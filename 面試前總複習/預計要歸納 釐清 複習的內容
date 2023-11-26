@@ -1,0 +1,64 @@
+
+1. Lombok 去看Lombok注意有提到 ， C:\Users\qw284\IdeaProjects\springboot\src\main\java\com\oni\training\springboot\LombokExample 也可練習操作
+2. 關於資料庫 hibernate 相關議題	/endproject/src/main/java/com/example/demo/repository/impl/MemberRepositoryJpaImpl.java
+3. 關於treeSet HashSet		/Onini_0316/src/at/com/home/datastruct/TreeSet/TreeSet_comparator.java
+4.
+
+
+
+
+【複習內容要用文字檔案紀錄方便複習、順便標註 git 關鍵字要用什麼去找 或者做完後 使用branch 這樣就可以直接找到】
+		
+		
+✓  10/25		半天~一天       "SQL 語法 crud 都要會 然後union join orderby limit create alter "
+☐  			半天~一天       "Java 再補充一下thread觀念好了 ?"
+   10/26	             "Jsp 跟 SET MAP LIST?"
+			有空再來        "SpringBoot 的啟動流程?"
+			                "SpringSecurity? "
+			半天內         "SpringBoot 上傳圖檔 how?  Controller?  Entity? 設定?"
+			練習半天       "稍微記一下JPA"
+			半天內         "記一下 jdbc 使用訓練一下"
+			半天內         "@Entity @OneToMany @ManyToOne @JoinColumn 回想清楚!"
+			一天內         "JS 優先看JQuery跟 await ajax"
+				          "LAZY LOAD 之類"
+	                	"ClassLoader順序複習"
+		
+		
+		
+		
+		【Normalization】   
+		            1.移除重複項    (1 cell one value)   跟 【增加必須的主鍵】
+		            2.移除部分相依 :
+		                也就是一個表的所有屬性需要完全相依於 (主鍵/複合主鍵)。  
+		                首先要知道 [主鍵代表只需要他一個 , 複合主鍵則由多個欄位組成 ]  兩者都能達成唯一識別性
+		                    【如果只有主鍵(一個) 那只會有遞移相依的問題要解決】
+		                    【如果有複合主鍵 那就處理有沒有部分相依 】
+		                如果有元素只依賴複合主鍵的 其中欄位(而非整個複合主鍵) 那就需要"移出"部分相依 
+		                    z : 課程代號    w : 學生編號     
+		                    r : 教師姓名    x : 學生姓名    
+		                    s : 教師性別    y : 學生智商
+		                    t : 教師編號    o : 學生課程成績             
+		               
+		                Table(w,x,y,z,r,s,t)     主鍵(determining factors)為 w 和 z :
+		                   
+		                    [o]  直接且完全依賴w,z  所以保留 
+		                    [x,y] 直接或間接依賴 w  [r,s,t]直接或間接依賴 z  
+		                    [x,y]   [r,s,t]  得到新的3個表 
+		                     
+		
+		            3.移除遞移相依  (教師姓名r 教師性別s 依賴 教師編號t  ， 教師編號 依賴 z 課程編號  )
+		                    [<w>,x,y] ，[<t>,r,s]  [<z>,t]  [<w,t> , o]得到以上四個表 
+		                    
+		                    
+		                    
+		                    
+		                    
+		                    
+		                    
+		                    
+		
+		最後    好好理解自己的springboot4learn到底寫了什麼鬼
+		
+		
+		2023/10/24  21:37 明天把 error 加入一下 usercontroller 讓他呼叫的時候如果不合規範 要告知錯誤發生詳細!
+		            弄好之後先這樣，剩下改天再溫習，先去弄上面說的 SQL 開幹!

@@ -1,0 +1,87 @@
+
+	
+*	使用 @Data @Builder @AllArgsConstructor  @NoArgsConstructor @EqualsAndHashCode @ToString
+			
+		> 		C:\Users\qw284\IdeaProjects\springboot\src\main\java\com\oni\training\springboot\LombokExample
+		>	上面這邊我有特別弄例子 直接操作更直觀	
+		>	https://kucw.github.io/blog/2020/3/java-lombok/ 不錯的網站	
+	
+*	https://zhuanlan.zhihu.com/p/266377497 总结
+	1.使用@Builder.Default初始化变量
+	2.@Builder要注意与其他注解的使用，特别是构造函数和@EqualsAndHashCode
+	3.使用@Builder(toBuilder = true) 只能实现浅拷贝
+	4.@NonNull，如果检测结果为null则抛出NullPointerException. 反而显式的null-check是更好的选择。
+	5.@EqualsAndHashCode    transient、靜態  不會被包括 
+	需要注意的 會用 > 表示
+	
+		
+		
+		> 	對@Builder注解的說明是不建議與構造函數注解和@EqualsAndHashCode一起使用的 !!!!!
+		
+		
+		> 	@Builder(toBuilder=ture)  
+			雖然可以透過多次調用Build 得到對象 但是屬於淺複製Shallow Copy  深層對象依舊是相同引用
+		
+	
+			使用 Lombok	builder:
+			
+				用這個方法建立的物件 我記得 不會理會field 預設的值  (明明建構式建立就沒問題)
+				
+		>	【 參考 SpringBoot4Learn 的entity  CustomBadRequest 中說明   】
+			
+				解決: @Getter(AccessLevelNone)
+				
+			 
+		>				如果timestamp 是 null 使用預設值 ，不是null代表被設定過 所以可以直接使用 
+			 
+		   				public String getTimestamp() {
+		        			return timestamp==null?String.valueOf(LocalDateTime.now()):timestamp;
+		    			}
+			
+		>	【為什麼會null 原因如下】 
+					
+					public class User {
+					    private UUID id = UUID.randomUUID();
+					    private String name;
+					
+					    User(final UUID id, final String name) {
+					        this.id = id;
+					        this.name = name;
+					    }
+					
+					    public static User.UserBuilder builder() {
+					        return new User.UserBuilder();
+					    }
+					
+					    public static class UserBuilder {
+					        private UUID id;
+					        private String name;
+					
+					        UserBuilder() {
+					        }
+					
+					        public User.UserBuilder id(final UUID id) {
+					            this.id = id;
+					            return this;
+					        }
+					
+					        public User.UserBuilder name(final String name) {
+					            this.name = name;
+					            return this;
+					        }
+					
+					        public User build() {
+					            return new User(this.id, this.name);
+					        }
+					    }
+					}
+					
+					
+					
+			>	public class MyClass implements Serializable {
+				    private String regularField; // 这个字段会被序列化
+				
+				    private transient String transientField; // 这个字段不会被序列化
+				}
+			
+			

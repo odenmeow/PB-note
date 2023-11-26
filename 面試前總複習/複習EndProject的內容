@@ -1,0 +1,37 @@
+
+
+
+	/endproject/src/main/java/com/example/demo/repository/impl/MemberRepositoryJpaImpl.java
+	
+	
+	通常下面寫在	 名為 persistence.xml 的檔案內
+	
+			//	<persistence-unit name="myDatabasePU" transaction-type="RESOURCE_LOCAL">
+			//    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+			//    <properties>
+			//        <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
+			//        <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mydatabase" />
+			//        <property name="javax.persistence.jdbc.user" value="username" />
+			//        <property name="javax.persistence.jdbc.password" value="password" />
+			//        <!-- 其他属性设置 -->
+			//    </properties>
+			// </persistence-unit>
+			
+	@PersistenceContext(unitName = "myDatabasePU")
+		private EntityManager em;
+	
+//	@PersistenceUnit	  注入 EntityManagerFactory
+//	@PersistenceContext   注入 EntityManager
+	
+	【  EntityManager vs EntityManagerFactory 】
+	
+		
+	EntityManager:			使用這個基本上就ok
+				
+				
+	
+	EntityManagerFactory:  //springBoot會自動配置上去
+	
+						
+	
+	
