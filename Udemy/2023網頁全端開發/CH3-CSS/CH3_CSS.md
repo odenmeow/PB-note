@@ -192,7 +192,78 @@
 # CSS Selectors 2
 
 - Grouping Selector 可一次選擇所有數個 HTML 元素,並以逗號分隔。
+  
+  ```css
+  h1,
+  h2 {
+    color: red;
+  }
+  ```
 
 - Descendant Selector 由兩個或多個用空格分隔的選擇器組成。
+  
+  ```css
+  /* -------Descendant Selector------------ */
+  
+  div.link1 a {
+    color: red;
+  }
+  div.link2 a {
+    color: green;
+  } 
+  ```
 
+```
 - Attribute Selector 選擇所有具有相同屬性的HTML 元素。
+
+```css
+/* -------Attribute Selector------------ */
+
+input[type="text"] {
+  color: rgb(248, 53, 53);
+}
+```
+
+# (39) Pseudo class, element
+
+- `pseudo-class` 指定所選元素其特殊狀態(樣式) 
+  
+  :hover 滑鼠懸停在按鈕上
+  
+  :active 滑鼠按下去才變色
+  
+  :focus 專注 = 輸入會有 顯示藍色 那就是聚焦物件 
+  
+  :nth-child() 選擇第n個元素
+  
+  ```css
+  p::before {
+    content: ">>";
+    color: rgb(47, 47, 255);
+  }
+  ```
+  
+  加入GuGonMuseum.html 第二段落`<p>` 之後使用~上面
+
+- `pseudo-element` 設置所選元素的指定 '部分樣式' 
+  
+  ::first-line 用於更改段落第一行字體字型 
+  
+  ```css
+  p::first-line {
+    font-size: 29px;
+    color: rgb(47, 47, 255);
+  }
+  ```
+  
+  真的就是只改第一行字體大小跟顏色，隨著螢幕放大縮小 某些文字因放大不在第一行就不再是藍色了。不只第一個`<p>` 第二個也會套用第一行。
+
+- `*::selection` 改變反白 區塊的CSS
+  
+  ```css
+  *::selection {
+    background-color: aqua;
+  }
+  ```
+
+        <font style="color: chartreuse;"> 上面蠻酷的</font>
