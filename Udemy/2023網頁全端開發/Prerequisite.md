@@ -39,15 +39,3 @@ Google Font: [https://fonts.google.com/](https://fonts.google.com/)
 Font Awesome: [Get Started instantly With 1,000+ Free Icons | Font Awesome](https://fontawesome.com/start)
 
 Animation: https://storyset.com
-
-Here is the link to all resources in the course.
-
-Unsplash: [https://unsplash.com/](https://unsplash.com/)
-
-Icon8: https://icons8.com/icons/
-
-Google Font: [https://fonts.google.com/](https://fonts.google.com/)
-
-Font Awesome: [Get Started instantly With 1,000+ Free Icons | Font Awesome](https://fontawesome.com/start)
-
-Animation: https://storyset.com

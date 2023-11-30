@@ -1,6 +1,6 @@
 # DOM Tree
 
-![](../../../Images/2023-11-26-18-02-18-image.png)
+![DOM 樹圖](../../../Images/b2bb5c1378dffce80ae54f00560a25b82c135d55.png)
 
 # CSS簡介
 
@@ -365,7 +365,9 @@ input[type="text"] {
     
     後者 覆蓋前者。
 
-# (41) CSS 單位
+# (41) CSS 單位  【Text styling】
+
+- `font-size` 可設置字體大小，分為 `絕對單位` 跟 `相對單位` 。
 
 - `Absolute units` 指有預設的數值或是現實生活定義的單位
   
@@ -386,15 +388,15 @@ input[type="text"] {
     
     瀏覽器如果沒動過通常是預設16px ( 下圖是預設的CSS )
     
-    ![](C:\MyNote\Images\2023-11-30-17-12-23-image.png)
+    ![網路字體預設圖](../../../Images/2cb5ac292af22a5c38412b850ef466df469a57ab.png)
     
     但通常避免使用em，因為 DOM tree越下層越難以計算。
   
   - `rem` root em的意思 根據瀏覽器預設為主而非parent
     
-    也就是說 不會因為節點居後而縮小 ，而是固定倍數於瀏覽器預設。假設預設16px 則 2 rem=32px
+    也就是說 不會因為節點居後而縮小 ，而是固定倍數於瀏覽器預設。假設瀏覽器的預設為16px 則 2 rem=32px
   
-  - `vw` viewport width  ( 瀏覽器視窗 ) 的 1/100 
+  - `vw` viewport width  ( 瀏覽器視窗 ) 的寬度的 1/100 
     
     然而100vw長度略寬於網頁寬度，所以會出現horizontal scrollbar
     
@@ -409,6 +411,243 @@ input[type="text"] {
     
     通常不會設定`100vw`這樣， 我的電腦而言則是 `98vw` 才不會跑出水平scrollbar ( 圖例如下 )
     
-    ![](../../../Images/2023-11-30-17-25-36-image.png)
+    ![範例圖](../../../Images/b3eca9d6e48a85e7f7395db2892cb82ce6db9ff2.png)
+  
+  - `vh` 跟上面類似，基本單位是瀏覽器 高度  1/100
+  
+  - `%` 百分比 代表相對於 parent element的值
+    
+    假設父元素為width500px Child設定width 50%則其寬度為250px
+    
+    <font style="color: chartreuse;"> 突然發現如果vsCode輸入div.box 會變成</font> 
+    
+    ```html
+    <div class="box"></div>
+    ```
 
-- [CSS Default Browser Values for HTML Elements (w3schools.com)](https://www.w3schools.com/cssref/css_default_values.php)
+# (42-3) font 設定1-2 【Text styling】
+
+- `text-align`  
+  
+  設置block element 或 table cell 中的 content的水平對齊位置。
+  
+  ```css
+  h1 {
+    text-align: center;
+  }
+  
+  p {
+    text-align: center;
+  }
+  /* ----- 對 <a> 使用text-align無效 因為不是block elem \ table cell ------ */
+  
+  /* ----- <a>  = inline elem ------ */
+  a {
+    text-align: right;
+  }
+  ```
+  
+  `<a>` 屬於 inline element 故對齊無效
+
+- `text-decoration`   文字裝飾外觀
+  
+  ```css
+  /* ----- <a>  讓超連結的底線消失 ------ */
+  
+  a {
+    text-decoration: none;
+  }
+  ```
+
+- `line-height` 文字each row之間的distance。 
+  
+  ```css
+  /* ------------------ 使用 line-height ----------------- */
+  p {
+    line-height: 50px;
+  }
+  ```
+
+- `letter-spacing` 文字水平間距
+  
+  ```css
+  /* ------------------ 使用 letter-spacing ----------------- */
+  p {
+    letter-spacing: 5px;
+  }
+  ```
+
+- `font-family` 為所選的元素指定一個或者多個字體系列的優先列表
+  
+  - [Noto Sans Traditional Chinese - Google Fonts](https://fonts.google.com/noto/specimen/Noto+Sans+TC) 從這邊玩
+  
+  - <img title="" src="../../../Images/2023-11-30-21-25-19-image.png" alt="" width="236">
+  
+  - 因為我們使用的是 外部css 所以要先提供google `<link>` 在自己的.css 之前，這樣我們的css才能讀到這個沒見過的字體。
+    
+    ```html
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../Chapter3/pages/style.css" />
+    ```
+    
+    之後CSS設定
+  
+  - ```css
+    /* ------------------ 使用 font-family google font ----------------- */
+    img + p {
+      font-family: "Noto Sans TC", sans-serif;
+    }
+    p::first-line {
+      font-family: "Noto Sans TC", sans-serif;
+    }
+    ```
+    
+    除此之外也可以用<font style="color: chartreuse;"> h1~p 全體兄弟選擇器 </font> 選擇與 h1
+    
+    同位階 <font style="color: chartreuse;">( 輩分 )</font> 的元素 p
+
+# (44) 背景樣式
+
+- `background-color` 
+  
+  ```css
+  /* ------------------ 使用 Background-color ----------------- */
+  h1 {
+    background-color: antiquewhite;
+  }
+  ```
+
+- `background-im` 
+  
+  ```css
+  /* ------------------ 使用 background-image ----------------- */
+  body {
+    font-family: "Noto Sans TC", sans-serif;
+    background-image: url(../images/故宮圖片2.jpeg);
+  }
+  ```
+
+- `background-size`
+  
+  > [background-size - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/background-size)  有範例可以玩 !
+  
+  ```css
+  body{
+      background-size:contain;
+      background-repeat:no-repeat;
+  }
+  ```
+  
+  > [Beautiful Free Images & Pictures | Unsplash](https://unsplash.com/) 免費圖庫
+  
+  圖片改用 101 。
+
+- `background-position` 
+  
+  ```css
+  background-position: bottom;
+    /* 使用bottom會發現上面被裁切 */
+  ```
+
+- `background` 只是個shorthand
+  
+  > [background - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/background) 有介紹  可減少打字
+  
+  ```css
+  body {
+    background: url(../images/tommy-tsao-TZldfnLPZ3Q-unsplash.jpg);
+  }
+  ```
+
+# (45) Box Model 基本認識
+
+- 每個 `block element` 都被視為一個Box ，由下組成。
+  
+  <img src="../../../Images/2023-11-30-22-50-45-image.png" title="" alt="" width="375">
+  
+  Inline element 只有持有 Box中的一部份屬性 ，不是Box。
+
+- `content` 
+  
+  - 顯示內容的區域 ，用width 、height等屬性調整
+    
+    h1就是一個block元素
+    
+    ```css
+    h1 {
+      background-color: aqua;
+      width: 300px;
+      height: 500px;
+    }
+    ```
+  
+  - 透過 F12 查看會發現 怎麼會有被設定 margin ，從下面網址找h1即可知。
+  
+  > [CSS Default Browser Values for HTML Elements (w3schools.com)](https://www.w3schools.com/cssref/css_default_values.php) 
+
+- `padding` 
+  
+  > [padding - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/padding) 
+  
+  - ```css
+    padding-left: 150px;
+    padding: 15rem;  
+    瀏覽器預設
+    ```
+
+- `border` 
+  
+  > [border - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/border) 
+  > 
+  > [border-style - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) 
+  
+  - 可以從上面網址查看border有哪些樣式
+    
+    - solid
+    
+    - dotted
+    
+    - dashed ...之類
+  
+  - ```css
+     border: 5px solid blue;
+    ```
+  
+  - 還有 `boder-radius` 能玩
+  
+  - ```css
+    .box {
+      width: 200px;
+      height: 200px;
+      background-color: blueviolet;
+      border-radius: 50%;
+    }
+    ```
+    
+    <img title="" src="../../../Images/2023-11-30-23-48-52-image.png" alt="" width="168">
+    
+    ```css
+    /*     GPT輔助  */
+    .box2 {
+      width: 200px;
+      height: 200px;
+      background-color: blueviolet;
+      border-radius: 40%;
+      text-align: center;
+      position: relative;
+      color: aqua;
+    }
+    
+    .box2::before {
+      content: var(--content-text, "40%");
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    ```

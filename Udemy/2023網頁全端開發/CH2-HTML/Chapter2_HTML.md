@@ -258,13 +258,20 @@
 - 表示方法用 [C,R] 而不是 RC哦~  [2,3] 代表 td8  (th不納考慮的話)
 
 ```mermaid
-graph TD;
-    th1-->name_tel_age;
-    th2-->name_tel_age;
-    th3-->name_tel_age;
-    tr --> td1;
-    tr --> td2;
-    tr --> td3;
+graph TB
+
+    th1-->name;
+    th2-->tel;
+    th3-->age;
+```
+
+```mermaid
+graph LR;          
+    tr;
+    td1 --> td2;
+    td2 --> td3;
+    /tr;        
+    
 ```
 
 - 只要知道就好 我隨便練習flowchart而已 不要管我= =
@@ -411,7 +418,7 @@ graph TD;
   
   <font style="color:lightgreen">雖然也可能繞過但是對於一般使用者要設定min 年齡不為負</font>.
   
-  - `setp`  每次增減 加多少 預設是1 
+  - `step`  每次增減 加多少 預設是1 
     
     - <font style="color:lightgreen">可以設定成0.01 這樣就可以輸入小數了</font>.
   
