@@ -1,6 +1,6 @@
 # DOM Tree
 
-![](C:\MyNote\Images\2023-11-26-18-02-18-image.png)
+![](../../../Images/2023-11-26-18-02-18-image.png)
 
 # CSS簡介
 
@@ -267,3 +267,148 @@ input[type="text"] {
   ```
 
         <font style="color: chartreuse;"> 上面蠻酷的</font>
+
+# (40) CSS重點概念
+
+- Inherited and Non-Inherited Properties
+  
+  - CSS 樣式<font style="color: chartreuse;"> 有些會被子元素繼承，有些不會。</font> 
+    
+    - Parent element / Child element
+  
+  - https://www.w3.org/TR/CSS21/propidx.html
+  
+  - 會繼承的 常見有
+    
+    - color
+    
+    - font-family
+    
+    - font-size
+    
+    - font-weight
+    
+    - list-style-type
+    
+    - text-align
+  
+  - 由於user agent styling 優先度 > inheritance 所以瀏覽器預設樣式可能覆蓋繼承屬性 例如 `<a>` 的顏色通常要額外設定。
+
+- Conflicting Styling
+  
+  - 例如顏色衝突 ， 如下，以後執行為主。
+  
+  - ```css
+    h1 {
+      color: red;
+    }
+    h1 {
+      color: blue;
+    }
+    ```
+  
+  - 衝突處理原則
+    
+    - Priority
+    
+    - Specificity
+    
+    - Order Rule
+
+- Specificity 
+  
+  - 順序而言
+    
+    - Inline Styling
+    
+    - User Stylesheet ( .css )
+    
+    - User Agent Stylesheet
+    
+    - Inheritance
+  
+  - specificities
+    
+    - id - specificity (1,0,0)
+    
+    - class - specificity (0,1,0)
+    
+    - tag - specificity (0,0,1)
+    
+    ```html
+    <h1 class="gugu">國立故宮博物院</h1>
+    ```
+    
+    ```css
+    h1.gugu {
+      color: red;
+    }
+    .gugu {
+      color: blue;
+    }
+    ```
+    
+    會發現後面沒有蓋掉前面，因為滑鼠移過去 
+    
+    (0,1,1) > (0,1,0)
+    
+    因為 `h1.gugu` 更加 specific 特定(具體)。 
+
+- Order Rule 
+  
+  - 相同 specificity 則 後面覆蓋前面。
+  
+  - ```css
+     <link rel="stylesheet" href="./style.css" />
+     <link rel="stylesheet" href="./style2.css" />
+    ```
+    
+    後者 覆蓋前者。
+
+# (41) CSS 單位
+
+- `Absolute units` 指有預設的數值或是現實生活定義的單位
+  
+  px ( pixel ) = 2.54cm 的 1/96 、in、mm、cm之類都可以。
+
+- `Relative units`  
+  
+  - `em` 相對於parent element的單位 根據上層節點計算
+    
+    ```css
+    body {
+      font-size: 40px;
+    }
+    h1 {
+      font-size: 1em;   /* 40px*1   =40px */
+    }
+    ```
+    
+    瀏覽器如果沒動過通常是預設16px ( 下圖是預設的CSS )
+    
+    ![](C:\MyNote\Images\2023-11-30-17-12-23-image.png)
+    
+    但通常避免使用em，因為 DOM tree越下層越難以計算。
+  
+  - `rem` root em的意思 根據瀏覽器預設為主而非parent
+    
+    也就是說 不會因為節點居後而縮小 ，而是固定倍數於瀏覽器預設。假設預設16px 則 2 rem=32px
+  
+  - `vw` viewport width  ( 瀏覽器視窗 ) 的 1/100 
+    
+    然而100vw長度略寬於網頁寬度，所以會出現horizontal scrollbar
+    
+    ```css
+    /* ------------------ 使用 vw ----------------- */
+    
+    h1 {
+      background-color: pink;
+      width: vw;
+    }
+    ```
+    
+    通常不會設定`100vw`這樣， 我的電腦而言則是 `98vw` 才不會跑出水平scrollbar ( 圖例如下 )
+    
+    ![](../../../Images/2023-11-30-17-25-36-image.png)
+
+- [CSS Default Browser Values for HTML Elements (w3schools.com)](https://www.w3schools.com/cssref/css_default_values.php)

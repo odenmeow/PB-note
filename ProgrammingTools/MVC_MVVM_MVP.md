@@ -2,8 +2,6 @@
 
 > [快速上手Mermaid流程图 · 雪之梦 (snowdreams1006.github.io)](https://snowdreams1006.github.io/write/mermaid-flow-chart.html)
 
-
-
 # 參考來源:
 
 > https://juejin.cn/post/6901200799242649607 比較清楚(?) 稍亂
@@ -13,8 +11,6 @@
 > [MVC vs MVVM！MVVM 是什麼？能吃嗎？(上) - HackMD](https://hackmd.io/@leoho0722/rJtBdJFJc/https%3A%2F%2Fhackmd.io%2F%40leoho0722%2Frkaj8tXH9)
 
 > [MVC,MVP和MVVM之間的優缺點-有解無憂 (uj5u.com)](https://www.uj5u.com/ruanti/277826.html) 
-
-
 
 > [探究 Android MVC、MVP、MVVM 的区别以及优缺点_android mvc mvp mvvm 优缺点_怪伽先森的博客-CSDN博客](https://blog.csdn.net/u011033906/article/details/118113466)
 
@@ -27,10 +23,6 @@
 - 在後端，特別是像Spring Boot這樣的框架中，MVC是一種常見的架構模式，它將應用程式分為模型（Model）、視圖（View）和控制器（Controller）。但是在前端開發中，經常會使用MVVM或MVP這樣的模式，因為這些模式更適合處理前端的複雜邏輯和數據處理。
 
 - 不同的框架和平台有不同的需求和特點，因此在開發過程中選擇適合的架構模式是很重要的。MVVM和MVP等模式可以幫助開發者更好地管理代碼和提高應用程式的可維護性。
-
-
-
-
 
 # MVC
 
@@ -85,8 +77,6 @@ graph LR
 - 切割讓view 自己有控制器，控制自己的畫面
 - present 專心處理 view跟model 之間就好 不處理畫面了
 - 大量接口處理 解耦 頁面邏輯多= =接口多
-
-
 
 在MVP架構中，相互依賴可能會出現在View和Presenter之間。這是因為View負責`接收用戶輸入`和`顯示數據`，而Presenter則`負責處理業務邏輯`和`更新View`。當這兩者相互依賴時，可能會導致一些問題：
 

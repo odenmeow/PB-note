@@ -24,7 +24,7 @@
 
 - forward slash   =>    【   /  】
 
-- <img title="" src="file:///C:/MyNote/2023網頁全端開發/CH2-HTML/元素和內容.png" alt="元素和內容.png" width="404">
+- <img title="" src="../CH2-HTML/元素和內容.png" alt="元素和內容.png" width="404">
 
 - 下載故宮博物館的資料然後跟著做而已
 
@@ -94,7 +94,7 @@
   
   同上  效果如下
   
-  <img title="" src="file:///C:/MyNote/Images/2023-11-19-15-18-44-image.png" alt="" data-align="inline">
+  <img title="" src="../../../Images/2023-11-19-15-18-44-image.png" alt="" data-align="inline">
 
 - ```html
   <meta name="robots" content="index,follow" />
@@ -452,9 +452,9 @@ graph TD;
 
 - `placeholder="中文姓名"`  <font style="color:lightgreen">Input 區塊顯示提示字串</font>.
 
-- <img src="file:///C:/MyNote/Images/2023-11-19-22-15-49-image.png" title="" alt="" width="381">
+- <img title="" src="../../../Images/2023-11-19-22-15-49-image.png" alt="" width="381">
 
-- ![](C:\MyNote\Images\2023-11-19-22-16-05-image.png)
+- ![](../../../Images/2023-11-19-22-16-05-image.png)
 
 - 我的按按鈕就會自動加速之類就是因為有安裝到這個插件 所以我跑去移除垃圾 
 

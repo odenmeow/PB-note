@@ -100,3 +100,19 @@
 - ```batch
   
   ```
+
+## 丟棄工作區的更改 ( 還沒git add . )
+
+- ```batch
+  git checkout -- path/to/yourdir_foldername
+  ```
+
+## 如果已經staged ( git add . )
+
+- ```batch
+  git reset Head path/to/yourdir_foldername
+  ```
+  
+  上述指令 能把staged 的對象 unstaged 
+  
+  可能還需要 checkout

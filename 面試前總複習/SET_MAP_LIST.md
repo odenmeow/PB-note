@@ -151,7 +151,5 @@
 - 大多數 `List` 都非 thread-safe  
 
 - `開發者自己處理安全問題`
-  
-  <br>
 
-- ArrayBlockingQueue<E>、還有許多其他衍生很方便的類別
+- `ArrayBlockingQueue<E>`、還有許多其他衍生很方便的類別
