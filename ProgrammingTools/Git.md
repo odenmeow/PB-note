@@ -117,19 +117,28 @@
   
   可能還需要 checkout
 
-## 後續附加標籤 tag
-
-- ```batch
-  git tag -a <tag_name> -m "Tag message" <commit_hash>
-  ```
-
 ## Commit 附加標籤
 
 - ```batch
   git commit -a -m "Commit message" -m "Additional description"
   ```
 
-- GPT說的，要試試看才知道 @ @、
+- GPT說的，要試試看才知道 @ @ <mark>上面這個最好別用</mark>
+
+- 這樣會將兩個訊息合併到一起成為提交的訊息。第一個 `-m` 後的內容是主要的提交訊息，第二個 `-m` 後的內容則是附加的描述。 這不是tag @@
+
+- ```batch
+  git add .
+  git commit -m "直接上傳囉"
+  git tag <tag_name> 就可以  之後再push
+  git push 
+  ```
+
+## 後續附加標籤 tag
+
+- ```batch
+  git tag -a <tag_name> -m "Tag message" <commit_hash>
+  ```
 
 ## 創建分支並推送過去遠倉
 
