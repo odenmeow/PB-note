@@ -116,3 +116,24 @@
   上述指令 能把staged 的對象 unstaged 
   
   可能還需要 checkout
+
+## 後續附加標籤 tag
+
+- ```batch
+  git tag -a <tag_name> -m "Tag message" <commit_hash>
+  ```
+
+## Commit 附加標籤
+
+- ```batch
+  git commit -a -m "Commit message" -m "Additional description"
+  ```
+
+- GPT說的，要試試看才知道 @ @、
+
+## 創建分支並推送過去遠倉
+
+- ```batch
+  git branch Chapter8  左邊是章節8的意思  (因為我要依照章節做切換)
+  git push origin Chapter8 這樣就能推送上去
+  ```

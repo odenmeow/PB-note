@@ -317,7 +317,7 @@ input[type="text"] {
 
 - Specificity 
   
-  - 順序而言
+  - <mark>順序而言</mark>  
     
     - Inline Styling
     
@@ -796,6 +796,8 @@ input[type="text"] {
 
 ## outer display / inner display
 
+## outer有block、inline、inline-block之類
+
 - `outer display type` 
   
   - `block`
@@ -816,7 +818,7 @@ input[type="text"] {
     
     改成這樣之後，超連結原本同一行，會自動換行 ( block特性 )。
     
-    <mark>使用 inline 則 width跟height 無效</mark>
+    <mark>使用 inline 則 width跟height 無效</mark> 
   
   - `inline` 
     
@@ -886,4 +888,540 @@ input[type="text"] {
     
     - `grid` 
 
-# 
+# (50) Position 1
+
+## position 屬性 設置元素在文檔的定位方式
+
+> top bottom left right 四個屬性用來確定定位元素的最終位置。
+
+--- 
+
+static 、relative 、absolute  、 ( 下一節51講 )  fixed、 sticky 
+
+---
+
+- `static`  
+  
+  - 元素根據文檔的normal flow 定位。
+    
+    top bottom left right 和 z-index 屬性無效，此為position的預設值。
+    
+    > CSS normal flow 是指瀏覽器的正常排版規則，例如block element換行、inline element 並排直到沒空間之類。
+    > 
+    > **<u>Static 並不是 positioned element </u>**=> 指的是元素按照正常文檔流自然排列，而不受任何額外定位的影響。
+  
+  - `z-index` 相同的 stacking context的情況下，positioned element會使有較大的z-index <mark>覆蓋較小者</mark>，static不會。
+  
+  - <mark>positioned element 是指被定位的元素</mark>，也就是設置了 `position` 屬性為 `relative`, `absolute`, `fixed` 或 `sticky` 的元素。
+
+- `relative` 
+  
+  - 想要偏離原本該存在的位置，保持預留位置 (布局)。
+    
+    ```html
+    <div class="container">
+          <div class="box box1">1</div>
+          <div class="box box2">2</div>
+          <div class="box box3">3</div>
+    </div>
+    ```
+    
+    ```css
+    .box2 {
+      background-color: goldenrod;
+      position: relative;
+      top: 100px;
+      left: 30px;
+      z-index: 10;
+    }
+    .box3 {
+      background-color: cornflowerblue;
+      position: relative;
+      right: 20px;
+      z-index: 5;
+    }
+    ```
+    
+    偏離原本的位置。
+    
+    <img src="../../../Images/2023-12-01-19-08-38-image.png" title="" alt="" width="167">
+    
+    <mark>如果使用 static + index-z 則無效</mark>
+    
+    ```css
+    .box2 {
+      background-color: goldenrod;
+      position: relative;
+      top: 100px;
+      left: 30px;
+      z-index: 10;
+    }
+    .box3 {
+      background-color: cornflowerblue;
+      position: static;
+      right: 20px;
+      z-index: 15;
+    }
+    ```
+    
+    <img title="" src="../../../Images/2023-12-01-19-11-42-image.png" alt="" width="169">
+
+- `absolute` 
+  
+  - 元素從normal flow 中移除，不保留空間。
+    
+    根據top bottom left right的值進行定位。
+    
+    參考對象是<mark>closest positioned ancestor</mark>，如果往上父元素找都沒有人是positioned element，則定位參考initial containing block = 瀏覽器初始視窗。
+    
+    > <font style="color:lightgreen">再次提示只要不是 **static** 的定位方式 那就是 **positioned element** !</font> 
+    
+    ```css
+    div.container {
+      width: 500px;
+      height: 2000px;
+      background-color: aquamarine;
+      /* 如果父元素 是 positioned elem 則依據此元素定位，打開看差別 */
+      position: relative;
+    }
+    .box {
+      width: 200px;
+      height: 200px;
+    }
+    .box1 {
+      background-color: beige;
+    }
+    .box2 {
+      background-color: goldenrod;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      z-index: 10;
+    }
+    .box3 {
+      background-color: cornflowerblue;
+      position: static;
+      right: 20px;
+      z-index: 15;
+    }
+    ```
+    
+    ![](../../../Images/2023-12-01-20-21-56-image.png)
+
+# (51) Position 2
+
+## position 屬性 設置元素在文檔的定位方式
+
+- `fixed`
+  
+  - 該元素從normal flow中移除，不保留空間，根據 top、bottom、left、right定位，固定在瀏覽器視窗的固定位置，類似購物車那樣懸浮、固定在那。
+    
+    定位參考為 viewport 形成的initial containing block
+
+- `sticky`
+  
+  - **<u>relative 和 fixed 的混合體</u>** 
+    
+    一開始視為相對定位，直到超過threshold，此時變成fixed。
+    
+    > [首頁.-衛生福利部疾病管制署 (cdc.gov.tw)](https://www.cdc.gov.tw/) 範例
+    
+    如果指定
+    
+    ```css
+    .box2 {
+      background-color: goldenrod;
+      position: sticky;
+      top: 50px;
+      left: 300px;
+    }
+    ```
+    
+    則一開始relative 直到 scroll down，然後它會強迫.box2 跟視窗上方保持 50px。
+    
+    另外，會保留原始空間 (預留)。
+    
+    <img src="../../../Images/2023-12-01-20-44-56-image.png" title="" alt="" width="434">
+
+# (52-53) Sticky, Fix 比較補充
+
+- `sticky` 
+  
+  上小節沒說到，它會依賴Parent 的空間，所以不會一直保持50px，
+  
+  它會黏在Parent給予的空間最下面而不會超出。
+  
+  ```html
+   <div class="container">
+        <div class="box box1">1</div>
+        <div class="box box2">2</div>
+        <div class="box box3">3</div>
+      </div>
+  ```
+  
+  ```css
+  body {
+    height: 3000px;
+  }
+  
+  div.container {
+    width: 500px;
+    height: 1000px;
+    background-color: aquamarine;
+  }
+  .box {
+    width: 200px;
+    height: 200px;
+  }
+  .box1 {
+    background-color: beige;
+  }
+  .box2 {
+    background-color: goldenrod;
+    position: sticky;
+    top: 50px;
+    left: 300px;
+  }
+  .box3 {
+    background-color: cornflowerblue;
+  }
+  ```
+  
+  ![](../../../Images/2023-12-01-20-51-01-image.png)
+
+- `fixed` 
+  
+  - 除了會從normal flow 移除，也會一直往下，超出Parent element。
+    
+    ![](../../../Images/2023-12-01-20-52-57-image.png)
+  
+  - 另外很重要就是說<mark>這邊的 top bottom left right 是 threshold 而不是位置偏移量</mark> 
+    
+    ![](../../../Images/2023-12-01-21-01-43-image.png)
+  
+  - 如上圖所示，只是碰巧調到而已。
+
+# (54) Stacking Context, Cursor, Table
+
+- **Stacking Context**
+  
+  - HTML元素沿著 假想z軸穿出螢幕指向用戶的3D概念
+    
+    形成情況包含以下 ( 不限於 )
+    
+    - Root element of the document <html>
+    
+    - <font style="color:lightgreen">任何元素有設定position 為 absolute 或 relative 且 z-index不是auto </font>
+      
+      則其 <u>**內部形成新的 stacking context**</u> ，其<u>**本身不算**</u>在內=不在一組。
+      
+      <mark>例子如下</mark> 
+    
+    ```html
+    <div class="container">
+          <div class="box box1">1</div>
+          <div class="box box2">
+            2
+            <div class="small-box box4">4</div>
+            <div class="small-box box5">5</div>
+          </div>
+          <div class="box box3">3</div>
+    </div>
+    ```
+    
+    ```css
+    .box2 {
+      background-color: goldenrod;
+      position: relative;
+      z-index: 0;
+    }
+    .box3 {
+      background-color: cornflowerblue;
+    }
+    .box4 {
+      background-color: greenyellow;
+      position: absolute;
+      top: 70px;
+    
+      z-index: -1;
+    }
+    .box5 {
+      background-color: brown;
+      position: relative;
+      z-index: 2;
+    }
+    ```
+    
+    ![](../../../Images/2023-12-01-21-28-44-image.png)
+    
+    `4` [綠色] 並沒有被 `2` [玉米色] 覆蓋 。 因為`2`獨立於 `4`跟 `5` 的 z-index
+    
+    > 自己去MDN參考更多情況
+
+- **表格樣式設定** 
+  
+  簡單講一下表格設定然後她為了示範 overflow-x:auto
+  
+  ```html
+  <div style="overflow-x: auto">
+        <table>
+          <thead>
+            <tr>
+              <th colspan="3">故宮的基礎資訊</th>....
+  ```
+  
+  ```css
+  /* ------------------------------ (54) 表格樣式 ----------------------------- */
+  table,
+  th,
+  tr,
+  td {
+    /* border: solid salmon; */
+    border-bottom: solid salmon;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    padding: 50px 150px;
+  }
+  tr:hover {
+    background-color: aqua;
+  }
+  ```
+  
+  我使用增加padding讓表格變大，模擬手機擠不下，然後縮小時，overflow-x : auto 就會自動添增 scroll bar 給div以呈現完整表格。
+  
+  ![](../../../Images/2023-12-01-21-55-21-image.png)
+
+- `opacity` 
+  
+  - 0 = 透明
+    
+    1 = 實體
+    
+    ```css
+    td {
+      padding: 50px 150px;
+      /* Opacity 0 =透明 1=實體=預設*/
+      opacity: 0.3;
+    }
+    ```
+
+- `cursor` 
+  
+  > [cursor - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor) 
+  
+  - 切換滑鼠圖案
+    
+    下面有效果
+    
+    ```css
+    td {
+      cursor: pointer;
+    }
+    ```
+  
+  - 如果使用td:hover 則無效果出現
+
+# (55) Transition
+
+- 該屬性可以幫助我們設定某個CSS屬性轉化時的timing function、速度。本身為一個 shorthand property，可一次設定四種以下屬性。
+  
+  - transition-property
+  
+  - transition-duration
+  
+  - transition-timing-function
+  
+  - transition-delay
+  
+  > [transition - CSS | MDN (mozilla.org)](https://developer.mozilla.org/zh-TW/docs/Web/CSS/transition) 
+  
+  > [Easing Functions Cheat Sheet (easings.net)](https://easings.net/) 
+  
+  ```css
+  /* ----------------------------- (55) Transition ----------------------------- */
+  
+  h1 {
+    transition: all 2s ease-out;
+  }
+  h1:hover {
+    background-color: aqua;
+  }
+  /* 提示transition放入:hover則只有懸浮時有過渡效果、離開沒有 */
+  ```
+  
+  如果 transition放到 hover 又會有不同效果
+
+# (56) Transform
+
+- 該屬性允許我們旋轉、縮放、傾斜或平移HTML元素。
+  
+  可以設定的值有以下，皆可分別設定x,y,z的變換 :
+  
+  - `translate` 
+    
+    ```css
+    /* ------------------------------ (56) Transform ----------------------------- */
+    div.container {
+      width: 1000px;
+      height: 1000px;
+      background-color: aqua;
+    }
+    div.box {
+      width: 100px;
+      height: 100px;
+      background-color: orange;
+      transition: all 1s ease-out;
+    }
+    div.box:hover {
+      transform: translate(100px, 200px);
+    }
+    ```
+    
+    - <mark>下面教你置中 div</mark>
+      
+      由於top、 left 50%只有橘色箱子左上角的點在中心所以運用
+      
+      transform 就可以達成想要的置中了~
+    
+    ```css
+    div.container {
+      width: 300px;
+      height: 300px;
+      background-color: aqua;
+      position: relative;
+    }
+    div.box {
+      width: 100px;
+      height: 100px;
+      background-color: orange;
+      transition: all 1s ease-out;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    div.box:hover {
+      transform: translate(100px, 200px);
+    }
+    ```
+    
+    <img title="" src="../../../Images/2023-12-01-23-33-02-image.png" alt="" width="287">
+  
+  - `rotate` + `scale`
+    
+    ```css
+    /* ------------------------------ (56) Rotate ----------------------------- */
+    div.container {
+      width: 300px;
+      height: 300px;
+      background-color: aqua;
+      position: relative;
+    }
+    div.box {
+      width: 100px;
+      height: 100px;
+      background-color: orange;
+      transition: all 1s ease-out;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    div.box:hover {
+      /* 下面的translate是為了不要讓div.box的transform失效 */
+      transform: scale(2, 1) RotateZ(180deg) translate(-50%, -50%);
+      /* 可以自己玩XYZ ，取下Scale看看原本的*/
+      /* 不能夠重複寫 無效而且壞掉*/
+      /* transform: translate(-50%, -50%); */
+    }
+    ```
+    
+    ![](../../../Images/2023-12-01-23-47-47-image.png)
+
+# (57) Animation
+
+## animation-name|duration|timing-funciton|delay|.....
+
+是一個 shorthand property 可一次設定多種 順序跟下面介紹一樣，如果跳過則使用CSS預設值。
+
+- animation-name (keyframes)
+
+- animation-duration
+
+- animation-timing-function
+
+- animation-delay
+
+- animation-iteration-count
+
+- animation-direction、animation-fill-mode、animation-play-state...之類。
+
+```css
+/* ------------------------------ (57) Animation ----------------------------- */
+div.container {
+  width: 300px;
+  height: 300px;
+  background-color: aqua;
+}
+div.box {
+  width: 100px;
+  height: 100px;
+  background-color: orange;
+  position: relative;
+  /*下面能一行替代其後面的部分  */
+  /* animation: changeColor 2s ease-in 1s infinite alternate forwards; */
+  animation-name: changeColor;
+  animation-duration: 2s;
+  animation-timing-function: ease-in;
+  animation-delay: 1s;
+  animation-iteration-count: infinite;
+  /* 倒放動畫 */
+  /* animation-direction: reverse; */
+  /* 正反播放 */
+  animation-direction: alternate;
+  /* 維持最後顏色 */
+  animation-fill-mode: forwards;
+}
+@keyframes changeColor {
+  from {
+    background-color: yellow;
+    top: 0px;
+    left: 0px;
+  }
+  to {
+    background-color: blue;
+    top: 200px;
+    left: 200px;
+  }
+}
+```
+
+<img src="../../../Images/2023-12-02-00-16-34-image.png" title="" alt="" width="190"><img title="" src="../../../Images/2023-12-02-00-16-50-image.png" alt="" width="192">
+
+# CH3考試有意思的題目
+
+- 程式碼放置於 internal styling 優點跟缺點是
+  
+  - 不方便維護但是方便寫。
+
+- CSS 優先順序為
+  
+  1. Inline Styling
+  
+  2. Inheritance
+  
+  3. User Agent Stylesheet
+  
+  4. User Stylesheet ( 內部順序由Specificity決定 )
+
+- 如果年長使用者的網頁瀏覽器設定字體放大，則在CSS中設定1rem以及1em的長度分別會是？
+  
+  - 兩者都跟瀏覽器設定有關係，只是 `rem` 不會被 Parent 綁架，直接先綁定root ( 瀏覽器預設 )。
+
+- 設定block element的height: 50%並不能改變其高度的根本原因是因為？
+  
+  - 它是說 所有element高度都是auto，如果要求根據預設計算則會得到undefined。
+  
+  - 不過好像如果元素是relative 
