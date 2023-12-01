@@ -566,6 +566,8 @@ input[type="text"] {
 
 # (45) Box Model 基本認識
 
+## content、padding、border、...
+
 - 每個 `block element` 都被視為一個Box ，由下組成。
   
   <img src="../../../Images/2023-11-30-22-50-45-image.png" title="" alt="" width="375">
@@ -629,7 +631,7 @@ input[type="text"] {
     }
     ```
     
-    <img title="" src="../../../Images/2023-11-30-23-48-52-image.png" alt="" width="168">
+    <img title="" src="../../../Images/2023-11-30-23-48-52-image.png" alt="" width="202">
     
     ```css
     /*     GPT輔助  */
@@ -651,3 +653,237 @@ input[type="text"] {
       transform: translate(-50%, -50%);
     }
     ```
+    
+    後續再去研究 content跟transform 怎麼讓字跑到中心。
+
+# (46) BoxModel - width, height與overflow屬性
+
+- `width` 
+  
+  - 可以用%設定，跟著網頁寬度變動。
+
+- `height`
+  
+  - <font style="color: chartreuse;">單用%設定，不會跟著變動，而是固定數值或0。因瀏覽器預設而異，除非親自設定ParentElement的height</font>。
+    
+    - 下面<mark>不會</mark>隨著視窗縮放改變
+    
+    ```css
+    body {
+            height: 1000px;
+          }
+    div.box {
+            width: 50%;
+            height: %;
+            padding: 10px;
+            border: 10px solid black;
+            background-color: aquamarine;
+          }
+    ```
+    
+    - 下面<mark>會隨著</mark> ， 因為他的body使用 `vh` 單位
+    
+    ```css
+    ```css
+    body {
+            height: 80vh;
+          }
+    div.box {
+            width: 50%;
+            height: %;
+            padding: 10px;
+            border: 10px solid black;
+            background-color: aquamarine;
+          }
+    ```
+    
+    ```
+    
+    ```
+  
+  - 使用Lorem20 跟 Lorem100 ，使用F12會發現 `<p>` 高度不同，是瀏覽器自己決定，因為我們沒定義。
+
+- `overflow` 
+  
+  通常不會去設定某個元素的高度，而是browser自己根據內容決定元素高度。否則需要去考慮overflow的情況，也就是寬度或者高度小於content ，去設定overflow屬性來選擇處理方式。
+  
+  - `visible-content` 
+    
+    - 不會被修剪，可以呈現在元素框之外，為預設值。
+      
+      ```css
+      p {
+          background-color: bisque;
+          height: 100px;
+      }
+      ```
+      
+      ![](../../../Images/2023-12-01-15-11-42-image.png)
+      
+      <img src="../../../Images/2023-12-01-15-12-13-image.png" title="" alt="" width="434">
+  
+  - `hidden` 
+    
+    - 隱藏，不顯示。
+  
+  - `scroll`
+    
+    - 提供滾動軸
+  
+  - `overflow-x` 、`overflow-y` 
+    
+    - 特定方向個別設定。
+      
+      ![](../../../Images/2023-12-01-15-15-43-image.png)
+    
+    ```css
+    p {
+            background-color: bisque;
+            height: 100px;
+            /* overflow: hidden; */
+            /* overflow: scroll; */
+            overflow-y: scroll;
+          }
+    ```
+
+# (47) BoxModel - content-box and border-box
+
+## box-sizing : border-box / content-box
+
+- `content-box`  
+  
+  ![](../../../Images/2023-12-01-15-22-07-image.png)
+  
+  高= 150+25+25+5+5=210px ( 不計入margin = 餘裕 )
+  
+  CSS **預設 box-sizing == content-box**
+  
+  所以 width height 為content的高寬 。
+
+- `border-box`
+  
+  ![](../../../Images/2023-12-01-15-27-35-image.png)
+  
+  如果使用border-box 則 width 跟 height 包含 :
+  
+  content+padding+border 。  ( margin 餘裕不計算) 
+  
+  350 - ( 25\*2 ) - ( 5\*2 ) = 290
+
+# (48)  border-box示範(練習)
+
+- 實際如下
+  
+  ```css
+   * {
+     margin: 0px;
+     padding: 0px;
+     box-sizing: border-box;
+  }
+   p {
+     width: 500px;
+     background-color: beige;
+     padding: 50px;
+     border: solid yellow 5px;
+  }
+  ```
+  
+  由於 寬度固定， 內部padding增加，高度沒給定，所以高度增加才能使內容通通填入 ( 沒設定高，所以採 overflow 預設值 = 瀏覽器自訂 )
+
+- 所以通常不設定 height 否則還要設定 overflow ... 否則內容會超出框
+
+# (49) Display屬性
+
+## outer display / inner display
+
+- `outer display type` 
+  
+  - `block`
+    
+    ```html
+    <a class="myClass" href="https://www.npm.gov.tw/"> 故宮網站連結</a>
+    <a href="https://www.gamer.com.tw/"> 巴哈姆特連結</a>
+    ```
+    
+    ```css
+    .myClass {
+      display: block;
+      width: 250px;
+      height: 100px;
+      background-color: burlywood;
+    }
+    ```
+    
+    改成這樣之後，超連結原本同一行，會自動換行 ( block特性 )。
+    
+    <mark>使用 inline 則 width跟height 無效</mark>
+  
+  - `inline` 
+    
+    - 動它的width、height 不會有效果。
+    
+    - 他的padding、margin 則會覆蓋到別人身上。
+    
+    - 下面表格有提到<mark>不會推開</mark>其他`element`，實際程式碼跟圖片如下
+      
+      ```html
+      <div style="background-color: salmon">
+        <a class="myClass2" href="https://www.gamer.com.tw/"> 巴哈姆特連結</a>
+      </div>
+      <div style="background-color: aquamarine">
+        <a class="myClass" href="https://www.npm.gov.tw/"> 故宮網站連結</a>
+      ...</div>
+      ```
+      
+      ```css
+      /* ------------------------------ inline ----------------------------- */
+      .myClass2 {
+        width: 250px;
+        height: 100px;
+        background-color: rgb(244, 161, 52);
+        padding: 1.5rem 3rem;
+      }
+      ```
+      
+      <img src="../../../Images/2023-12-01-16-52-44-image.png" title="" alt="" width="393">
+  
+  - `inline-block`  例如圖片，空間不夠 = 上下排列、空間夠=水平排列。
+    
+    ```html
+    <img id="image1" src="../images/故宮圖片1.jpeg" alt="故宮圖片1" />
+    <img id="image2" src="../images/故宮圖片2.jpeg" alt="故宮圖片2" />
+    <img
+      id="image3"
+      src="https://upload.wikimedia.org/wikipedia/commons/4/49/%E5%9C%8B%E7%AB%8B%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2_1001.jpg"
+      alt="故宮圖片3(外部連結)"/>
+    ```
+    
+    ```css
+    #image1 {
+      width: 600px;
+      height: 300px;
+    }
+    #image2 {
+      width: 500px;
+      height: 400px;
+    }
+    ```
+  
+  ![](../../../Images/2023-12-01-16-21-14-image.png)
+  
+  | display tpye | 換行        | width   height                              | 上下margin、padding                                           | 左右margin、padding | 範例                                                 |
+  |:------------:|:---------:|:-------------------------------------------:|:----------------------------------------------------------:|:----------------:|:--------------------------------------------------:|
+  | block        | 會         | 可設定                                         | 可設定                                                        | 可設定              | `<h1>`、`<p>` ...                                   |
+  | inline       | 不會        | <font style="color:lightgreen"> 不能設定</font> | 可設定，<font style="color:lightgreen"> 但不會推開其他elements</font> | 可設定              | `<a>``<span>` ...                                  |
+  | inline-block | 不一定、看空間決定 | 可設定                                         | 可設定                                                        | 可設定              | 只有`<img>``<button>``<input>``<select>``<textarea>` |
+  | flex item    | 不會        | 可設定                                         | 可設定                                                        | 可設定              | 任何在flex之下的element                                  |
+
+- `inner display type` 
+  
+  - 決定boxes內部元素，在網頁的排版呈現，之後才談。
+    
+    - `flex`
+    
+    - `grid` 
+
+# 
