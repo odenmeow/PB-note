@@ -10,7 +10,7 @@
   
   不用全部屬性都知道 常用跟實用就夠
 
-- <font style="color:lightgreen"> 還是直接拿上次故宮的例子接下去做@@ "</font> 
+- <span style="color:lightgreen"> 還是直接拿上次故宮的例子接下去做@@ "</span> 
 
 - `我決定新開CH3 複製品 、比較值觀方便` ，依舊會做Git 版控 : )
 
