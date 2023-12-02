@@ -204,7 +204,6 @@
   
   ```css
   /* -------Descendant Selector------------ */
-  
   div.link1 a {
     color: red;
   }
@@ -213,16 +212,42 @@
   } 
   ```
 
-```
+- 還有其他補充一下
+  
+  ```html
+  <div class="container2">
+        <a href="">oni</a>
+        <div>
+          <a href="">oniwww</a>
+        </div>
+        <a href="">umi</a>
+        <a href="">corn</a>
+  </div>
+  ```
+  
+  ```css
+  div.container2 {
+    display: flex;
+  }
+  div.container2 > a {
+    color: goldenrod;
+  }
+  ```
+  
+  \> a 是所有 \<div> 直接子標籤 \<a> 才可以 
+  
+  ![](../../../Images/2023-12-02-20-26-54-image.png)
+  
+  ` ` a 則是 \<div> 所有子孫標籤有 \<a> 都被選取
+
 - Attribute Selector 選擇所有具有相同屬性的HTML 元素。
-
-```css
-/* -------Attribute Selector------------ */
-
-input[type="text"] {
-  color: rgb(248, 53, 53);
-}
-```
+  
+  ```css
+  /* -------Attribute Selector------------ */
+  input[type="text"] {
+    color: rgb(248, 53, 53);
+  }
+  ```
 
 # (39) Pseudo class, element
 

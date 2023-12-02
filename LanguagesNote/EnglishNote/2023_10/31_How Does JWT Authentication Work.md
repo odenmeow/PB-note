@@ -14,13 +14,13 @@
 
 |                             |                           |                               |                                 |                           |
 |:---------------------------:|:-------------------------:|:-----------------------------:|:-------------------------------:|:-------------------------:|
-| [subsequent](./#subsequent) | [secret](#secret)         | [inextricably](#inextricably) | [dedicate](#dedicate)           | [relative](#relative)     |
+| [subsequent](#subsequent)   | [secret](#secret)         | [inextricably](#inextricably) | [dedicate](#dedicate)           | [relative](#relative)     |
 | [discuss](#discuss)         | [relevant](#relevant)     | [prosperity](#prosperity)     | [signature](#signature)         | [audience](#audience)     |
 | [illness](#illness)         | [leaflet](#leaflet)       | [fortune](#fortune)           | [practically](#practically)     | [through](#through)       |
 | [disease](#disease)         | [vulnerable](#vulnerable) | [innovative](#innovative)     | [Theoretically](#Theoretically) | [throughput](#throughput) |
 | [resignation](#resignation) | [intertwine](#intertwine) | [innovation](#innovation)     | [relatively](#relatively)       |                           |
 
-`subsequent`: /ˈsʌb.sɪ.kwənt/  <font id='subsequent'> </font>
+`subsequent`: /ˈsʌb.sɪ.kwənt/  <span id='subsequent'> </span>
 
 - `adj` happening after something else
 
@@ -28,49 +28,49 @@
 
 - 不是subsequence (重音偏後) 這個單字重音在前面但`確實有sɪ`的音
 
-`discuss`: /dɪˈskʌs/        <font id='discuss'> </font>
+`discuss`: /dɪˈskʌs/        <span id='discuss'> </span>
 
 - `verb` 討論
 - 注意發音有點 `尬s`的音  不是`鉻s`
 - We will *discuss* the proposal at the meeting
   - 我們將在會議上討論這項提議。
 
-`illness`: /ˈɪl.nəs/        <font id='illness'> </font>
+`illness`: /ˈɪl.nəs/        <span id='illness'> </span>
 
 - `noun`  a disease of the body or mind
 
-`disease`: /dɪˈziːz       <font id='sediseasecret'> </font>
+`disease`: /dɪˈziːz       <span id='disease'> </span>
 
-`resignation`:/ˌrez.ɪɡˈneɪ.ʃən/           <font id='resignation'> </font>
+`resignation`:/ˌrez.ɪɡˈneɪ.ʃən/           <span id='resignation'> </span>
 
 - `noun` the act of telling your employer that you are leaving your job
 - 注意重音在 nation 不是 /ˌreˈzɪɡ neɪ.ʃən/ ，另外要有點聽不到g 才對 ! 一點點頓在那邊
 - His **resignation** came as a surprise to everyone.
   - 他的辭職令大家感到驚訝。 
 
-`secret` : /ˋsikrɪt/        <font id='secret'> </font>
+`secret` : /ˋsikrɪt/        <span id='secret'> </span>
 
 - 劍橋 /ˈsiː.krət/  但是 Google YTR Yahoo都是上面那個!
 
-`relevant` : /ˈrel.ə.vənt/        <font id='relevant'> </font>
+`relevant` : /ˈrel.ə.vənt/        <span id='relevant'> </span>
 
 - `adg` connected with what is happening or being discussed
 - Education should be **relevant to** the child's needs.
 - For further information, please refer to the relevant **leaflet**.
 - `2:40` 有點難聽出來
 
-`leaflet` : /ˈliː.flət/ 或 /ˈliː.flet/        <font id='leaflet'> </font>
+`leaflet` : /ˈliː.flət/ 或 /ˈliː.flet/        <span id='leaflet'> </span>
 
 - `noun` 傳單 (散的) 、 `verb` 發傳單
 - They **leafleted** the area two weeks before the event.
 
-`vulnerable ` : /ˈvʌl.nɚ.ə.bəl/       <font id='vulnerable'> </font>
+`vulnerable ` : /ˈvʌl.nɚ.ə.bəl/       <span id='vulnerable'> </span>
 
 - able to be easily physically, emotionally, or mentally hurt, influenced, or attacked.
 - `adj` 容易受傷的
 - I felt very **vulnerable**, standing there without any **clothes** on.  [ /kloʊðz/ ]
 
-`intertwine` : /ˌɪn.t̬ɚˈtwaɪn/       <font id='intertwine'> </font>
+`intertwine` : /ˌɪn.t̬ɚˈtwaɪn/       <span id='intertwine'> </span>
 
 - `verb` （使）纏結，（使）纏繞在一起;（使）緊密關聯
 
@@ -78,7 +78,7 @@
 
 - The town's **prosperity** is **inextricably intertwined** with the **fortunes** of the factory.
 
-`inextricably` : /ˌɪn.ɪkˈstrɪk.ə.bli/       <font id='inextricably'> </font>
+`inextricably` : /ˌɪn.ɪkˈstrɪk.ə.bli/       <span id='inextricably'> </span>
 
 - 這單字超級難唸出來 
 
@@ -88,7 +88,7 @@
 
 - His name was **inextricably** linked with the environmental movement.
 
-`prosperity` : /prɑːˈsper.ə.t̬i/           <font id='prosperity'> </font>
+`prosperity` : /prɑːˈsper.ə.t̬i/           <span id='prosperity'> </span>
 
 - 見過但常叫不出正確發音哈哈
 
@@ -96,18 +96,18 @@
 
 - 成功、經濟上的繁榮 、昌盛
 
-`fortune` : /ˈfɔːr.tʃuːn/     <font id='fortune'> </font>
+`fortune` : /ˈfɔːr.tʃuːn/     <span id='fortune'> </span>
 
 - a large amount of money, goods, property, etc. 
 - `noun` 一大筆錢；大量財産
 
-`innovative` : /ˈɪn.ə.veɪ.t̬ɪv/      <font id='innovative'> </font>
+`innovative` : /ˈɪn.ə.veɪ.t̬ɪv/      <span id='innovative'> </span>
 
 - <mark>重音只有前面</mark> 不是 /ɪn.əˈveɪt̬ɪv/
 - `adj` 創新的 新穎的 using new methods or ideas
 - She was an **imaginative** and innovative manager.
 
-`innovation` : /ˌɪn.əˈveɪ.ʃən/        <font id='innovation'> </font>
+`innovation` : /ˌɪn.əˈveɪ.ʃən/        <span id='innovation'> </span>
 
 - 念的時候好像不用故意前面放很輕 只有字典會那樣
 
@@ -115,13 +115,13 @@
 
 - the latest innovations in computer technology
 
-`imaginative` : /ɪˈmædʒ.ə.nə.t̬ɪv/ <font id='imaginative'> </font>
+`imaginative` : /ɪˈmædʒ.ə.nə.t̬ɪv/ <span id='imaginative'> </span>
 
 - `adj` 有創意的
 
 - new, original, and clever、想像力豐富的
 
-`dedicate` : /ˈded.ɪ.keɪt/   ɪ為主  <font id='dedicate'> </font>
+`dedicate` : /ˈded.ɪ.keɪt/   ɪ為主  <span id='dedicate'> </span>
 
 - to give all of your energy, time, etc.
 
@@ -129,13 +129,13 @@
 
 - dedicated 念作 /ˈded.ɪ.keɪtɪd/
 
-`signature` :  /ˈsɪɡ.nə.tʃɚ/    <font id='signature'> </font>
+`signature` :  /ˈsɪɡ.nə.tʃɚ/    <span id='signature'> </span>
 
 - 注音發音 後面都是輕聲 不是nature /ˈneɪ.tʃɚ/ 喔!!
 
 - `noun` 簽名
 
-`practically` : /ˈpræk.tɪ.kəl.i/  <font id='practically'> </font>
+`practically` : /ˈpræk.tɪ.kəl.i/  <span id='practically'> </span>
 
 - `adv` almost or very nearly 
 
@@ -143,7 +143,7 @@
 
 - in a way that relates to real situations and actions rather than ideas
 
-`Theoretically` : /ˌθiː.əˈret̬.kəl.i/ <font id='Theoretically'> </font>
+`Theoretically` : /ˌθiː.əˈret̬.kəl.i/ <span id='Theoretically'> </span>
 
 - `adv` 理論上
 
@@ -151,11 +151,11 @@
 
 - Theoretically, it's a good idea to live without a car, but practically speaking, it would be difficult to manage without one.
 
-`relatively` :  /ˈrel.ə.t̬ɪv.li/  <font id='relatively'> </font>
+`relatively` :  /ˈrel.ə.t̬ɪv.li/  <span id='relatively'> </span>
 
 - 重音在前啦 跟我印象不同
 
-`relative` : /ˈrel.ə.t̬ɪv/  <font id='relative'> </font>
+`relative` : /ˈrel.ə.t̬ɪv/  <span id='relative'> </span>
 
 - `noun` 親屬 a member of your family
 
@@ -165,7 +165,7 @@
 
 - We weighed up the relative advantages of driving there or going by train.
 
-`audience` :   /ˈɑː.di.əns/  <font id='audience'> </font>
+`audience` :   /ˈɑː.di.əns/  <span id='audience'> </span>
 
 - `9:00` 
 
@@ -175,7 +175,7 @@
 
 - She **lectures** to audiences all over the world. [ /ˈlek.tʃɚ/  ]
 
-`through` :  /θruː/  <font id='through'> </font>
+`through` :  /θruː/  <span id='through'> </span>
 
 - `9:47` 
   
@@ -205,7 +205,7 @@
   
   - She works Monday through Thursday
 
-`throughput` :  /ˈθruː.pʊt/  <font id='throughput' style='color:yellow'> -</font>
+`throughput` :  /ˈθruː.pʊt/  <span id='throughput' style='color:yellow'> -</span>
 
 - `noun` 生產率 
 

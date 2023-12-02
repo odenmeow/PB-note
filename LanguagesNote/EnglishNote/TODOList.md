@@ -66,7 +66,7 @@
 
 - [(66) “一时兴起”英语怎么说？| 美剧解码 Better Call Saul - YouTube](https://www.youtube.com/watch?v=l1rm8c-ZvVE) 
 
-- 
+- [(75) 超多人说错: “压力大” 可不是 I have a lot of pressure ❌ How to translate "压力大" into English #英语 #English - YouTube](https://www.youtube.com/watch?v=dm4PxVPH-H8) 
 
 # 超長篇
 
