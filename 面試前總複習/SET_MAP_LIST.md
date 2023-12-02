@@ -142,7 +142,7 @@
 | element() | getFirst()    |     |         |               |
 | peek()    | peekFirst()   |     |         |               |
 
-- `Vector` : <span style="color: #FFFF22;">threadSafe </span>但更推薦用 `ConcurrentLinkedQueue`， Vector 增長默認 now*2
+- `Vector` : 🔥<span style="color: #FFFF22;">threadSafe </span> 🔥但更推薦用 `ConcurrentLinkedQueue`， Vector 增長默認 now*2
 
 - `LinkedList` :  non thread-safe
 

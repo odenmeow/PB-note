@@ -103,7 +103,7 @@
 
 `innovative` : /ˈɪn.ə.veɪ.t̬ɪv/      <span id='innovative'> </span>
 
-- <mark>重音只有前面</mark> 不是 /ɪn.əˈveɪt̬ɪv/
+- <mark>重音只有前面</mark> 不是 /ɪn.əˈveɪt̬ɪv/ 💡
 - `adj` 創新的 新穎的 using new methods or ideas
 - She was an **imaginative** and innovative manager.
 

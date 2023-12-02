@@ -62,7 +62,7 @@
 
 # Test Spy
 
-- <font style="color:lightgreen">還沒用過 </font>
+- 🔥<font style="color:lightgreen">還沒用過 </font>🔥
 
 - 用來驗證 SUT  與對其他 DOC 物件造成的效果。
   
@@ -103,7 +103,7 @@
   }
   ```
 
-- 透過 `Mokito` 給予替身 觸發方法後 <font style="color:lightgreen">可如預期般地回傳值 </font>
+- 透過 `Mokito` 給予替身 觸發方法後 🔥<font style="color:lightgreen">可如預期般地回傳值 </font> 🔥
 
 # Fake Object
 

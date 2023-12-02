@@ -40,7 +40,7 @@
   
   `semaphore.release()`
 
-- <font style="color:lightgreen">幾個注意事項</font>. 
+- 🔥<font style="color:lightgreen">幾個注意事項</font>🔥
   
   1. 該寫法保證烏龜等到兔子兩千才會開始跑。
   
@@ -85,7 +85,7 @@
   
   這邊中斷由於沒有break， 所以 i+1繼續執行，而且之後
   
-  - <font style="color:lightgreen">還是保留被中斷狀態</font>因為我使用 `if(Thread.isinterrupted())`  除非
+  - 🔥<font style="color:lightgreen">還是保留被中斷狀態</font>🔥因為我使用 `if(Thread.isinterrupted())`  除非
   
   - 如果使用` if ( Thread.interrupted() )` 那i+1就清除狀態
   
@@ -103,7 +103,7 @@
   
   - join() 
 
-- <font style="color:lightgreen">需要自己判斷是否被中斷 或者自己處理 例外</font>.
+- 🔥<font style="color:lightgreen">需要自己判斷是否被中斷 或者自己處理 例外</font>🔥
 
 - 如果只想中斷其他線程 並讓它知道，還有其他方式
   
@@ -131,11 +131,11 @@
   
   如果`提早執行完畢` 也會繼續執行其他工作
   
-  <font style="color:lightgreen">呼叫的是哪個thread 那個thread就會讓出時間 </font>.
+  🔥<font style="color:lightgreen">呼叫的是哪個thread 那個thread就會讓出時間 </font>🔥
   
   例如我是Main_Thread 所以 main會暫停並讓出執行時間
 
-- <font style="color:lightgreen">參考 - > </font>. `joinInOtherThread()`
+- 🔥<font style="color:lightgreen">參考 - > </font>🔥 `joinInOtherThread()`
 
 ## ThreadGroup
 
@@ -158,7 +158,7 @@
   
   使用activeCount會因為sleep所以會有+0 不用在意
 
-- <font style="color:lightgreen">預設例外 - > </font>.  `uncaughtException` `p1116` 
+- 🔥<font style="color:lightgreen">預設例外 - > </font>🔥  `uncaughtException` `p1116` 
 
 ## UncaughtExceptionHandler
 
@@ -190,7 +190,7 @@
 
 試著使用下面的方式 則可以讓synchronized 不要 鎖死全部方法
 
- <font style="color:lightgreen">( 一次只能一個同步方法被執行 ， 太嚴格 ! ) </font>
+🔥 <font style="color:lightgreen">( 一次只能一個同步方法被執行 ， 太嚴格 ! ) </font>🔥
 
 ```java
 public class Material {
@@ -233,13 +233,13 @@ public class Material {
 
 - `p1129` 
 
-- 這邊有提到 如果當run 的條件沒有volatile 並且while中內容使用或者不使用 System.out.print會影響 快取、同步機制 ，isContinue就會因為使用System.out.print <font style="color:lightgreen">被系統要求同步</font>.。
+- 這邊有提到 如果當run 的條件沒有volatile 並且while中內容使用或者不使用 System.out.print會影響 快取、同步機制 ，isContinue就會因為使用System.out.print 🔥<font style="color:lightgreen">被系統要求同步</font>.🔥。
 
 - 在 Java 中，`System.out.println` 通常在輸出訊息時會調用系統的 `flush()` 方法，這會刷新輸出流並確保輸出被寫入控制台。在這個過程中，由於輸出流的特性，可能會引發一些底層的線程同步操作。
   
   因此，當執行 `System.out.println("hi");` 時，這個操作可能會導致底層的線程同步，進而導致線程之間的數據同步，使對 `isContinue` 的修改對其他線程可見，從而能夠正確地停止線程。
   
-  當你移除 `System.out.println("hi");` 這行程式碼時，可能由於缺乏明確的<font style="color:lightgreen">同步點</font>，導致一些線程在執行過程中<font style="color:lightgreen">仍在使用快取中的舊值</font>，從而可能無法及時停止線程。這是因為缺乏明確的同步機制，沒有強制要求線程主動刷新快取。
+  當你移除 `System.out.println("hi");` 這行程式碼時，可能由於缺乏明確的🔥<font style="color:lightgreen">同步點</font>🔥，導致一些線程在執行過程中 🔥<font style="color:lightgreen">仍在使用快取中的舊值</font>🔥，從而可能無法及時停止線程。這是因為缺乏明確的同步機制，沒有強制要求線程主動刷新快取。
 
 ## AtomicInteger  /əˈtɑː.mɪk/
 
@@ -301,13 +301,13 @@ public class Material {
   
   也可以考慮用`semaphore` 
   
-  <font style="color:lightgreen">特別創造p1123_deadlock_semaphore.java來示範 semaphore</font>
+  🔥 <font style="color:lightgreen">特別創造p1123_deadlock_semaphore.java來示範 semaphore</font> 🔥
   
   11/26/2023 勉強弄出來，弄兩種方式
   
   `synchronized(lock1 、lock2)` 的方式去做
 
-- <font style="color:lightgreen">幾乎跟synchronized差不多，比較需要注意的是finally要釋放</font> 
+- 🔥<font style="color:lightgreen">幾乎跟synchronized差不多，比較需要注意的是finally要釋放</font>  🔥
   
   - Lock介面的唯一實現類，都以reentrant命名。
     

@@ -10,7 +10,7 @@
   
   不用全部屬性都知道 常用跟實用就夠
 
-- <p style="color:lightgreen"> 還是直接拿上次故宮的例子接下去做@@ "</p> 
+- <p style="color:lightgreen"> 還是直接拿上次故宮的例子接下去做@@ "</p>
 
 - `我決定新開CH3 複製品 、比較值觀方便` ，依舊會做Git 版控 : )
 
@@ -22,11 +22,11 @@
 
 # CSS放置位置
 
-- <font style="color:lightgreen"> 查看方式F12 點選要查看物件 > 樣式 ~~blue~~ 的可知效果、順序</font>
+- 🔥 <font style="color:lightgreen"> 查看方式F12 點選要查看物件 > 樣式 ~~blue~~ 的可知效果、順序</font> 🔥
 
 - `inline styling`
   
-   <font style="color:lightgreen"> 優先最高</font>但只能對特定標籤設定 最優先
+  🔥  <font style="color:lightgreen"> 優先最高 </font> 🔥但只能對特定標籤設定 最優先
   
   ```html
   <body>
@@ -291,13 +291,13 @@
   }
   ```
 
-        <font style="color: chartreuse;"> 上面蠻酷的</font>
+       🔥 <font style="color: chartreuse;"> 上面蠻酷的</font> 🔥
 
 # (40) CSS重點概念
 
 - Inherited and Non-Inherited Properties
   
-  - CSS 樣式<font style="color: chartreuse;"> 有些會被子元素繼承，有些不會。</font> 
+  - CSS 樣式🔥 <font style="color: chartreuse;"> 有些會被子元素繼承，有些不會。</font> 🔥
     
     - Parent element / Child element
   
@@ -342,7 +342,7 @@
 
 - Specificity 
   
-  - <mark>順序而言</mark>  🍉
+  - 🔥 <mark>順序而言</mark>  🔥
     
     - Inline Styling
     
@@ -444,7 +444,7 @@
     
     假設父元素為width500px Child設定width 50%則其寬度為250px
     
-    <font style="color: chartreuse;"> 突然發現如果vsCode輸入div.box 會變成</font> 
+    🔥 <font style="color: chartreuse;"> 突然發現如果vsCode輸入div.box 會變成</font> 🔥
     
     ```html
     <div class="box"></div>
@@ -532,9 +532,9 @@
     }
     ```
     
-    除此之外也可以用<font style="color: chartreuse;"> h1~p 全體兄弟選擇器 </font> 選擇與 h1
+    除此之外也可以用 🔥<font style="color: chartreuse;"> h1~p 全體兄弟選擇器 </font>🔥選擇與 h1
     
-    同位階 <font style="color: chartreuse;">( 輩分 )</font> 的元素 p
+    同位階🔥 <font style="color: chartreuse;">( 輩分 )</font> 🔥的元素 p
 
 # (44) 背景樣式
 
@@ -689,9 +689,9 @@
 
 - `height`
   
-  - <font style="color: chartreuse;">單用%設定，不會跟著變動，而是固定數值或0。因瀏覽器預設而異，除非親自設定ParentElement的height</font>。
+  - 🔥 <font style="color: chartreuse;">單用%設定，不會跟著變動，而是固定數值或0。因瀏覽器預設而異，除非親自設定ParentElement的height</font>。🔥
     
-    - 下面<mark>不會</mark>隨著視窗縮放改變
+    - 下面🔥<mark>不會</mark>🔥隨著視窗縮放改變
     
     ```css
     body {
@@ -706,7 +706,7 @@
           }
     ```
     
-    - 下面<mark>會隨著</mark> ， 因為他的body使用 `vh` 單位
+    - 下面🔥<mark>會隨著</mark>🔥 ， 因為他的body使用 `vh` 單位
     
     ```css
     ```css
@@ -843,7 +843,7 @@
     
     改成這樣之後，超連結原本同一行，會自動換行 ( block特性 )。
     
-    <mark>使用 inline 則 width跟height 無效</mark> 
+    🔥 <mark>使用 inline 則 width跟height 無效</mark> 🔥
   
   - `inline` 
     
@@ -851,7 +851,7 @@
     
     - 他的padding、margin 則會覆蓋到別人身上。
     
-    - 下面表格有提到<mark>不會推開</mark>其他`element`，實際程式碼跟圖片如下
+    - 下面表格有提到🔥<mark>不會推開</mark>🔥其他`element`，實際程式碼跟圖片如下
       
       ```html
       <div style="background-color: salmon">
@@ -898,12 +898,12 @@
   
   ![](../../../Images/2023-12-01-16-21-14-image.png)
   
-  | display tpye | 換行        | width   height                              | 上下margin、padding                                           | 左右margin、padding | 範例                                                 |
-  |:------------:|:---------:|:-------------------------------------------:|:----------------------------------------------------------:|:----------------:|:--------------------------------------------------:|
-  | block        | 會         | 可設定                                         | 可設定                                                        | 可設定              | `<h1>`、`<p>` ...                                   |
-  | inline       | 不會        | <font style="color:lightgreen"> 不能設定</font> | 可設定，<font style="color:lightgreen"> 但不會推開其他elements</font> | 可設定              | `<a>``<span>` ...                                  |
-  | inline-block | 不一定、看空間決定 | 可設定                                         | 可設定                                                        | 可設定              | 只有`<img>``<button>``<input>``<select>``<textarea>` |
-  | flex item    | 不會        | 可設定                                         | 可設定                                                        | 可設定              | 任何在flex之下的element                                  |
+  | display tpye | 換行        | width   height                                 | 上下margin、padding                                              | 左右margin、padding | 範例                                                 |
+  |:------------:|:---------:|:----------------------------------------------:|:-------------------------------------------------------------:|:----------------:|:--------------------------------------------------:|
+  | block        | 會         | 可設定                                            | 可設定                                                           | 可設定              | `<h1>`、`<p>` ...                                   |
+  | inline       | 不會        | 💡 <font style="color:lightgreen"> 不能設定</font> | 可設定，💡 <font style="color:lightgreen"> 但不會推開其他elements</font> | 可設定              | `<a>``<span>` ...                                  |
+  | inline-block | 不一定、看空間決定 | 可設定                                            | 可設定                                                           | 可設定              | 只有`<img>``<button>``<input>``<select>``<textarea>` |
+  | flex item    | 不會        | 可設定                                            | 可設定                                                           | 可設定              | 任何在flex之下的element                                  |
 
 - `inner display type` 
   
@@ -935,9 +935,9 @@ static 、relative 、absolute  、 ( 下一節51講 )  fixed、 sticky
     > 
     > **<u>Static 並不是 positioned element </u>**=> 指的是元素按照正常文檔流自然排列，而不受任何額外定位的影響。
   
-  - `z-index` 相同的 stacking context的情況下，positioned element會使有較大的z-index <mark>覆蓋較小者</mark>，static不會。
+  - `z-index` 相同的 stacking context的情況下，positioned element會使有較大的z-index🔥 <mark>覆蓋較小者</mark>🔥，static不會。
   
-  - <mark>positioned element 是指被定位的元素</mark>，也就是設置了 `position` 屬性為 `relative`, `absolute`, `fixed` 或 `sticky` 的元素。
+  - 🔥<mark>positioned element 是指被定位的元素</mark>🔥，也就是設置了 `position` 屬性為 `relative`, `absolute`, `fixed` 或 `sticky` 的元素。
 
 - `relative` 
   
@@ -971,7 +971,7 @@ static 、relative 、absolute  、 ( 下一節51講 )  fixed、 sticky
     
     <img src="../../../Images/2023-12-01-19-08-38-image.png" title="" alt="" width="167">
     
-    <mark>如果使用 static + index-z 則無效</mark>
+    💡🔥 <mark>如果使用 static + index-z 則無效</mark>🔥
     
     ```css
     .box2 {
@@ -997,9 +997,9 @@ static 、relative 、absolute  、 ( 下一節51講 )  fixed、 sticky
     
     根據top bottom left right的值進行定位。
     
-    參考對象是<mark>closest positioned ancestor</mark>，如果往上父元素找都沒有人是positioned element，則定位參考initial containing block = 瀏覽器初始視窗。
+    💡 參考對象是 🔥<mark>closest positioned ancestor</mark>🔥，如果往上父元素找都沒有人是positioned element，則定位參考initial containing block = 瀏覽器初始視窗。
     
-    > <font style="color:lightgreen">再次提示只要不是 **static** 的定位方式 那就是 **positioned element** !</font> 
+    > **🔥** <font style="color:lightgreen">再次提示只要不是 **static** 的定位方式 那就是 **positioned element** !</font> 
     
     ```css
     div.container {
@@ -1120,7 +1120,7 @@ static 、relative 、absolute  、 ( 下一節51講 )  fixed、 sticky
     
     ![](../../../Images/2023-12-01-20-52-57-image.png)
   
-  - 另外很重要就是說<mark>這邊的 top bottom left right 是 threshold 而不是位置偏移量</mark> 
+  - 另外很重要就是🔥<mark>這邊 top bottom left right 是 threshold 而不是位置偏移量</mark> 🔥
     
     ![](../../../Images/2023-12-01-21-01-43-image.png)
   
@@ -1136,11 +1136,11 @@ static 、relative 、absolute  、 ( 下一節51講 )  fixed、 sticky
     
     - Root element of the document <html>
     
-    - <font style="color:lightgreen">任何元素有設定position 為 absolute 或 relative 且 z-index不是auto </font>
+    - 🔥 <font style="color:lightgreen">任何元素有設定position 為 absolute 或 relative 且 z-index不是auto  </font> 🔥
       
       則其 <u>**內部形成新的 stacking context**</u> ，其<u>**本身不算**</u>在內=不在一組。
       
-      <mark>例子如下</mark> 
+      🔥 <mark>例子如下</mark> 🔥
     
     ```html
     <div class="container">
@@ -1304,7 +1304,7 @@ static 、relative 、absolute  、 ( 下一節51講 )  fixed、 sticky
     }
     ```
     
-    - <mark>下面教你置中 div</mark>
+    - 🔥 <mark>下面教你置中 div</mark> 🔥
       
       由於top、 left 50%只有橘色箱子左上角的點在中心所以運用
       

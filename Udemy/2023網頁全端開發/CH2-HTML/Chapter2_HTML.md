@@ -88,7 +88,7 @@
 
 - `\<title>我做的故宮博物館介紹 \</title> `
   
-  <font style="color:lightgreen"> 可以讓別人比較容易找到我們</font>.
+  🔥 <font style="color:lightgreen"> 可以讓別人比較容易找到我們</font>. 🔥
 
 - `<meta name="description" content="簡單描述故宮博物館" />`
   
@@ -122,7 +122,7 @@
 
 - `<font style="color:lightgreen"> 自己取用 </font>`
 
-- <font style="color:lightgreen"> 正確使用標籤可以做到SEO</font> Search Engine Optimization
+- 🔥 <font style="color:lightgreen"> 正確使用標籤可以做到SEO</font>  🔥Search Engine Optimization
 
 # Anchor tag
 
@@ -140,7 +140,7 @@
   
   - `_top` `_parent`  有興趣者自己查詢
 
-- 使用<font style="color:lightgreen"> Base Tag <base target="_blank"> </font> .
+- 使用🔥 <font style="color:lightgreen">  Base Tag <base target="_blank"> </font> 🔥
   
   - 如果刪除  `attribute`  中的 `target` 
   
@@ -153,7 +153,7 @@
     <a href="https://www.gamer.com.tw/" target="_self"> 巴哈姆特連結</a>
     ```
   
-  - <font style="color:lightgreen"> 如果自己寫清楚target就會用自己的唷 </font>`看上面`
+  - 🔥 <font style="color:lightgreen"> 如果自己寫清楚target就會用自己的唷 </font> 🔥`看上面`
 
 # img 絕對路徑、相對路徑
 
@@ -167,7 +167,7 @@
     
     - /cat 則是 vscode folder 根基 
     
-    - <font style="color:lightgreen"> 檔名避免空白 ， 因為編碼問題可能抓不到</font>. 
+    - 🔥<font style="color:lightgreen"> 檔名避免空白 ， 因為編碼問題可能抓不到</font>🔥
     
     - `圖片網址`
   
@@ -193,7 +193,7 @@
     
     - square  正方形
     
-    - <font style="color:lightgreen"> 建議不要改因為css可以改，避免被廢棄造成麻煩</font>.
+    - 🔥 <font style="color:lightgreen"> 建議不要改因為css可以改，避免被廢棄造成麻煩</font> 🔥 
 
 - ordered list 
   
@@ -231,7 +231,7 @@
     
     - `<ul> <p></p> <ul>` 這順序才對
     
-    - `<p>`    在外 也許能顯示 但 !<font style="color:lightgreen"> 建議不要 !</font>.
+    - `<p>`    在外 也許能顯示 但 !🔥 <font style="color:lightgreen"> 建議不要 !</font>🔥
 
 - inline 只要能放下 就會一直放到最後塞不下頁面才換到下一行 !
   
@@ -275,7 +275,7 @@ graph LR;
 
 - 只要知道就好 我隨便練習flowchart而已 不要管我= =
   
-  <font style="color:lightgreen"> th放tr內方便擴充 !</font>. 不放也可以 依樣上面<tr>放<th>就能擴
+  🔥 <font style="color:lightgreen"> th放tr內方便擴充 !</font>🔥 不放也可以 依樣上面<tr>放<th>就能擴
   
   ```html
   <table> 
@@ -336,7 +336,7 @@ graph LR;
 
 - for 跟 id 如果一致 ，點標籤的時候會自動cursor 出現在對應 input
 
-- <font style="color:lightgreen"> name 屬性</font>. 
+- 🔥 <font style="color:lightgreen"> name 屬性</font>🔥
   
   - 如果有設定才能對應到資料庫的parameter
   
@@ -367,7 +367,7 @@ graph LR;
 
 - POST不能因為URL不會儲存資料
 
-- <font style="color:lightgreen"> Google 以 GET搜尋 有助於分享搜尋、提高效率、還能被【緩存】</font>.
+- 🔥 <font style="color:lightgreen"> Google 以 GET搜尋 有助於分享搜尋、提高效率、還能被【緩存】</font>🔥
 
 # checkbox email file
 
@@ -399,7 +399,7 @@ graph LR;
       
       `required` 填了才可送出、空白不可
       
-      <font style="color:lightgreen"> 雖然是說一定要，但是無法預防postman之類方式 所以後端也要處理</font>.
+      🔥 <font style="color:lightgreen"> 雖然是說一定要，但是無法預防postman之類方式 所以後端也要處理</font>. 🔥
     
     - file
       
@@ -415,11 +415,11 @@ graph LR;
   
   這邊放了value 預設18 之類
   
-  <font style="color:lightgreen">雖然也可能繞過但是對於一般使用者要設定min 年齡不為負</font>.
+  🔥 <font style="color:lightgreen">雖然也可能繞過但是對於一般使用者要設定min 年齡不為負</font>.🔥
   
   - `step`  每次增減 加多少 預設是1 
     
-    - <font style="color:lightgreen">可以設定成0.01 這樣就可以輸入小數了</font>.
+    - 🔥 <font style="color:lightgreen">可以設定成0.01 這樣就可以輸入小數了</font>. 🔥
   
   - `min` 限制最小   0    不會比0小 最多0
   
@@ -450,13 +450,13 @@ graph LR;
   
   `minlength="5"`     小於不給送出
   
-  <font style="color:lightgreen">但不填可以送出，要搭配required使用</font>.
+  🔥 <font style="color:lightgreen">但不填可以送出，要搭配required使用</font>.🔥
   
-  `maxlength="20"`   <font style="color:lightgreen">大於會自動停止</font>.
+  `maxlength="20"`  🔥 <font style="color:lightgreen">大於會自動停止</font>.🔥
 
 - `<input type="password">` 也使用`minlength`  `maxlength` !
 
-- `placeholder="中文姓名"`  <font style="color:lightgreen">Input 區塊顯示提示字串</font>.
+- `placeholder="中文姓名"` 🔥 <font style="color:lightgreen">Input 區塊顯示提示字串</font>.🔥
 
 - <img title="" src="../../../Images/2023-11-19-22-15-49-image.png" alt="" width="381">
 
@@ -491,7 +491,9 @@ graph LR;
   <label for="女性_4">女性</label>
   ```
   
-  如果上面用 `checkbox` <font style="color:lightgreen">就做不到單選了</font>. 即使`checkbox` `name`一樣 
+  如果上面用 `checkbox` 🔥 <font style="color:lightgreen">就做不到單選了</font>.  🔥
+  
+  即使`checkbox` `name`一樣。 
   
   `checkbox` HTML 適合用 多選
   
@@ -533,15 +535,15 @@ graph LR;
   
   特別注意到value原本在 input 是可以預設自訂值 但這邊變成這樣
   
-  所以這邊有別的方法<font style="color:lightgreen">預設 </font> 
+  所以這邊有別的 🔥<font style="color:lightgreen">預設方法 </font> 🔥
   
-  `selected` 使用這個就可以囉 !
+  也就是 `selected` ，使用這個就可以囉 !
   
   作者有說明怎麼強制別人填資料 故意設空白`<option>`然後 required 。
   
-  <font style="color:lightgreen">請注意 </font>它`<select  required>`是依照 `選取` 而非 `value`有沒有給定 
+  🔥 <font style="color:lightgreen">請注意 </font> 🔥它`<select  required>`是依照 `選取` 而非 `value`有沒有給定 
   
-  > <font style="color:lightgreen">下面範例可以 成功阻止送出</font>
+  > 🔥 <font style="color:lightgreen">下面範例可以 成功阻止送出</font>
   
   ```java
   <select name="gender_5" id="sex_5" required>
@@ -552,7 +554,7 @@ graph LR;
   </select>
   ```
   
-  > <font style="color:lightgreen">下面不阻止，因有seleted，required覺得有選就好 !</font>
+  > 🔥 <font style="color:lightgreen">下面不阻止，因有seleted，required覺得有選就好 !</font>
   
   ```java
   <select name="gender_5" id="sex_5" required>

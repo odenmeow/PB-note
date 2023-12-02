@@ -36,7 +36,7 @@
 
 - 預計要把 `805692d` 跟 `6ceb3f6` 合併成一個歷史紀錄就好
 
-- <font style="color:lightgreen">type :wq Enter to save changes and exit vim.</font>  輸入`:` ，後續就可以輸入文字 `:wq` 之後`enter` 就可以離開了。
+- 🔥<font style="color:lightgreen">type :wq Enter to save changes and exit vim.</font>🔥輸入`:` ，後續就可以輸入文字 `:wq` 之後`enter` 就可以離開了。
 
 - ```batch
   noop
@@ -48,11 +48,11 @@
   pick 6ceb3f6 Ch3-section37
   ```
   
-  <font style="color:lightgreen">這邊跟我預想不同耶</font> 。所以`log`為主，reflog則是為輔，安全機制 ...?
+  🔥<font style="color:lightgreen">這邊跟我預想不同耶</font> 🔥。所以`log`為主，reflog則是為輔，安全機制 ...?
   
   之前使用 amend 就已經把資料改成同一個 
   
-  `reflog` <font style="color:lightgreen">保留默認時間 90天。 </font> 
+  `reflog` 🔥 <font style="color:lightgreen">保留默認時間 90天。 </font> 🔥
 
 ## Git 清理歷史紀錄
 
@@ -123,7 +123,7 @@
   git commit -a -m "Commit message" -m "Additional description"
   ```
 
-- GPT說的，要試試看才知道 @ @ <mark>上面這個最好別用</mark>
+- GPT說的，要試試看才知道 @ @🔥 <mark>上面這個最好別用</mark> 🔥
 
 - 這樣會將兩個訊息合併到一起成為提交的訊息。第一個 `-m` 後的內容是主要的提交訊息，第二個 `-m` 後的內容則是附加的描述。 這不是tag @@
 
