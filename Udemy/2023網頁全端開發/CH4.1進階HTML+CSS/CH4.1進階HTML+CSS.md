@@ -410,3 +410,27 @@
   ![](../../../Images/2023-12-02-22-27-58-image.png)
   
   <img src="../../../Images/2023-12-02-22-26-19-image.png" title="" alt="" width="316">
+  
+  🔥實際做一下如下，<mark>主要是因為smallbox的margin讓文字基準線往下</mark>🔥
+  
+  ```css
+  .box2 {
+    display: flex;
+    /* transform: rotateX(180deg); */
+    height: 300px;
+  }
+  .smallbox {
+    margin-top: 100px;
+    border: 3px solid violet;
+    height: 70px;
+    width: 70px;
+  
+    /* w 90也會有所感悟 */
+  }
+  ```
+  
+  ![](../../../Images/2023-12-02-23-39-00-image.png)
+  
+  <img src="../../../Images/2023-12-02-23-42-11-image.png" title="" alt="" width="265">
+  
+  🔥上面另外也提供 flex-direction : column 🔥

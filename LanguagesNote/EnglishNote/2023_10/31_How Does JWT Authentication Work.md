@@ -127,7 +127,7 @@
 
 - He has **dedicated** his life to scientific research.
 
-- dedicated 念作 /ˈded.ɪ.keɪtɪd/
+- dedicated 念作 /ˈded.ɪ.keɪtɪd/ 沒有拉長音(K ㄟ ~ tid)
 
 `signature` :  /ˈsɪɡ.nə.tʃɚ/    <span id='signature'> </span>
 
