@@ -211,7 +211,7 @@
 
 ## flex-wrap
 
-- 預設no wrap ， 可以壓縮直到內容極限， 不會換行。
+- 💡預設no wrap ， 可以壓縮直到內容極限， 不會換行。
 
 - 使用wrap 可以幫助我們換行。
   
@@ -274,7 +274,7 @@
 
 ## align-items
 
-與 main axis 軸 `垂直的`另一軸上的對齊方式
+💡與 main axis 軸 `垂直的`另一軸上的對齊方式
 
 <img src="../../../Images/2023-12-02-22-09-37-image.png" title="" alt="" width="300">
 
@@ -434,3 +434,386 @@
   <img src="../../../Images/2023-12-02-23-42-11-image.png" title="" alt="" width="265">
   
   🔥上面另外也提供 flex-direction : column 🔥
+
+# (62) flex grow, shrink, basis
+
+**Flex items 可設定的常見屬性包含 :** 
+
+- **flex-grow** 
+  
+  指定如何將 flex container 中的剩餘空間 remaining space 分配給 flex items。 flex-grow 屬性可以設定每個 flex item 的彈性增長因子 ( grow factor ) 。 成長因子範圍 = [0,infinite)  。
+  
+  - remaining space 是 flex container 的大小減 flex items 的總和。
+    
+    如果所有同級的flex items 具有相同的 grow factor 則所有項目將獲得相同的剩餘空間份額，否則會依據 持有的 factor 比例分配。
+
+- **flex-shrink** 
+  
+  定義 flex item 必要時的收縮能力。
+  
+  > [flex-shrink - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink) 
+  
+  - 💡預設為1 也就是會收縮，縮到容器內。
+  
+  - 💡如果設0 則不收縮，不壓縮item，所以會凸出container 邊界。
+
+- **flex-basis** 
+  
+  基本寬或高，取決於使用的flex-direction方向是row 或 column，如果是row 則對應寬，反之則高，下面有介紹。 
+  
+  - 💡如果使用 % 則是**取決於父容器的寬或高的百分比** !
+  
+  - 💡如果 flex-wrap:wrap 則 若顯示的寬或高 被限縮到低於 基準則會往下掉，移動到其他空間。
+
+> **以上三種可用shorhand property flex: 一次設定**
+
+- **align-self** 
+
+---
+
+`以下為範例`
+
+> 下面示範，移除.box 寬高 改用 flex-basis 則將依據 剩餘空間分配%數
+
+```css
+/* ------------------------------ (62) Flex grow shrink basis  ----------------------------- */
+div.container {
+  height: 1500px;
+  border: 3px solid black;
+  display: flex;
+  /* flex-direction: row-reverse; */
+  /* wrap 預設=no wrap */
+  flex-wrap: wrap;
+  /* 預設 flex-start */
+  /* justify-content: flex-start;  */
+  /* evenly 平均分配 */
+  justify-content: space-evenly;
+  flex-direction: row;
+  align-items: baseline;
+}
+.box {
+  /* width: 250px; */
+  /* height: 250px; */
+}
+```
+
+`flex item 也就是 .box{} 寬高`
+
+> 還沒設定，處於content寬度。 綠色高度是被紫框margin撐高的。
+
+![](../../../Images/2023-12-03-17-39-24-image.png)
+
+> 設定 flex-basis : 200 px  沒特別說寬或者高 則依照 flex-direction決定，🔥目前處於 row (也是預設) 所以 自動設定的會是寬。🔥
+
+![](../../../Images/2023-12-03-18-38-22-image.png)
+
+> 如果設定🔥 flex-basis:50% 是依照其父容器的寬 / 高計算🔥 ，這邊因為flex-direction:row 所以會如下圖顯示，各佔一半。
+
+![](../../../Images/2023-12-03-22-34-31-image.png)
+
+`flex item 附加屬性flex-grow 進去 也就是寫在 .box{}內`
+
+> 如果 .box1  \~ .box5 都設定 flex-grow : 1 ，flex-basis:200px  則
+> 
+> 🔥main axis剩餘空間將毫無保留的  /平均/  分配使用。🔥
+> 
+> 如下圖大家都佔據相同剩餘的份額 + ( 本身設定基本200px )
+
+![](../../../Images/2023-12-03-18-44-22-image.png)
+
+> 下面程式碼我設定為 **.box2 flex-grow : 6**  其他boxes **:** 1 
+
+```css
+/* ------------------------------ (62) Flex grow shrink basis  ----------------------------- */
+div.container {
+  height: 1500px;
+  border: 3px solid black;
+  display: flex;
+  /* flex-direction: row-reverse; */
+  /* wrap 預設=no wrap */
+  flex-wrap: wrap;
+  /* 預設 flex-start */
+  /* justify-content: flex-start;  */
+  /* justify-content: flex-end; */
+  /* justify-content: center; */
+  /* justify-content: space-between; */
+  /* justify-content: space-around; */
+  /* evenly 平均分配 */
+  justify-content: space-evenly;
+  flex-direction: row;
+
+  align-items: baseline;
+}
+.box {
+  /* width: 250px; */
+  /* height: 250px; */
+  flex-basis: 200px;
+}
+.box1 {
+  flex-grow: 1;
+  background-color: coral;
+}
+.box2 {
+  flex-grow: 6;
+  background-color: aquamarine;
+}
+.box3 {
+  flex-grow: 1;
+  background-color: burlywood;
+}
+.box4 {
+  flex-grow: 1;
+  background-color: goldenrod;
+}
+.box5 {
+  flex-grow: 1;
+  background-color: thistle;
+}
+/* ------------------------------ a 原本不能改w h  ----------------------------- */
+div.container2 {
+  display: flex;
+}
+/* 直屬子標籤用 > 選擇 */
+div.container2 > a {
+  color: goldenrod;
+  /* %依舊不能用在高 */
+  height: 35px;
+  width: 15%;
+  background-color: cadetblue;
+  border: salmon solid 2px;
+}
+/* ------------------------------ smallbox in flex item----------------------------- */
+/* 拿掉flex 或說改成block(div預設) 可知有什麼不同 */
+.box2 {
+  display: flex;
+  /* transform: rotateX(180deg); */
+  height: 300px;
+}
+.smallbox {
+  margin-top: 100px;
+  border: 3px solid violet;
+  height: 70px;
+  width: 70px;
+
+  /* w 90也會有所感悟 */
+}
+```
+
+右邊下面為 藍綠色的區塊的配置圖，254 然後滑鼠指向為209 我原本分配是200px 每個人`flex-basis:200px` 🔥有看到grow factor 6 跟1 的差別了吧🔥
+
+![](../../../Images/2023-12-03-18-51-14-image.png)
+
+`關於flex-shrink收縮` 
+
+> 如果basis 是固定值，然後容器因網頁縮放而變小，flex item 是否跟著縮小，或者🔥突出 flex container 🔥。
+
+```css
+.box {
+  /* width: 250px; */
+  /* height: 250px; */
+  flex-basis: 3000px;
+  flex-shrink: 1;
+}
+```
+
+由於我的 container 沒設定寬 (自動撐滿網頁寬度)，所以3000px一定 > 容器寬
+
+**當我設定shrink : 1結果顯示如下**
+
+<img src="../../../Images/2023-12-03-23-21-53-image.png" title="" alt="" width="465">
+
+ **當我設定shrink : 0結果顯示如下** ， 每個都突出，當然也可單獨設定box1、2、3
+
+![](../../../Images/2023-12-03-23-22-45-image.png)
+
+# (63) align-self
+
+💡允許 flex item 複寫 默認對齊方式
+
+- 這邊說的默認對齊
+  
+  指的是 **Flex Contanier 的屬性 align-items** 指定的對齊方式。
+
+`下面實際 獨讓 .box3  center，其他則 baseline` 
+
+```css
+/* ------------------------------ (62) Flex grow shrink basis  ----------------------------- */
+div.container {
+  height: 600px;
+  border: 3px solid black;
+  display: flex;
+  /* flex-direction: row-reverse; */
+  /* wrap 預設=no wrap */
+  flex-wrap: wrap;
+  /* 預設 flex-start */
+  /* justify-content: flex-start;  */
+  /* justify-content: flex-end; */
+  /* justify-content: center; */
+  /* justify-content: space-between; */
+  /* justify-content: space-around; */
+  /* evenly 平均分配 */
+  justify-content: space-evenly;
+  flex-direction: row;
+
+  align-items: baseline;
+}
+.box {
+  /* width: 250px; */
+  /* height: 250px; */
+  flex-basis: 100px;
+  flex-shrink: 1;
+}
+.box1 {
+  /* flex-grow: 1; */
+  background-color: coral;
+}
+.box2 {
+  /* flex-grow: 6; */
+  background-color: aquamarine;
+
+}
+.box3 {
+  /* flex-grow: 1; */
+  background-color: burlywood;
+}
+.box4 {
+  /* flex-grow: 1; */
+  background-color: goldenrod;
+}
+.box5 {
+  /* flex-grow: 1; */
+  background-color: thistle;
+}
+/* ------------------------------ a 原本不能改w h  ----------------------------- */
+div.container2 {
+  display: flex;
+}
+/* 直屬子標籤用 > 選擇 */
+div.container2 > a {
+  color: goldenrod;
+  /* %依舊不能用在高 */
+  height: 35px;
+  width: 15%;
+  background-color: cadetblue;
+  border: salmon solid 2px;
+}
+/* ------------------------------ smallbox in flex item----------------------------- */
+/* 拿掉flex 或說改成block(div預設) 可知有什麼不同 */
+.box2 {
+  display: flex;
+  /* transform: rotateX(180deg); */
+  height: 300px;
+}
+.smallbox {
+  margin-top: 100px;
+  border: 3px solid violet;
+  height: 70px;
+  width: 70px;
+
+  /* w 90也會有所感悟 */
+}
+```
+
+![](../../../Images/2023-12-04-14-01-33-image.png)
+
+# (64) Flexbox and Images
+
+## 處理 在 Flexbox圖片很大的時候的解法
+
+`圖片超過 flex-base: 500px` 
+
+- 那就超過，不是大家都死死固定500px，若圖片大小或block元素超過可能因此換行。
+
+- ```html
+  <body>
+      <img src="../images/panda_image/panda.jpeg" alt="" />
+      <img src="../images/panda_image/small_panda.jpeg" alt="" />
+    </body>
+  ```
+
+- ```css
+   body {
+          display: flex;
+          flex-wrap: wrap;
+        }
+        /* 子類 */
+        body img {
+          flex: 1 1 500px;
+        }![](../../../Images/2023-12-04-16-13-59-image.png)
+  ```
+
+- ![](../../../Images/2023-12-04-16-14-04-image.png)
+
+`放到 div 裡面 讓他們不要那麼大` 
+
+- **小技巧**
+
+- `html+css`
+  
+  ```html
+   <style>
+        body {
+          display: flex;
+          flex-wrap: wrap;
+        }
+        body div {
+          flex: 1 1 500px;
+        }
+        /* 子類 */
+        body div img {
+          width: 50%;
+        }
+      </style>
+    </head>
+    <body>
+      <div>
+        <img src="../images/panda_image/panda.jpeg" alt="" />
+      </div>
+      <div><img src="../images/panda_image/small_panda.jpeg" alt="" /></div>
+    </body>
+  ```
+
+- `100%` 
+
+![](../../../Images/2023-12-04-16-57-25-image.png)
+
+- `50%` 
+
+![](../../../Images/2023-12-04-16-58-00-image.png)
+
+- `加入 < p > Lorem150`
+
+- `html+css` 
+  
+  ```html
+      <style>
+        body {
+          display: flex;
+          flex-wrap: wrap;
+        }
+        body div {
+          flex: 1 1 500px;
+        }
+        /* 子類 */
+        body div img {
+          width: 50%;
+        }
+        body div p {
+          width: 50%;
+        }
+      </style>
+    </head>
+    <body>
+      <div>
+        <img src="../images/panda_image/panda.jpeg" alt="" />
+      </div>
+      <div><img src="../images/panda_image/small_panda.jpeg" alt="" /></div>
+      <div>
+        <p>
+          Lorem ips......
+      </p>
+      </div>
+    <body>
+  ```
+
+![](../../../Images/2023-12-04-17-01-26-image.png)

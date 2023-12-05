@@ -68,6 +68,8 @@
 
 - [(75) 超多人说错: “压力大” 可不是 I have a lot of pressure ❌ How to translate "压力大" into English #英语 #English - YouTube](https://www.youtube.com/watch?v=dm4PxVPH-H8) 
 
+- [(75) "来例假了/来大姨妈了/卫生巾"英语怎么说？ | How to translate "例假/卫生巾" into English #英语 #English #shorts - YouTube](https://www.youtube.com/shorts/xD-YcOiOT9I) 
+
 # 超長篇
 
 - [(63) 1 HOUR of Business English Conversation Practice | Improve Speaking Skills - YouTube](https://www.youtube.com/watch?v=LbL4_ybemO4)
