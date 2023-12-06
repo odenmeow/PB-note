@@ -12,6 +12,167 @@
 > 
 > 有很多有用的 例如
 
+### 問 :  如何把歷史的某 commit 拆分 ?
+
+#### 可以拆，只是hash 全部會被改，之後可能只能 force push
+
+- > [【狀況題】把一個 Commit 拆解成多個 Commit - 為你自己學 Git | 高見龍 (gitbook.tw)](https://gitbook.tw/chapters/rewrite-history/split-one-commit-to-many-commits) 
+
+- ```batch
+  💡 先找出初始的 commit 然後 rebase 是填上它的 hash
+  d87f1fc (origin/CH0-CH2-HTML, CH0-CH2-HTML) CH2_結束，完成到33section
+  65696f3 CH2_中途上傳，內容包含到27section，預計明天會完成CH2和更多
+  718dc1f first commit
+  PS C:\CodeSForGit\2023WebFullStack> git rebase -i 718dc1f
+  ```
+  
+  💡下個頁面 VIM 頁面 按 `i` 可以 開始輸入文字  按`:` + `w` +`q` 離開
+  
+  💡把我要拆分的 從 pick變成edit
+  
+  ```batch
+  pick 26177d5 Project1 - 台灣ok 、完成Project1
+  edit f8b620c Ch4.2 - section77 接觸bootstrap
+  pick 47b771d Ch4.2 - section78 User snippest 類似預製內容熱鍵
+  pick f44615d Ch4.2 - section81 HTML-bookmart功能
+  
+  # Rebase 718dc1f..f44615d onto 718dc1f (40 commands)
+  ```
+  
+  💡打字完 按 `esc` 可以解除輸入模式 
+  
+  然後目前交互vim狀態下面 原本輸入 :wq 可以離開 `直接離開就好`
+  
+  ```batch
+  ...
+  d87f1fc (origin/CH0-CH2-HTML, CH0-CH2-HTML) CH2_結束，完成到33section
+  65696f3 CH2_中途上傳，內容包含到27section，預計明天會完成CH2和更多
+  718dc1f first commit
+  PS C:\CodeSForGit\2023WebFullStack> git rebase -i 718dc1f ⭐離開vim後⭐
+  Stopped at f8b620c...  Ch4.2 - section77 接觸 bootstrap ⭐會在這⭐
+  You can amend the commit now, with
+  
+    git commit --amend
+  
+  Once you are satisfied with your changes, run
+  
+    git rebase --continue
+  
+  💡然後偷偷 git log 會發現 🔥目前 HEAD 在拆分目標上🔥
+  PS C:\CodeSForGit\2023WebFullStack> git log
+  commit f8b620cc9d1e7d64bb27747dff8fb584eb9cb96d (HEAD)
+  Author: Oni <qw28425382694@gmail.com>
+  Date:   Wed Dec 6 22:57:34 2023 +0800
+  
+      Ch4.2 - section77 接觸bootstrap
+  ```
+  
+  `接下來要拆分 Commit `了 💡直接輸入以下💡
+  
+  ```batch
+  git reset HEAD^
+  ```
+  
+  ![](../Images/2023-12-07-00-37-04-image.png)
+  
+  🍉會發現之前的對象都 untrack 了 !
+  
+  ```batch
+  💡直接輸入以下💡
+  PS C:\CodeSForGit\2023WebFullStack> git status
+  interactive rebase in progress; onto 718dc1f
+  Last commands done (38 commands done):
+     pick 26177d5 Project1 - 台灣ok 、完成Project1
+     edit f8b620c Ch4.2 - section77 接觸bootstrap
+    (see more in file .git/rebase-merge/done)
+  Next commands to do (2 remaining commands):
+     pick 47b771d Ch4.2 - section78 User snippest 類似預製內容熱鍵
+     pick f44615d Ch4.2 - section81 HTML-bookmart功能
+    (use "git rebase --edit-todo" to view and edit)
+  You are currently editing a commit while rebasing branch 'master' on '718dc1f'.
+    (use "git commit --amend" to amend the current commit)
+    (use "git rebase --continue" once you are satisfied with your changes)
+  
+  Untracked files:
+    (use "git add <file>..." to include in what will be committed)
+          Chapter4_2/
+  
+  nothing added to commit but untracked files present (use "git add" to track)
+  PS C:\CodeSForGit\2023WebFullStack>
+  ```
+
+- 💡很討厭，只顯示資料夾 。 先 git add . 再查看 git status💡
+  
+  ```batch
+  Changes to be committed:
+    (use "git restore --staged <file>..." to unstage)
+          new file:   Chapter4_2/76_Media Query/index.html
+          new file:   Chapter4_2/76_Media Query/mediaQuery.html
+          new file:   Chapter4_2/76_Media Query/style.css
+          new file:   Chapter4_2/77_Bootstrap/index.html
+          new file:   Chapter4_2/images/Nihon_Ki-in_Headquarter_(2016-05-05)_5.jpg
+          new file:   Chapter4_2/images/background.png
+          new file:   Chapter4_2/images/go-equipment.png
+  
+  PS C:\CodeSForGit\2023WebFullStack>
+  ```
+
+- 💡單獨移除我不要的  `Chapter4_2/77_Bootstrap/index`  即可。
+  
+  ```batch
+  git reset Chapter4_2/77_Bootstrap/index.html
+  🔥移除之後成功如下🔥
+  Changes to be committed:
+    (use "git restore --staged <file>..." to unstage)
+          new file:   Chapter4_2/76_Media Query/index.html
+          new file:   Chapter4_2/76_Media Query/mediaQuery.html
+          new file:   Chapter4_2/76_Media Query/style.css
+          new file:   Chapter4_2/images/Nihon_Ki-in_Headquarter_(2016-05-05)_5.jpg
+          new file:   Chapter4_2/images/background.png
+          new file:   Chapter4_2/images/go-equipment.png
+  
+  Untracked files:
+    (use "git add <file>..." to include in what will be committed)
+          Chapter4_2/77_Bootstrap/
+  ```
+  
+  接下來就只是單純的 commit 
+  
+  ```batch
+  PS C:\CodeSForGit\2023WebFullStack> git commit -m "Ch4.2-section76_Media Query 重返歷史成"
+  功拆分~"
+  
+  🔥上面使被分離以外的 重組成一個commit🔥
+  🔥下面再git add . 重新把被分離的加入 另外commit🔥
+  PS C:\CodeSForGit\2023WebFullStack> git commit -m "Ch4.2-section77_BootStrap 接觸簡單用~  
+  重返歷史成功拆分~"  
+  ```
+
+- 💡 收尾別忘了 要讓 rebase 跑完
+  
+  ```batch
+  git rebase --continue
+  ```
+
+- ⭐⭐⭐
+  
+  所有的 hash 值 都會被改掉，從更改的commit往後會被改而已，之前不變。
+  
+  ⭐⭐⭐
+
+- ```batch
+  PS C:\CodeSForGit\2023WebFullStack> git push
+  To https://github.com/odenmeow/FullStackLearn
+  🔥被拒絕 因為 hash 被改了🔥
+   ! [rejected]        master -> master (non-fast-forward)
+  error: failed to push some refs to 'https://github.com/odenmeow/FullStackLearn'
+  hint: Updates were rejected because the tip of your current branch is behind
+  hint: its remote counterpart. Integrate the remote changes (e.g.
+  hint: 'git pull ...') before pushing again.
+  hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+  PS C:\CodeSForGit\2023WebFullStack> 
+  ```
+
 ### 問：如何把好幾個 Commit 合併成同一個？
 
 - `互動式的rebase`  >  git rebase -i
@@ -117,6 +278,26 @@
   
   可能還需要 checkout
 
+## 簡單顯示 Commit的Hash
+
+- ```batch
+  PS C:\CodeSForGit\2023WebFullStack> git log --oneline
+  47b771d (HEAD -> master, origin/master) Ch4.2 - section78 User snippest 類似預製內容熱鍵
+  f8b620c Ch4.2 - section77 接觸bootstrap
+  26177d5 Project1 - 台灣ok 、完成Project1
+  5e5daf5 Project1 - 小改日本 下面article 的 left margin 跟 index 中棋戰圖片的 left margin 、完成中國棋院、加入小動
+  畫到目前完成頁面中。之後還要做台灣的頁面才算完成Project1
+  944a55a Project1 - section72~75 日本棋院CSS改進、做出canvas-nest效果、改進index排版(自己想改)、之後還要做中國跟台
+  灣的頁面才算完成Project1
+  631b6a6 Project1 - section71 日本棋院html為主 ( index+style) 日本的文字跟圖稿，基本還沒上CSS，僅改main的flex-direction:column
+  ```
+
+## 顯示兩者diff 檔案名稱就好
+
+- ```batch
+  git diff --name-only f8b620c 26177d5
+  ```
+
 ## Commit 附加標籤
 
 - ```batch
@@ -140,9 +321,46 @@
   git tag -a <tag_name> -m "Tag message" <commit_hash>
   ```
 
+- 後來我的作法如下
+  
+  ```batch
+  git tag -a section76 f8b620cc9d1e7d64bb27747dff8fb584eb9cb96d -m "忘了說有section76-MediaQuery"                                           
+  ```
+
+## 取消 tag
+
+- ```batch
+  PS C:\CodeSForGit\2023WebFullStack> git tag
+  section76
+  PS C:\CodeSForGit\2023WebFullStack> git tag -d section76
+  Deleted tag 'section76' (was 4e37a95)
+  ```
+
 ## 創建分支並推送過去遠倉
 
 - ```batch
   git branch Chapter8  左邊是章節8的意思  (因為我要依照章節做切換)
   git push origin Chapter8 這樣就能推送上去
   ```
+
+## 我想要替某 Commit 的位置增加branch
+
+- 起因是我忘了Project 1 做branch 因此使用一下試試
+  
+  ```batch
+  git checkout commit_hash
+  git branch new_branch_name
+  ```
+
+- 照上面做
+  
+  ```batch
+  26177d5 Project1 - 台灣ok 、完成Project1
+  ...
+  git checkout 26177d5  
+  git branch Project1-Go-Game
+  git checkout master
+  git push --force origin Project1-Go-Game
+  ```
+  
+  結束，有了。
