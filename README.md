@@ -50,3 +50,11 @@
 ! 橘色字
 # 灰色
 ```
+
+---
+
+# VsCode 快捷鍵
+
+- Ctrl+enter 快速 add line
+
+- ctrl+shift +k 刪除 current line
