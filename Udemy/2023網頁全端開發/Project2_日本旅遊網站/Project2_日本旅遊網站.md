@@ -241,8 +241,6 @@ align-content 會無法垂直於main aixs 搞置中。
 
 - [box-shadow | CSS-Tricks - CSS-Tricks](https://css-tricks.com/almanac/properties/b/box-shadow/) 
 
-
-
 陰影效果如下
 
 ![](../../../Images/2023-12-08-10-56-58-image.png)
@@ -261,3 +259,67 @@ align-content 會無法垂直於main aixs 搞置中。
       z-index: 5;
       box-shadow: 0 10px 6px -6px #777;  ---> 這行
   ```
+
+# (94) Scrollbar 設定
+
+> [W3Schools Tryit Editor](https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_custom_scrollbar) 
+
+- ```html
+  <style>
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: yellow; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+  </style>
+  ```
+
+# (95) 部屬靜態網頁
+
+## 壓縮圖片
+
+### UTF-8 文字
+
+首先得先提文字部分 UTF-8 佔據的資料量其實是變動的 1byte ~ 4byte都可能，能混搭。
+
+1byte = 8bit
+
+UTF-8 
+
+- 對於UTF-8編碼中的任意位元組B，如果B的第一位為0，則B獨立的表示一個字元(ASCII碼)；
+- 如果B的第一位為1，第二位為0，則B為一個多位元組字元中的一個位元組(非ASCII字元)；
+- 如果B的前兩位為1，第三位為0，則B為兩個位元組表示的字元中的第一個位元組；
+- 如果B的前三位為1，第四位為0，則B為三個位元組表示的字元中的第一個位元組；
+- 如果B的前四位為1，第五位為0，則B為四個位元組表示的字元中的第一個位元組；
+
+### 圖片
+
+圖片佔據 RGB 每一個 channel (1bytes=255) \* 3 = 3byte展現一個pixel色彩。
+
+1000萬pixel 直接抵大約 1千萬文字的小說 ( 因為中文通常3 bytes ) 。
+
+所以建議 `壓縮` 再上傳。 
+
+- 作者使用tinypng線上軟體壓縮
+
+- 不過我不想，之後再自己用java code壓看看吧。
+
+## 部屬靜態網頁
+
+- 只能單方面呈現 。
+
+- 介紹Netlify 雲端靜態網站。
