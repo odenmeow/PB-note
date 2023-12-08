@@ -194,6 +194,70 @@ align-content 會無法垂直於main aixs 搞置中。
 
 # (90) Footer設定
 
+- 基本上沒使用到什麼特殊技巧，跟上面差不多吧。 分層手法會了就 o k。
+
+# (91) 略 Final Code
+
+# (92) Aceessibility
+
+## 無障礙網頁設計
+
+- 背景顏色跟字體不要相近
+
+- 鍵盤能瀏覽
+
+- alt 圖片 替代文字方便視障、 搜尋爬蟲效果更好、
+
+## img 屬性 title
+
+- title="你好，這不是連結唷"
+  
+  <img title="" src="../../../Images/2023-12-08-10-11-25-image.png" alt="" width="541">
+
+# (93) Sticky header
+
+## sticky header 怎麼做 ?
+
+- ```scss
+  header {
+      background-color: white;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+  ```
+
+基本上要注意的就是 z-index跟 top 
+
+> [box-shadow - CSS: Cascading Style Sheets | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow) 
+
+- **💡替 Nav Bar 增加陰影** !
+
+> [CSS-Tricks - Tips, Tricks, and Techniques on using Cascading Style Sheets.](https://css-tricks.com/) 
+
+- 之前講 flex box 他說有說過
+
+- [box-shadow | CSS-Tricks - CSS-Tricks](https://css-tricks.com/almanac/properties/b/box-shadow/) 
 
 
 
+陰影效果如下
+
+![](../../../Images/2023-12-08-10-56-58-image.png)
+
+![](../../../Images/2023-12-08-10-57-09-image.png)
+
+- ```scss
+  只需要
+  header {
+      background-color: white;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      box-shadow: 0 10px 6px -6px #777;  ---> 這行
+  ```
