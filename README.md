@@ -57,4 +57,8 @@
 
 - Ctrl+enter 快速 add line
 
-- ctrl+shift +k 刪除 current line
+- Ctrl+shift +k 刪除 current line
+
+- Ctrl+k +0  摺疊所有區塊
+
+- Ctrl+k +j   展開所有

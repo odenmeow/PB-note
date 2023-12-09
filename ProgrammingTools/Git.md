@@ -364,3 +364,37 @@
   ```
   
   結束，有了。
+
+## Git log 顯示一行就好
+
+- ```batch
+  git log -n 1  或者是
+  git log --max-count=1
+  ```
+
+- 傻子才選下 
+
+## 不小心detached分支上commit怎麼辦?
+
+- ##### 先用 git reset --soft HEAD^ 回到上一步驟
+  
+  ```batch
+  由於我們需要 保存那些不小心commit的資料 然後攜帶回去master
+  使用soft才會留住 ，不能、不能用hard !
+  git reset --soft HEAD^      
+  ```
+
+- ##### 儲存變更、運用stash
+  
+  ```batch
+  -------------  存到獨立空間  -------------
+  git stash
+  -------------  切回 master  -------------
+  git checkout master
+  -------------  從獨立空間丟回 master  -------------
+  git stash apply
+  ```
+
+```
+
+```
