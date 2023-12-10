@@ -185,7 +185,7 @@ symbol - unique identifier 也是。
   
   - 先執行整行，之後變數+1。
 
-# (110) String基本介紹
+# (111) String基本介紹
 
 ### " oni's world "
 
@@ -213,7 +213,7 @@ symbol - unique identifier 也是。
   // 結果2 50json1015   >>>正確
   ```
 
-# (111) Number Methods
+# (112) Number Methods
 
 ## js 是物件導向、數字也是物件 !
 
@@ -262,5 +262,156 @@ console.log(s.call(5));
     //得到 0.30000000000000004
   }
   ```
+
+# (113) StringAttributesAndMethods
+
+> [字串 - JavaScript | MDN (mozilla.org)](https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/String) 
+
+有問題就要去mdn 自己看用法比較實際。
+
+## 常用屬性
+
+### length
+
+- 回傳字串長度
+
+- ```js
+  let str="oni";
+  console.log("'oni ',Length is " + str.length);
+  ```
+
+### [n] 超出回傳undefined
+
+- 回傳第n項的字元
+
+- ```js
+  let str2 = "helloween oni";
+  console.log("str2[4] is: " + str2[4]);  ===> o
+  console.log("證明從0開始數");
+  /*     [-100]    [100]  ==undefined           */
+  console.log("str2[100] is: " + str2[100]);
+  console.log("str2[-100] is: " + str2[-100]);
+  ```
+  
+  #### 💡 使用不存在的index 回傳 undefined
+
+## Methods
+
+### slice(indexStart [,indexEnd])
+
+- ##### 提取字串的部分，回傳新的字串，不修改原始字串。 💡
+
+- ##### 左邊 inclusive 右邊 exclusive
+  
+  - 我猜是為了避免出錯 因為 str長度6 但是如果兩邊都inclusive 很容易提取到6 
+    
+    而不是最後一個 [5] , [0,1,2,3,4,5]。 
+
+#### 🔥[,indexEnd] 代表可選。
+
+- ##### 默認行為是 ~ end。
+  
+  ```js
+  let str3 = "oni umi wonderful";
+  console.log("str3.slice(2,5)= " + str3.slice(2, 6));
+  console.log("str3.slice(2)= " + str3.slice(2));
+  
+  // str3.slice(2,5)= i um
+  // str3.slice(2)= i umi wonderful
+  ```
+
+### ⚠️indexOf(subString)
+
+- ##### 💡回傳substr開頭位置，找不到return -1
+  
+  ```js
+  /*           indexOf(subString) 回傳substr開頭位置 找不到return -1         */
+  
+  let str4 = "oni umi wonderful";
+  console.log("oni umi wonderful ，找到了，從" + str4.indexOf("wond") + "開始");
+  console.log("oni umi wonderful ，找不到=" + str4.indexOf("wondd"));
+  ```
+  
+  ##### 💡注意、找到就不會往後找。
+  
+  ```js
+  let sentence = "Today is a good day";
+  console.log(sentence.indexOf("a")); ====> 3
+  console.log(sentence.indexOf("a "));====> 9
+  ```
+
+### toUpperCase() 變大寫
+
+#### ⚠️不影響str本身，是回傳新的字串。
+
+### toLowerCase() 變小
+
+#### ⚠️不影響str本身，是回傳新的字串。
+
+### split(pattern) ⭐⭐
+
+- ```js
+  /*         split(pattern)           */
+  let sentence = "Today is a nice day";
+  // "Today","is","a","nice","day"
+  let result = sentence.split(" ");
+  console.log(result);
+  result =sentence.split("o");
+  console.log(result);lt);
+  ```
+  
+  ![](../../../Images/2023-12-10-16-16-18-image.png)
+
+- #### 朝o 切下去⭐⭐⭐
+  
+  ![](../../../Images/2023-12-10-16-17-43-image.png)
+
+### startsWith(s) 是否以字串s開頭
+
+### endsWith(s) 是否以字串s結尾
+
+### includes(str) 是否包含 str
+
+### charCodeAt(position)
+
+- ```js
+  搭配 charAt、indexOf 
+  let sentence = "Today is a good day";
+  /*        charCodeAt       */
+  console.log(sentence.indexOf("a "));
+  console.log(sentence.charAt(9));
+  console.log(sentence.charCodeAt(9));
+  ```
+  
+  <img src="../../../Images/2023-12-10-16-27-13-image.png" title="" alt="" width="350">
+
+# (114)  Boolean, Undefined, Null
+
+### Boolean🗨
+
+- ```js
+  let isPremium=false;
+  ```
+
+- Unary Operator 【!】 可以反轉布林值。
+
+- ##### 比較特別如下⭐
+  
+  ```js
+  console.log(isPremium == "false"); //false
+  console.log(isPremium == "0");     // true
+  console.log(!isPremium == "1"); // true
+  console.log(!isPremium == "2"); // false
+  ```
+  
+  💡跟 JAVA 不同，JAVA if (非零) 則恆成立。
+
+### Undefined 💡
+
+- ### JS function的預設回傳值。
+
+### Null
+
+- #### 故意代表不存在的值。
 
 
