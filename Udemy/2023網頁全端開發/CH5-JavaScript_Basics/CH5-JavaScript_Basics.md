@@ -106,7 +106,7 @@ x=5 , x=x+1;
 
 ### const 一定要賦予initializer
 
-### let 可不用，但undefined。
+### let 可不賦值，但get undefined。
 
 ### ⭐引擎允許 x=5 ; 但容易出錯
 
@@ -322,7 +322,7 @@ console.log(s.call(5));
 
 ### ⚠️indexOf(subString)
 
-- ##### 💡回傳substr開頭位置，找不到return -1
+- ##### 💡回傳substr開頭位置，找不到則return -1
   
   ```js
   /*           indexOf(subString) 回傳substr開頭位置 找不到return -1         */
@@ -414,4 +414,306 @@ console.log(s.call(5));
 
 - #### 故意代表不存在的值。
 
+# (115)  logical, comparison operator
 
+## Operators
+
+### assignment operator
+
+### comparison operator
+
+```js
+==
+!=
+===  相同 資料型態 且內容也相同
+!==
+>,>=,<,<=
+
+/*            ===             */
+console.log("    ===    ");
+console.log(3 == "3"); //true
+console.log(3 === "3"); //false 多檢查了typeof both
+console.log(3 === 5 - 2); //true 有優先順序 ===比較後面才做;
+
+/**    🔥加碼🔥  === 使用變數    **/
+let x = "3";
+let y = "3";
+console.log(x === y); // true
+```
+
+### logical operator⚠️⭐⭐⭐
+
+| A   | B   | A&&B | A\|\|B |
+|:---:|:---:|:----:|:------:|
+| 0   | 0   | 0    | 0      |
+| 0   | 1   | 0    | 1      |
+| 1   | 0   | 0    | 1      |
+| 1   | 1   | 1    | 1      |
+
+```js
+/*            && || Logical Op             */
+console.log(1 || 0); // 1
+console.log(1 && 0); // 0
+console.log(1 && 1); // 1
+console.log(true && false); //false
+// 
+```
+
+- ⭐一個回傳 true false 一個回傳 1或0 ⭐
+- ⭐⭐⭐下面額外補充 
+
+```js
+console.log("-------混搭 0 1 true false && || 會怎樣?-------");
+/*  或運算|| */
+// 第一個值為真  直接回傳第一個值 !
+// 第一個值為假  直接回傳第二個值 !
+console.log(0 || true); //true
+console.log(1 || true); //1
+console.log(true || 0); //true
+console.log(true || 1); //true
+console.log("----4/16----");
+console.log(1 || false); //1
+console.log(0 || false); //false
+console.log(false || 1); //1
+console.log(false || 0); //0
+/*  and運算&& */
+// 第一個值為真  直接回傳第2個值 !
+// 第一個值為假  直接回傳第1個值 !
+console.log("----8/16----");
+console.log(0 && true); //0
+console.log(1 && true); //true
+console.log(true && 0); //0
+console.log(true && 1); //1
+console.log("----12/16----");
+console.log(0 && false); //0
+console.log(1 && false); //false
+console.log(false && 1); //false
+console.log(false && 0); //false
+```
+
+### typeof operator  (unary)
+
+### negation operator (unary)
+
+`! 就是`
+
+### increment operator (unary)
+
+`x++ x--`
+
+### bitwise operator
+
+### arithmetic operator
+
+```java
++ ,-, *, /  ,+=,-=,/=,*=,*,%
+```
+
+# (116) Bitwise Operators
+
+- 上面是宏觀 提到而已。
+
+## 講解一下十進位二進位而已
+
+## bitwise op
+
+### ⚠️將數字operand視為32bits進行
+
+### a&b,  a|b,  ⭐ a^b 看互斥就好
+
+- 32 bit對齊後，對bit 做 and 或 or 或 XOR
+  
+  ```js
+  /*          Bitwise Operators            */
+  /*           簡單測試 & | ^             */
+  
+  let a = 7; //0111
+  let b = 11; //1011
+  
+  console.log(a & b); //0011 =3
+  console.log(a | b); //1111 =15
+  console.log(a ^ b); //1100 =12⭐⭐⭐
+  ```
+
+- ##### XOR⭐⭐⭐
+  
+  ```js
+   0跟任何數字互斥或 都會得到 另一個數字的結果
+   1跟1 互斥或 會得到 0   
+   then
+   : 1^1^1=1
+   : 1^1=0
+   : 0^0=0
+  
+   不局限於特定數 任何二進制表示的文件或圖像或數字... 對自己XOR 都會得到 0 ⭐⭐⭐⭐
+   如果 self XOR self XOR self 會得到 self  ⭐⭐⭐⭐
+  ```
+
+### ~a
+
+- 反轉operand每個bit
+  
+  ```js
+  console.log("---   ~ a   ---");
+  console.log(~a); //不是8 其實是-8 這個要去了解 2's complement
+  // 原始有32位元 每個都要反轉，所以是1111.....1000 這才是我們的數字
+  
+  // -------- 2's complement 可得知負數1111.....1000 所代表數字為何 -------
+  // 簡單說就是 bit 取反轉 然後最低位bit代表2^0的那位 +1  可得知對應的數是誰。
+  // 1111....1000 做2's complement 先反轉
+  // 0000....0111 +1
+  // 0000....1000 = 8   因為原本數字 1開頭 ，代表負數 => 實為 -8
+  // 8 如何轉成 -8   一樣的事情照做 先反轉位元
+  // 1111....0111 +1  得到下面
+  // 1111....1000  就是 -8的表示值
+  ```
+
+### a<<b
+
+- a乘二的b次方
+
+### a>>b
+
+- ```js
+  /*           <<   >>                  */
+  let x = 16;
+  let y = 8;
+  console.log("------- << ------");
+  console.log("x<<2: " + (x << 2)); //*4= 64
+  console.log("x<<3: " + (x << 3)); //*8= 128
+  console.log("y<<3: " + (y << 2)); //*4= 32
+  console.log("y<<3: " + (y << 3)); //*8= 64
+  console.log("------- >> ------");
+  console.log("x>>2: " + (x >> 2)); //div4= 4
+  console.log("x>>3: " + (x >> 3)); //div8= 2
+  console.log("y>>3: " + (y >> 2)); //div4= 2
+  console.log("y>>3: " + (y >> 3)); //div8= 1
+  ```
+
+## 何時會用到?
+
+- 編碼
+
+- 資料傳出 socket 、ports
+
+- 加密、SHA
+
+- OS、CPU
+
+- Finite State Machine
+
+- Graphics 影像處理 AI
+
+# (117) 公式轉換，只是講2進制，跳。
+
+# (118) if statement
+
+- 常見用法~跳過 太簡單 code看一看就知道 不提了。
+
+## 😕稍微提到String跟String比大小會用字典...?
+
+## 💡幾個window.prompt搭配狀況 (練習題)
+
+```js
+console.log("------------   練習題       ------------ ");
+
+let input_age = window.prompt("請輸入年紀");
+console.log(typeof input_age); //String
+input_age = Number(input_age);
+console.log("內容為" + input_age);
+console.log(typeof input_age); // number
+
+if (input_age <= 12 && input_age >= 0) {
+  window.alert("額同票100");
+} else if (input_age > 12 && input_age <= 65) {
+  window.alert("盤子票250");
+} else if (input_age < 120) {
+  window.alert("老票150");
+} else {
+  window.alert("太老或太小、不可能、不能買");
+}
+```
+
+- 如果沒輸入 直接按確定 ，得到預設 0
+  
+  <img src="../../../Images/2023-12-10-23-59-52-image.png" title="" alt="" width="438">
+  
+  ![](../../../Images/2023-12-10-23-59-42-image.png)
+
+- 輸入文字得到 NaN
+  
+  <img title="" src="../../../Images/2023-12-11-00-00-09-image.png" alt="" width="432">
+
+# (119) Truthy and Falsy Values
+
+## 🔥Boolean Context
+
+JS 中 每個值在 BooleanContext下都能被視為true或者false。
+
+### 常見的2人
+
+#### if statement
+
+#### logical operators
+
+#### ...
+
+### 🔥JS 會自動幫值做 type coercion 強制類型轉換
+
+## Truthy😕
+
+- [] empty array 
+
+- {} empty obj 也是屬於truthy 
+
+## Falsy Values🔥🔥
+
+- false
+
+- 0,   -0,   0n (BitInt)😕😕😕
+  
+  而 `0n` 是 BigInt（大整數）的表示法，它表示的是 BigInt 中的零，也被視為 `falsy` 值。BigInt 是用於表示大整數的資料類型，不同於普通的 JavaScript 數字，它可以處理比 Number 型態更大的數值。
+
+- "",'',`` 空字串
+
+- null
+
+- undefined
+
+- NaN
+
+- 除此之外都是Truthy values 包含 [] {} 
+  
+  [] empty array
+  
+  {} empty obj 也是屬於truthy
+  
+  ```js
+  let x = {};
+  if (x) {
+    console.log("im true"); // true啦
+  } else {
+    console.log("im false");
+  }
+  ```
+
+## "" && "" 😕 還沒講到...冒出哭阿
+
+- ```js
+  if ("天氣好") {
+    // true  !?
+    console.log("嗎");
+  }
+  
+  console.log("" && "");
+  ```
+  
+  ![](../../../Images/2023-12-11-00-23-54-image.png)
+
+- 空字串 firefox出現 \<empty string>
+
+## 少使用if( 條件==true)
+
+- 最好可以 if ( variable )  就做判斷
+
+- if (hasPremium){ }
