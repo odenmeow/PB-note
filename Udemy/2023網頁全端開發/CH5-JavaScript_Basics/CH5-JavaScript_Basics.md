@@ -742,8 +742,6 @@ JS 中 每個值在 BooleanContext下都能被視為true或者false。
 
 # (121)Coding Convention And Restrictions
 
-
-
 ## Convention 慣例、習慣
 
 ### fun、var全小寫、兩單字以上使用camelCase或_。

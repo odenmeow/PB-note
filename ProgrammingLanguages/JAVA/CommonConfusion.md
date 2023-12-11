@@ -28,7 +28,7 @@ array[2] = 3;
 
 # 2.TwoDimArrayForEach
 
-package at.com.home.common_confuse.OCP;
+>  package at.com.home.common_confuse.OCP;
 
 ## Given the code fragment:
 
@@ -172,4 +172,20 @@ An ArrayIndexOutOfBoundsException is thrown at runtime.
 
 ## explanation : 宣告但沒使用、給定
 
-- 
+## 如何知道是不是array
+
+> package at.com.home.common_confuse.IsArrayOrNot; 
+
+- ```java
+  public class IsArray {
+  
+  	public static void main(String[] args) {
+  		int a[] =new int[] {1,2,3};
+  		Object b=a;
+  		
+  		System.out.println(b.getClass().isArray());
+  	}
+  }
+  ```
+  
+  
