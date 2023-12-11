@@ -717,3 +717,61 @@ JS 中 每個值在 BooleanContext下都能被視為true或者false。
 - 最好可以 if ( variable )  就做判斷
 
 - if (hasPremium){ }
+
+# (120) Logical Operator與其他資料類型處理
+
+- 根據是否為turthy 或 falsy 決定回傳的是 前一個operand或後一個。
+
+- ```js
+  console.log(NaN||100) 會輸出 NaN 因為它是truthy
+  如果 1 nd 是 falsy 則回傳 2 nd
+  如果 1 nd 是 truthy 則回傳 1 nd 
+  
+  console.log(NaN&&100) 會輸出 100 因為 && 總是 
+  如果 1 nd是falsy output= 1 nd  ，若非如此 代表
+      1 nd是truthy 則 output=2 nd
+  ```
+
+- ```js
+  console.log(NaN || 1);
+  let data = "";
+  console.log(data || "資料讀取失敗"); //😕得到  資料讀取失敗
+  data = "oni";
+  console.log(data || "資料讀取失敗"); //😕得到  oni
+  ```
+
+# (121)Coding Convention And Restrictions
+
+
+
+## Convention 慣例、習慣
+
+### fun、var全小寫、兩單字以上使用camelCase或_。
+
+### operators 周圍 + 上空白鍵
+
+- `z = x + y`   
+
+- operators 代表 運算符號之類 = + - / % & \** 
+
+### constant 使用常數全大寫
+
+- `const PI=3.14;`
+
+### Class 由大寫字母開頭
+
+## Coding Restrictions
+
+- 變數 函數名稱 不可以數字開頭、不可包含 - (hyphen)
+
+- 當然也不能使用reserved words
+
+# 總結考試
+
+## <script> 放最下面 why
+
+- 先讓HTML CSS完成比較重要。
+
+- [] {}  = truthy
+
+- 好像沒考到什麼重要的。@@
