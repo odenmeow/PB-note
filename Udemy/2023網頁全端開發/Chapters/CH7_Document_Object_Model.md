@@ -340,7 +340,109 @@ console.log(Oni.sis.name); // "Umi"
 
 # (159) 差別比較
 
+## Element Object 是三種Node之1
+
+### 三種都有childNodes屬性 (r.t. NodeList)
+
+- childNodes屬性的回傳return type r.t. 型態為 NodeList
+  
+  ```js
+  /*             child node、NodeList             */
+  let body = document.querySelector("body"); // element object
+  console.log(body);
+  ```
+  
+  ![](../../../Images/2023-12-13-22-53-51-image.png)
+  
+  ```js
+  console.log(body.childNodes);
+  ```
+  
+  ![](../../../Images/2023-12-13-22-56-51-image.png)
+
+### Element Object 多一個children屬性 (r.t. HTMLCollection)
+
+- 💡Element 同時有兩個屬性，但另外兩人只有childNodes屬性。
+  
+  - ##### 🗨另外兩人 text nodes  / comment nodes🗨
+
+## 表格1 :
+
+| Methods                    | Rt Type                          |
+|:--------------------------:|:--------------------------------:|
+| getElementById(id)         | Element Object                   |
+| ...ByClassName(className)  | HTML Collection內部為Element Object |
+| querySelector(selector)    | Element Object                   |
+| querySelectorAll(selector) | NodeList 內部為Nodes                |
+
+--- 
+
+## 表格2 :
+
+|           | NodeList                     | HTML Collection              |
+| --------- | ---------------------------- | ---------------------------- |
+| 特徵        | 類Array、no push pop (un)shift | 類Array、no push pop (un)shift |
+| motion    | static                       | dynamic                      |
+| elements  | nodes                        | element objects              |
+| attribute | length,index                 | length,inde                  |
+| forEach   | allowed                      | not allowed                  |
+
+## 總結 : 跟commit一樣。
+
+- " Ch7 - section159 差別比較，比較各種節點(文本、元素、屬性、方法、註解....)，兩種選取方式，getbyClass、selectorAll得到兩種資料結構NodeList跟HTMLCollection，跟別對應nodes跟elements objects，靜態、動態，ForEach可用與否...之類的，然後ElementObject有ChildNodes屬性跟children屬性。"
+
 # (160) Function Expression
+
+## 創建未命名function、放到其他變數、增加彈性⭐
+
+- ```js
+  let myAddition = function (a, b) {
+    return a + b;
+  };
+  console.log("myAddition(10, 5)", myAddition(10, 5));
+  ```
+
+- ##### ⭐⭐更特別的特性是 類似hoisting 只有宣告function才有提升
+  
+  ```js
+  console.log("尚未宣告可先放上來 addition(3, 2)", addition(3, 2));
+  
+  function addition(a, b) {
+    return a + b;
+  }
+  console.log("addition(3, 2)", addition(3, 2));
+  ```
+  
+  ##### ⭐下面這種變數方式不能提升 (let不能 var 變成undefined)
+  
+  ```js
+  let myAddition = function (a, b) {
+    return a + b;
+  };
+  ```
+
+## 當higher order function的callback function使用
+
+- 例如 forEach 或者是 addEventListener
+  
+  ```js
+  function react() {
+    alert("有人在點螢幕!!");
+  }
+  window.addEventListener("click", react);
+  或
+  window.addEventListener("click", function () {
+    alert("有人在點螢幕!!");
+  });
+  ```
+
+## 使用IIFE ( immediately invoked function expression)
+
+- ```js
+  (function (a, b) {
+    console.log(a + b);
+  })(10, 5);
+  ```
 
 # (161) Arrow Function Expression
 
