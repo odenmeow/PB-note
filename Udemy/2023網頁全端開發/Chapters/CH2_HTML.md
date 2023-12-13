@@ -24,7 +24,7 @@
 
 - forward slash   =>    【   /  】
 
-- <img title="" src="../CH2-HTML/元素和內容.png" alt="元素和內容.png" width="404">
+- <img title="" src="../../../Images/a0db556c26c0dfcc5a3d8c4caf4bdcef16ffd9f8.png" alt="元素和內容.png" width="404">
 
 - 下載故宮博物館的資料然後跟著做而已
 
