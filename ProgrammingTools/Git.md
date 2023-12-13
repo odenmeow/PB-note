@@ -398,3 +398,65 @@
 ```
 
 ```
+
+## stash 操作手冊
+
+### git stash list
+
+- 顯示內容
+
+### git stash save "內容描述"
+
+- 尚未 commit 、使用add 加入後的各位可被保存。
+
+- untracked unstaged 都不幫你保存
+
+### git stash push -m "儲存變更的描述" --file_path/
+
+### git stash drop stash@{1}
+
+- 刪除 stash
+
+### git stash apply --index {填參數括號不用}
+
+- 指定特定資料群 或 個體戶 (反正最好命名?)
+  
+  ```batch
+  PS C:\CodeSForGit\2023WebFullStack> git stash list
+  stash@{0}: On master: 先保存
+  stash@{1}: WIP on (no branch): 7b89bd0 Project3 - section103 RWD設定、sticky、RWD、消除因裝飾出現的x水平軸scrollbar
+  ```
+  
+  ```batch
+  PS C:\CodeSForGit\2023WebFullStack> git stash apply --index 0
+  On branch master
+  Your branch is up to date with 'origin/master'.
+  ```
+
+### git stash pop
+
+- 不只應用，還會從儲存中刪除。
+
+## branch 小概念
+
+### master跟branch關係
+
+- 如果master有`a`~`h` commit，然後`h` commit之後，branch `Br` ，如果當master修改 `c` commit ，並不會影響到 `Br` ，只會修改 位於master `c`  之後的commit。
+
+- 切回去 `Br` 會發現 `Br` 的 `c` 沒改變，只有 master被改變。
+
+#### 問題會發生在何時?
+
+- 如果master跟 branch要合併才會出現問題。
+
+- ##### 由於我目前沒新增東西，也想記錄跟master一樣，所以我刪除後重建就好。
+  
+  - 因為我剛好處在`程式練習` 這個branch 創建前一刻。
+
+### 刪除分支 及 後續問題
+
+#### git branch -d 程式練習題-缺中階題
+
+#### git push origin --force 程式練習題-缺中階題
+
+- 強制覆蓋之前的版本🗨 總之確定要覆蓋再用。

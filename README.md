@@ -67,6 +67,12 @@
 
 - Ctrl+k +j   展開所有
 
+- Ctrl+D 先選喜歡的文字之後 按這個組合 可以快速讓光標cursor 出現在目標上
+  
+  - 相當於 alt + 滑鼠點下去 可以一次多個滑鼠光標選取、輸入、刪除之類很方便
+  
+  - Ctrl+Shift+左右 箭頭 可以選取多個 或者 alt 排列組合試試。我忘了
+
 ---
 
 Udemy 預定進度 :
@@ -87,3 +93,27 @@ Udemy 預定進度 :
 |         | over          |
 |         |               |
 |         |               |
+
+---
+
+# MarkText 設定
+
+# 圖片設定
+
+![](Images/2023-12-13-17-14-05-image.png)
+
+選擇
+
+`Copy image to designated relative assets or global local folder` 。
+
+然後
+
+Global image folder: 填入
+
+`C:\MyNote\`
+
+以及 Relative image folder name:
+
+`Images`
+
+---
