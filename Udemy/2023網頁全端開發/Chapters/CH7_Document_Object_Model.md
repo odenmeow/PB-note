@@ -436,7 +436,7 @@ console.log(Oni.sis.name); // "Umi"
   });
   ```
 
-## 使用IIFE ( immediately invoked function expression)
+## 使用IIFE ( immediately invoked function expression)⭐⭐⭐
 
 - ```js
   (function (a, b) {
@@ -444,7 +444,264 @@ console.log(Oni.sis.name); // "Umi"
   })(10, 5);
   ```
 
-# (161) Arrow Function Expression
+# (161) Arrow Function Expression⭐⭐⭐⭐⭐
+
+> **很清楚**! [你不可不知的 JavaScript 二三事#Day21：箭頭函數 (Arrow Functions) 的 this 和你想的不一樣 (1) - iT 邦幫忙::一起幫忙解決難題，拯救 IT 人的一天 (ithome.com.tw)](https://ithelp.ithome.com.tw/articles/10207992) ⭐⭐⭐⭐⭐
+
+## ⚠️arrow function 不能傻傻用this⭐⭐⭐
+
+```js
+let Oni = {
+  name: "OniSan",
+  age: 25,
+  sayhi: () => {
+    console.log(this); // Window 物件
+    console.log(this.age + "hihihi"); // 這this 非 Oni物件 
+  },
+  sayhi2: function () {
+    console.log(this);
+    console.log(this.age + "hihihi"); // 得到 Oni跟 25 hihihi
+  },
+};
+Oni.sayhi(); // (圖一)  🗨
+Oni.sayhi2(); // (圖二)  🗨
+```
+
+#### 分別得到下面
+
+  ![](../../../Images/2023-12-14-16-52-31-image.png)
+
+![](../../../Images/2023-12-14-18-25-08-image.png)
+
+### 1.1函數定義在物件之內:
+
+> 我有放文章連結 
+
+#### 傳統的Fucntion
+
+首先傳統函數每次呼叫都會建立新的函數執行環境 Function Execution Context，然後建立一個新的`this`引用物件，指向當下的呼叫者。
+
+```js
+var player = {
+  whatsThis: function() {   // normal function
+    return this;
+  },
+};
+console.log( player.whatsThis() === player );    // true
+```
+
+#### ArrowFunction
+
+沒有自己的`this` 呼叫 this，沿用LexicalContext外圍的this。
+
+```js
+var player = {
+  whatsThis: () => {    // arrow function
+    return this;
+  },
+};
+console.log( player.whatsThis() === window );    // true
+```
+
+### 1.2函數定義在物件外(借用函數)
+
+#### 傳統
+
+```js
+var whatsThis = function() {   // normal function
+    return this;
+};
+var player = {};
+player.f = whatsThis;
+console.log(player.f() === player);     // true
+```
+
+#### Arrow
+
+看的是寫好的時候的位置。
+
+```js
+var whatsThis = () => {    // arrow function
+    return this;
+};
+var player = {};
+player.f = whatsThis;
+console.log(player.f() === window);     // true
+```
+
+### 1.3 物件的屬性物件的函式
+
+#### 傳統
+
+```js
+var player = {
+  name: 'OneJar',
+  f: function() {
+    return this;
+  },
+  pet: {
+    name: 'Totoro',
+    f: function() {
+      return this;
+    },
+  }
+};
+console.log(player.f() === player);             // true
+console.log(player.pet.f() === player.pet );    // true
+```
+
+#### Arrow
+
+兩個箭頭函數外圍都是this指向Window，都沒有屬於自己的this
+
+```js
+var player = {
+  name: 'OneJar',
+  f: () => {
+    return this;
+  },
+  pet: {
+    name: 'Totoro',
+    f: () => {
+      return this;
+    },
+  }
+};
+console.log(player.f() === window);         // true
+console.log(player.pet.f() === window );    // true
+```
+
+### 2.1全域環境 (Global Context) 下定義函數 & 呼叫函數
+
+#### 傳統
+
+```js
+var whatsThis = function() {
+  return this;
+}
+
+console.log( whatsThis() ); // (normal mode) window / (strict mode) undefined
+```
+
+#### Arrow
+
+```js
+var whatsThis = () => {
+  return this;
+}
+
+console.log( whatsThis() ); // window
+```
+
+### 2.2內部函數 (Inner Functions)
+
+#### 傳統⚠️⚠️⚠️
+
+- 原因是因為 他並沒有直屬呼叫物件，而是透過function呼叫。
+
+- 所以就分發global給它，不會跨兩層傳給他。
+
+```js
+var x = 10;
+var obj = {
+    x: 20,
+    f: function(){
+        console.log('Output#1: ', this.x);
+        var foo = function(){ console.log('Output#2: ', this.x); }
+        foo();
+    }
+};
+
+obj.f();
+```
+
+```js
+Output#1:  20
+Output#2:  10
+```
+
+#### Arrow🔥🔥🔥
+
+- 不論情況，它只看它LexicalContext (寫程式當下的上下文)
+
+- 也就是外面有沒有function包住它，有的話就使用那個人的this。
+
+- 外層傳統的function，傳統function會建立this 指向其直屬物件。
+
+```js
+var x = 10;
+var obj = {
+    x: 20,
+    f: function(){
+        console.log('Output#1: ', this.x);
+        var foo = () => { console.log('Output#2: ', this.x); } // arrow function
+        foo();
+    }
+};
+
+obj.f();
+```
+
+```js
+Output#1:  20
+Output#2:  20
+```
+
+最後，我在上面的物件追加以下 IIFE 剛剛160最後有寫。
+
+```js
+hello: (function a() {
+    //要不要命名 取決可讀性而已 ，其他地方用不了。
+    console.log("hello u");
+  })(), //默默自動執行  建立做一次就沒用了，通常用於初始化之類的行為。
+```
+
+### 我的想法、聯想 :😕
+
+😕文章看一下比較好...這內容不是一下下就能了解的東西。
+
+##### 🗨如果能看懂上面 2.2的東西，應該是蠻懂了。剩下就再學遇到再說
+
+#### 首先想到之前印的出物件的有以下 (160)commit有
+
+```js
+console.log("----------配合物件使用--------");
+let Oni = {
+  name: "Oni",
+  greet() {
+    console.log(this.name + "打招呼");
+  },
+  walk: function () {
+    console.log(this.name + "正在走路");
+  },
+};
+Oni.greet(); // Onit打招呼
+Oni.walk(); // Oni正在走路
+```
+
+#### 又想到IIFE
+
+## 箭頭函數的要點:
+
+### 零個或者兩個以上參數一定要 + ( )
+
+- 最好加上去比較容易讀懂
+
+### 主體不加上 {  } 則直接回傳該row運算結果
+
+- 只有一行 例如回傳 a+b 結果
+
+### 有多行表達一定要 {  }  包起來
+
+- 只有單一運算式才會幫你回傳結果。
+
+### { } 裡面要 return 才會回傳undefined以外
+
+- {} 的話記得要加上return
+
+### ArrowFunction沒有this綁定，不要在物件當方法使用this
+
+- 自己注意使用this
 
 # (162) forEach method
 
