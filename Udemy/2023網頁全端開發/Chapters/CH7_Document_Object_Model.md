@@ -705,6 +705,23 @@ Oni.walk(); // Oni正在走路
 
 # (162) forEach method
 
+## forEach(function(element){dosome})
+
+## forEach(function(element,index){})
+
+- 一個是元素本身，一個是位在第幾index。
+
+## ⚠️帶入傳統函數跟箭頭對this有影響否?
+
+- ```js
+  /*  index 顯出、this是 Window物件 (沒直屬父親)                 */
+  myLuckyNumbers.forEach(function (element, index) {
+    console.log(this, ":", index, ":", element + 3);
+  });
+  ```
+
+- ##### 你還是得到Window 而不是呼叫者，因為它內部直接幫你呼叫function，沒有直屬父親，所以this指向Global或者Window。
+
 # (163) forEach in NodeList
 
 # (164) Element Objects 1
