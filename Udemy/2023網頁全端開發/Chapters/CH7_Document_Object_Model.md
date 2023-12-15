@@ -340,9 +340,11 @@ console.log(Oni.sis.name); // "Umi"
 
 # (159) 差別比較⚠️
 
-## Element Object 是三種Node之1
+## Element Object 是3種Node之1
 
-### 三種都有childNodes屬性 (r.t. NodeList)
+### 3種都有childNodes屬性 (r.t. NodeList)
+
+⚠️HTML element/Comment/Text Node (當然還有其他種method 、properties之類)⚠️
 
 - childNodes屬性的回傳return type r.t. 型態為 NodeList
   
@@ -890,10 +892,337 @@ btn.style = "background-Color:gray;color:white;";
 
 # (166) Inheritance
 
+## 觀念:
+
+所有 HTML elements 都從 element object繼承attr跟methods。
+
+某些元素還會有獨有的attr跟methods。
+
+- ## 重製表單的方法
+
+```js
+console.log("----------Inheritance--------------");
+let btn = document.querySelector("button");
+btn.addEventListener("click", () => {
+  let form = document.querySelector("form");
+  form.reset();
+});
+```
+
 # (167) JS事件
+
+## Event 表示在DOM物件上所發生的事件
+
+## AddEventListener(type,listener)
+
+- addEventListener() 可以在window|document|element Object掛一個Event Listener ，不斷等待事件發生，然後執行任務。
+
+- **type** : 事件類型 
+  
+  - button可以掛 click，window Object可以掛 resize
+
+- **listener** : function或更常放arrow function，JS 會把**event object**當作argument 放入 listeners內部，自動執行該函式。
+  
+  ```js
+  console.log("------------ JS Events ----------");
+  let btn = document.querySelector("button");
+  btn.addEventListener("click", (e) => {
+    console.log(e);
+  });
+  ```
+  
+  **event object** : 上面那個 (e)
+  
+  ![](../../../Images/2023-12-15-19-40-58-image.png)
+
+- Events Objects 繼承關係如下
+  
+  ![](../../../Images/2023-12-15-19-43-51-image.png)
+
+```mermaid
+graph LR
+
+    Z[DragEvent] --> T[MouseEvent]
+
+    R[InputEvent] --> D[UiEvent]
+    S[Focus] --> D[UiEvent]
+    T[MouseEvent] --> D[UiEvent]
+    U[KeyboardEvent] --> D[UiEvent]
+    V[TouchEvent] --> D[UiEvent]
+    W[WheelEvent] --> D[UiEvent]  
+
+
+    A[TransitionEvent] --> O[Event]
+    B[AnimationEvent] --> O[Event]
+    C[ClipboardEvent] --> O[Event]
+    D[UiEvent] --> O[Event]
+    E[PagTransitionEvent] --> O[Event]
+    F[PopStateEvent] --> O[Event]
+    G[ProgressEvent] --> O[Event]  
+    H[StroageEvent] --> O[Event]  
+```
+
+- 去MDN ， 然後他示範了keydown Event
+
+> [Event reference | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/Events#event_listing)  
+
+```js
+console.log("------------ keydownEvnet ----------");
+window.addEventListener("keydown", (e) => {
+  console.log(e);
+});
+```
+
+<img src="../../../Images/2023-12-15-20-20-10-image.png" title="" alt="" width="388">
+
+## 常用Event 的屬性跟方法
+
+### 1. target
+
+- 最初發生事件的DOM物件
+  
+  ```js
+  let btn = document.querySelector("button");
+  btn.addEventListener("click", (e) => {
+    console.log(e.target);
+    console.log(e);
+  });
+  ```
+  
+  ![](../../../Images/2023-12-15-20-27-54-image.png)
+
+### 2. preventDefault🔥🔥
+
+- 取消事件的預設行為
+  
+  ```js
+  <form action="">
+        <input type="text" name="姓名" id="" />
+        <input type="number" name="年紀" min="0" max="100" />
+        <button>交表單</button>
+  </form>
+  
+  console.log("------------ PreventDefault ----------");
+  let form = document.querySelector("form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault(); //阻止預設行為
+    if (window.confirm("確認提交?")) {
+      form.submit();
+    } else {
+      console.log("已取消提交");
+    }
+  });
+  });
+  ```
+
+### 3. stopPropagation
 
 # (168) Event Bubbling
 
+## 剛剛的常用event 3
+
+## stopPropagation
+
+```html
+<style>
+      .a {
+        width: 300px;
+        height: 300px;
+        background-color: aqua;
+        position: relative;
+      }
+      .b {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        width: 150px;
+        height: 150px;
+        background-color: orange;
+        transform: translate(-50%, 50%);
+
+        z-index: -5;
+   }
+    </style>
+
+ <div class="a">
+      <div class="b"></div>
+ </div>
+```
+
+```js
+console.log("------------EventBubbling----------");
+
+let a = document.querySelector(".a");
+let b = document.querySelector(".b");
+
+a.addEventListener("click", () => {
+  alert("A 事件監聽!");
+});
+b.addEventListener("click", () => {
+  alert("B 事件監聽!");
+});
+```
+
+<img src="../../../Images/2023-12-15-20-52-03-image.png" title="" alt="" width="214">
+
+避免 內部元素淺藍被點取
+
+### 補充 z - index⚠️
+
+- 下圖我點的是淺藍色 (橘色被覆蓋的地方) 
+  
+  <img src="../../../Images/2023-12-15-20-54-35-image.png" title="" alt="" width="344">
+
+- 但只有A觸動，代表 z- index 遮住後真的就點不到
+
+### 補充 transform translate⚠️
+
+- 參考下圖跟上圖，我點橘色 但是淺藍色也被觸發了 !
+  
+  明明脫離了淺藍才對 ? 但確實還是觸發A🙄
+  
+  <img src="../../../Images/2023-12-15-20-56-14-image.png" title="" alt="" width="346"> 
+  
+  ( 我們只想要 index-z 上層的 橘色)
+
+### 解決方式 e.stopPropagation()
+
+- B 點取 原本A會連動，使用後就OK了。
+  
+  ```js
+  b.addEventListener("click", (e) => {
+    e.stopPropagation();
+    alert("B 事件監聽!");
+  });
+  ```
+
+### preventDefault 無法阻止傳播⚠️
+
+- 終究還是會傳播上去，一定要stop才有效果。
+  
+  ```js
+  b.addEventListener("click", (e) => {
+    // e.stopPropagation();
+    e.preventDefault();
+    alert("B 事件監聽!");
+  });
+  ```
+
 # (169) Storage講解
 
-# (170) JSON與Storag
+## LocalStorage and SessionStorage
+
+- Storage 瀏覽器儲存數據的地方 (不等於database)、內部資料儲存都是 key value pair，不論key或value 資料型態都必須是String、如果不是的話會被強制轉換再儲存。
+
+- Local 關機也會存在
+
+- Session 瀏覽器關閉就消失
+
+- 綁定網址的
+
+### 兩人的methods都一樣~
+
+<img src="../../../Images/2023-12-15-21-28-20-image.png" title="" alt="" width="347">
+
+#### 1. setItem(key,value)
+
+- 添加 k-v 進去，如果k存在了，就更新v。
+  
+  ```js
+  // window.localStorage
+  localStorage.setItem("name", "Oni");
+  localStorage.setItem("age", 25);
+  ```
+
+#### 2. getItem(key)
+
+- 找出對應的value，不存在則返回null。
+  
+  ```js
+  let myName = localStorage.getItem("name");
+  let myAge = localStorage.getItem("age");
+  
+  console.log(myName, typeof myName);
+  console.log(myAge, typeof myAge);
+  ```
+  
+  ![](../../../Images/2023-12-15-21-30-27-image.png)
+
+#### 3. removeItem(key)
+
+- 清除給定的key，對應的儲存資料。
+
+#### 4. clear()
+
+- 清除所有的k-v 。
+
+# (170) JSON與Storage
+
+## 原因 :
+
+由於 Storage 只能以字串型態儲存資料，所以陣列物件儲存就要特別設計，讓其內部物件能進去，因此特別介紹JSON。
+
+## 介紹一下樣貌:
+
+vscode>左下角齒輪>setting>
+
+<img title="" src="../../../Images/2023-12-15-22-44-00-image.png" alt="" width="114">
+
+- 裡面就有VS設定檔案
+
+```js
+{
+  "workbench.colorTheme": "Default Dark Modern",
+  "code-runner.runInTerminal": true,
+  "markdown-preview-enhanced.revealjsTheme": "black.css",
+  "markdown-preview-enhanced.previewTheme": "github-dark.css",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "workbench.iconTheme": "eq-material-theme-icons",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "window.zoomLevel": 1
+}
+```
+
+## JSON Object兩個方法:
+
+![](../../../Images/2023-12-15-22-49-17-image.png)
+
+### JSON.stringify(value)
+
+- 將value轉換為JSON String
+
+### JSON.parse(text)
+
+- 解析JSON 字串，製作出它描述的JS值、物件。
+
+```js
+console.log("------------JSON ----------");
+let myLuckyNumbers = [1, 2, 3, 4, 5, 6];
+localStorage.setItem("myNumbers", JSON.stringify(myLuckyNumbers));
+let myarr = JSON.parse(localStorage.getItem("myNumbers"));
+console.log(myarr);
+myarr.forEach((e) => {
+  console.log(e);
+});
+```
+
+# 最終小考:
+
+## 有意思的題目:
+
+- window object 包含 alert()、prompt()、localStorage、console。![](../../../Images/2023-12-15-22-58-24-image.png)
+
+- childNodes、children 
+  
+  ![](../../../Images/2023-12-15-23-00-06-image.png)
+  
+  - 答案不是2 而是3  
+  
+  - 1.2 都錯誤 因為不是所有，而是該節點的下一層而已 下下層不包含。
+
+- NodeList、HTMLCollection比較
+  
+  ![](../../../Images/2023-12-15-23-13-44-image.png)
+  
+  🔥**比較有意思的是第三個選項，原來是這樣** 🔥
