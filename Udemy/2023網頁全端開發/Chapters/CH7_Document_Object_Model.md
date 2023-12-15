@@ -77,7 +77,7 @@ console.log(window); //系統隱含的;😕
 
 > 其實window 太常用 ，基本上不打也沒差。
 
-#### window.alert()
+#### 1. window.alert()
 
 - 在視窗顯示對話框。
   
@@ -89,13 +89,13 @@ console.log(window); //系統隱含的;😕
 
 - #### 😕所以不用真的每次都window.alert...
 
-#### window.addEventListener()
+#### 2. window.addEventListener()
 
 - 將事件監聽程式碼附加到window object
 
 - 後續課程才會真的講到。跳過。
 
-#### window.clearInterval()
+#### 3. window.clearInterval()
 
 - 將 setInterval所重複執行的code 暫停
   
@@ -105,11 +105,11 @@ console.log(window); //系統隱含的;😕
   window.clearInterval(interval);
   ```
 
-#### window.prompt()
+#### 4. window.prompt()
 
 - return 用戶在對話框輸入的文字
 
-#### window.setInterval()
+#### 5. window.setInterval()
 
 - 給定毫秒數、週期執行某函數。
   
@@ -126,24 +126,24 @@ console.log(window); //系統隱含的;😕
 
 ### 常見properties :
 
-#### window.console
+#### 1. window.console
 
 - 瀏覽器控制台
 
 - 常用的是console.log()、console.error()
 
-#### window.document
+#### 2. window.document
 
 ```js
 /*    window Object - document          */
 console.log(window.document);
 ```
 
-#### window.localStorage
+#### 3. window.localStorage
 
 - 之後說
 
-#### window.sessionStorage
+#### 4. window.sessionStorage
 
 - 之後說
 
@@ -219,13 +219,13 @@ console.log(Oni.sis.name); // "Umi"
 
 ## Document Object 常用Method :
 
-### window.document.addEventListener()
+### 1. window.document.addEventListener()
 
-### window.document.createElement(tagName)
+### 2. window.document.createElement(tagName)
 
 - 下一支影片會講。157
 
-### window.document.getElementById(id)
+### 3. window.document.getElementById(id)
 
 - return 第一個相符的id的 element object
   
@@ -237,7 +237,7 @@ console.log(Oni.sis.name); // "Umi"
   
   ![](../../../Images/2023-12-13-21-52-40-image.png)
 
-### window.document.getElementyByClassName(className)
+### 4. window.document.getElementyByClassName(className)
 
 - return 一個動態的`HTML Collection`內部元素包含所有具有給定className的元素。
   
@@ -338,7 +338,7 @@ console.log(Oni.sis.name); // "Umi"
   
   不論是使用childNodes還是children屬性，所獲得的DOM Tree元素集合，都只會是本身元素在DOM Tree下一層的元素。如果希望獲得下下一層的元素，需要使用，像是element.children[i].children的語法，才能夠取得元素。當然，如果是下下下一層的元素，就需要使用element.children[i].children[j].children的語法。關於程式碼的例子，請見Element Object的影片。
 
-# (159) 差別比較
+# (159) 差別比較⚠️
 
 ## Element Object 是三種Node之1
 
@@ -360,13 +360,13 @@ console.log(Oni.sis.name); // "Umi"
   
   ![](../../../Images/2023-12-13-22-56-51-image.png)
 
-### Element Object 多一個children屬性 (r.t. HTMLCollection)
+### ⚠️Element Object 多一個children屬性 (r.t. HTMLCollection)
 
 - 💡Element 同時有兩個屬性，但另外兩人只有childNodes屬性。
   
   - ##### 🗨另外兩人 text nodes  / comment nodes🗨
 
-## 表格1 :
+## 表格1 :🔥🔥🔥
 
 | Methods                    | Rt Type                          |
 |:--------------------------:|:--------------------------------:|
@@ -377,7 +377,7 @@ console.log(Oni.sis.name); // "Umi"
 
 --- 
 
-## 表格2 :
+## 表格2 :🔥
 
 |           | NodeList                     | HTML Collection              |
 | --------- | ---------------------------- | ---------------------------- |
@@ -724,9 +724,169 @@ Oni.walk(); // Oni正在走路
 
 # (163) forEach in NodeList
 
+## HTMLCollection  Vs   NodeList😕
+
+- HTMLCollection不可使用forEach功能，雖然兩者看起來很相似。
+  
+  ![](../../../Images/2023-12-15-12-12-00-image.png)
+  
+  ```js
+  /*                       ForEach                      */
+  /*    NodeList          */
+  console.log("-----------NodeList------------");
+  let hellos = document.querySelectorAll(".hello");
+  console.log(hellos);
+  hellos.forEach((e) => console.log(e));
+  
+  /*    HTMLCollection          */
+  console.log("-----------HTMLCollection------------");
+  hellos = document.getElementsByClassName("hello");
+  console.log(hellos);
+  // hellos.forEach((e) => console.log(e));  //無法使用，這是NodeList才有。
+  ```
+
 # (164) Element Objects 1
 
+## 有些獨特的屬性方法是特有，但其他
+
+## 必須具有以下Properties、Methods :
+
+### 1. addEventListener(event,callbackFn)
+
+### 2. appendChild(element)
+
+```js
+let body = document.querySelector("body");
+let myH1 = document.createElement("h1");
+// innerHTML 標籤會被讀做標籤 , innerText 標籤也是純文字
+// myH1.innerText = "我是附加的H1";
+myH1.innerHTML = "<a href='https://www.google.com'>Google</a>";
+body.appendChild(myH1);
+```
+
+<img src="../../../Images/2023-12-15-12-52-42-image.png" title="" alt="" width="219">
+
+注意innerText是屬性而不是方法 ! 亂用會消失，雖然GPT會告訴你。
+
+innerHTML 標籤會被讀做標籤 , innerText 標籤也是純文字
+
+### 3. children -> HTMLCollection
+
+#### 🔥 去看之前表格一有提到
+
+#### ⚠️ 159說過、只有Element Object 才有此屬性
+
+```js
+body = document.querySelector("body");
+console.log("----------body--------------");
+console.log(body);
+console.log("----------body.children--------------");
+console.log(body.children); // HTMLCollection
+console.log("----------body.children.children--------------");
+console.log(body.children[0].children); // 物件[0] 才有children 才有另一個HTMLCollection
+```
+
+### 4. childNodes ->NodeList
+
+### 5. parentElement
+
+```js
+console.log("----------parentElement--------------");
+let firstP = document.querySelector("p");
+console.log("----------parentElement=div--------------");
+console.log(firstP.parentElement);
+console.log("----------parentElement.parentElement=body--------------");
+console.log(firstP.parentElement.parentElement);
+```
+
+### 6. classList
+
+- 紀錄找到的元素所持有的class列表
+
+```js
+console.log("----------classList--------------");
+firstP = document.querySelector("p");
+console.log(firstP.classList);
+```
+
+![](../../../Images/2023-12-15-13-31-50-image.png)
+
+#### 該物件可用、add() remove() toggle() contains()
+
+- 增加屬性、刪除屬性 
+
+- toggle 類似電燈開關那樣切換
+  
+  ```js
+  firstP.addEventListener("click", () => {
+    firstP.classList.toggle("blue");
+    console.log(firstP.classList);
+  });
+  ```
+
+- contains查詢 有沒有包含某class
+
+---
+
 # (165) Element Objects 2
+
+## 續 - Properties、Methods :
+
+### 7. getAttribute(attributeName)
+
+```js
+<a title="到google首頁" href="https://www.google.com">google</a>
+let a = document.querySelector("a");
+console.log(a.getAttribute("title")); // 到google首頁
+console.log(a.getAttribute("href")); // https://www.google.com
+```
+
+- title是跟之前下面這個功能一樣
+  
+  <img title="" src="../../../Images/7253bc18be5b90c605494ce0edb888cbad066232.png" alt="" width="457">
+
+### 8. innerHTML
+
+### 9. innerText
+
+- 以上看過就不多述。
+
+### 10. querySelector(selector)
+
+- Element Objects 內部尋找
+
+- 之前是在Document Object去尋找全體
+
+### 11. querySelectorAll(selector)
+
+### 12. remove()💡
+
+```js
+console.log("----------remove--------------");
+
+let btn = document.querySelector("#disappear");
+btn.addEventListener("click", () => {
+  // a.remove("href");  // 不是attr消失而是node本身
+  // a.removeAttribute("href");
+  a.remove();
+  // a.toggleAttribute 也有~
+});
+```
+
+### 13. style⭐⭐
+
+- 可以改變element object's inline styling。
+
+- 因為JS 不允許使用 hyphen ( - ) 不能 - 
+
+- 所以CSS屬性都使用camelCase。
+
+```js
+console.log("----------style--------------");
+// btn.style.backgroundColor = "green";
+// btn.style.color = "white";
+btn.style = "background-Color:gray;color:white;"; 
+```
 
 # (166) Inheritance
 
