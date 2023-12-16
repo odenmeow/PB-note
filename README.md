@@ -100,7 +100,7 @@ Udemy 預定進度 :
 
 # 圖片設定
 
-![](Images/2023-12-13-17-14-05-image.png)
+<img src="Images/2023-12-13-17-14-05-image.png" title="" alt="" width="357">
 
 選擇
 

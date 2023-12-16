@@ -718,7 +718,7 @@ div.container2 > a {
 
 # (64) Flexbox and Images
 
-## 處理 在 Flexbox圖片很大的時候的解法
+## ⚠️處理 在 Flexbox圖片很大的時候的解法
 
 `圖片超過 flex-base: 500px` 
 
