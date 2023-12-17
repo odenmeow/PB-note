@@ -117,3 +117,5 @@ Global image folder: 填入
 `Images`
 
 ---
+
+Project4 - section174 改變select顏色，使用了之前所學，JS、preventDefault防止enter表單送出、防止點擊垃圾桶送出、探測select標籤change的時候、以及target value、改變選單顏色之類【我偷回過去改變數名稱allbtns -> allBtns】

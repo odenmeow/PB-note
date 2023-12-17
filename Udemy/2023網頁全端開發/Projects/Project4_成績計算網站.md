@@ -343,3 +343,265 @@ h2#result-gpa {
     animation.style.pointerEvents = "none"; //點擊後面
   }, 2100);
   ```
+
+# (174) 改變select 顏色
+
+## 順序
+
+### 垃圾桶preventDefault
+
+- 改變form 按垃圾桶 自動送出問題。
+  
+  ```js
+  // 如果是HTMLCollection則不能forEach 🔥
+  // 除非透過Array.from(丟進來).forEach才能用🔥
+  allbtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+    });
+  });
+  ```
+
+### 表單preventDefault (enter送出問題)
+
+- 避免form 填入後按enter直接送出表單
+  
+  ```js
+  window.addEventListener("keypress", (e) => {
+    if (e.key == "Enter") {
+      e.preventDefault();
+    }
+  });
+  ```
+
+### JS 選取 select 標籤、印target、target.value
+
+- 改變選取 option A~F 之後的背景顏色
+  
+  > html select choose option event 
+  > 
+  > 標籤上面叫做onchange
+  
+  <img src="../../../Images/2023-12-17-15-28-23-image.png" title="" alt="" width="308">
+  
+  ##### event 叫做 change 🙄...
+  
+  ```js
+  let allSelects = document.querySelectorAll("select");
+  allSelects.forEach((select) => {
+    select.addEventListener("change", (e) => {
+      console.log(e.target);
+      console.log(e.target.value);
+    });
+  });
+  ```
+  
+  <img title="" src="../../../Images/e1b0e2ffac82780392fcbbff6bfa4db34f475d23.png" alt="" width="228">
+
+### 顏色改變 target.style.backgroundColor
+
+- ```js
+  function changeColor(target) {
+    if (target.value == "A" || target.value == "A-") {
+      target.style.backgroundColor = "lightgreen";
+      target.style.color = "black";
+    } else if (
+  ```
+
+## 最後留著一個setGPA等著做。
+
+# (175) 計算成績 gpa
+
+## 順序
+
+### 製作setGPA()
+
+### 關於數字跟空字串行為:⚠️
+
+#### console.log(  填這 ) ....以下舉例
+
+- `"3"` * `""`+ `"A"`  = `0` 然後字串相接 `"A"` =>>>> `"0A"` string
+
+- `"2"` * `""`+   `5`    = `0` 然後 +`5` 等於 `0`+`5`   =>>>> `5` number
+
+- `0` * `false` = `0`  可以預期、轉換就會去轉
+
+- `0` * `""` = `0` 
+
+- `0` * `null` = `0` 
+
+- `0` * `NaN` = `NaN`  ( 屬於數字下的 無法辨認 例如infinte之類)
+  
+  - 特別注意下面⭐⭐⭐⭐⭐  
+  
+  - NaN 的資料型態是 number 🔥
+    
+    - `console.log("NaN資料型態是", typeof NaN);` 
+  
+  - isNaN(填這) 用來判斷 `obj.valueAsNumber` 或 `Number(obj)` 是否NaN
+    
+    - 因為兩者一定typeof number  但可能NaN 不是一個合法數字🔥
+    - 如果物件A沒有輸入值， A.valueAsNumber 得到 NaN !🔥
+
+- `0` * `undefined` = `undefined`  無定義 ( undefined )
+  
+  ```js
+   console.log("-----", "" * 5 + "2", typeof ("" * 5 + "2")); //string
+   console.log("-----", "" * 5 + 2, typeof ("" * 5 + 2)); //number
+   console.log("-----", "" * 5, typeof ("" * 5)); //number  = 0
+  ```
+  
+  ![](../../../Images/2023-12-17-19-10-04-image.png)
+
+- 數字 小數第二位為止
+  
+  ```js
+  if (creditSum != 0) {
+      gpa.innerText = (sum / creditSum).toFixed(2);
+  } else {
+      gpa.innerText = "0.00";
+  }
+  ```
+
+# (176) 新增form
+
+## 其實有個問題就是input number credit可以>6
+
+- 因為直接透過js ，但HTML表單那邊是默認送出才會阻止
+
+- 我有稍微做修改~
+
+## 製作表單新增的功能⚠️
+
+### 關於成績select 用陣列做比起複製他的更好!🔥🔥
+
+- 例如
+  
+  ```js
+  function makeSelectTag() {
+    var grades = [
+      "",
+      "A","A-",
+      "B+","B","B-",
+      "C+","C","C-",
+      "D+","D","D-",
+      "F",
+    ];
+    let newSelect;
+    newSelect = document.createElement("select");
+    newSelect.setAttribute("name", "select");
+    newSelect.classList.add("select");
+    grades.forEach((g) => {
+      var opt = document.createElement("option");
+      opt.setAttribute("value", g);
+      let textNode = document.createTextNode(g);
+      opt.appendChild(textNode);
+      newSelect.appendChild(opt);
+    });
+    return newSelect;
+  }
+  ```
+
+## datalist跟select 有點不同，一個輸入文字一個純提供選擇
+
+- 一個文字，然後提供選擇，但未必要選
+
+- 一個只能選擇或不選
+
+## 16:00 input之間空格造成跟我們製作出來的版面不同
+
+![](../../../Images/2023-12-17-23-04-49-image.png)
+
+- 其實就是上面每個之間有空格 `<input/>   <input/>` 有空格
+
+## 解決辦法 :
+
+> newDiv.appendChild(document.createTextNode(" "));
+
+```js
+  newDiv.appendChild(newInput1);
+  newDiv.appendChild(document.createTextNode(" "));
+  newDiv.appendChild(newInput2);
+  newDiv.appendChild(document.createTextNode(" "));
+  newDiv.appendChild(newInput3);
+  newDiv.appendChild(document.createTextNode(" "));
+  newDiv.appendChild(newSelect);
+  newDiv.appendChild(document.createTextNode(" "));
+  newDiv.appendChild(newBtn);
+  newDiv.appendChild(document.createTextNode(" "));
+  newForm.appendChild(newDiv);
+```
+
+## 表單出現 由小變大 ⌛!
+
+- js 要做 對新的標籤form 追加動畫style 
+  
+  ```js
+    newForm.style.animation = "scaleUp 0.5s ease forwards";
+  ```
+
+- css要做 keyframes  💡記得按下watch sass💡
+  
+  ```scss
+  @keyframes scaleUp {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  ```
+
+# (177) 垃圾桶製作
+
+## 一開始的移除沒動畫效果
+
+- 也只套用初期的三個
+  
+  ```js
+  let allTrash = document.querySelectorAll(".trash-btn");
+  allTrash.forEach((trash) => {
+    trash.addEventListener("click", (e) => {
+      console.log(e.target.parentElement.parentElement.remove());
+    });
+  });
+  ```
+
+## 中間的只套用前三個垃圾桶
+
+- 其他新增依舊不套用
+  
+  ```js
+  let allTrash = document.querySelectorAll(".trash-btn");
+  allTrash.forEach((trash) => {
+    trash.addEventListener("click", (e) => {
+      console.log(e.target.parentElement.parentElement.classList.add("remove"));
+    });
+    let form = trash.parentElement.parentElement;
+    form.addEventListener("transitionend", (e) => {
+      e.target.remove();
+      setGPA();
+    });
+  });
+  ```
+
+- 💡transistionend 是比較有意思的 然後除了移除也要記得重設定GPA💡
+
+## 新增的垃圾桶動畫及移除效果
+
+- 回去中間之前寫的部分，然後用稍微不同的做法 (動畫作法)
+  
+  ```js
+    newInput3.addEventListener("change", () => {
+      setGPA();
+    });
+    newSelect.addEventListener("change", (e) => {
+      setGPA();
+      changeColor(e.target);
+    });
+    newBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      >>>>>>  這 寫 東 西
+    });
+  ```

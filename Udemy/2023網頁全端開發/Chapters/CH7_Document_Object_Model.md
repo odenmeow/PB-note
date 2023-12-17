@@ -977,7 +977,7 @@ window.addEventListener("keydown", (e) => {
 
 ## 常用Event 的屬性跟方法
 
-### 1. target
+### 1. target⭐⭐
 
 - 最初發生事件的DOM物件
   
