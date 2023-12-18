@@ -605,3 +605,145 @@ h2#result-gpa {
       >>>>>>  這 寫 東 西
     });
   ```
+
+# (178) 排序演算法比較
+
+- 一開始講之前的泡沫排序bigO = $n^2$
+  
+  ![](../../../Images/2023-12-18-14-07-40-image.png)
+
+- from
+  
+  > [**Algorithm 演算法排序筆記** - HackMD](https://hackmd.io/@coherent17/Sy79MIyju) 
+  
+  <img src="../../../Images/2023-12-18-14-10-41-image.png" title="" alt="" width="331">
+  
+  ### GPT 說 n^2跟 nlogn交叉點大概n=10~20
+
+## 使用merge排序
+
+- 他選的![](../../../Images/2023-12-18-14-19-18-image.png)
+
+# (179) 排序程式碼
+
+## 物件的另一種寫法
+
+- 原本要 A:A  ,B:B,C:C   如下
+  
+  ```js
+  for (let i = 0; i < graders.length; i++) {
+      let class_name = graders[i].children[0].value; // class category
+      let class_number = graders[i].children[1].value; // class number
+      let class_credit = graders[i].children[2].value; // class credit
+      let class_grade = graders[i].children[3].value;
+      let object = {
+        class_name: class_name,
+        class_number: class_number,
+        class_credit: class_credit,
+        class_grade: class_grade,
+      };
+      objectArray;
+    }
+  ```
+
+### 由於太常見所以可以省略🔥🔥
+
+- 直接寫就好，名稱直接對應物件。
+  
+  ```js
+  let object = {
+        class_name,
+        class_number,
+        class_credit,
+        class_grade,
+      };
+  ```
+
+## Object屬性直接增加的方法如下
+
+- 直接  .aaa 不存在的屬性 就會增加上去
+  
+  ```js
+  // 取得objectArray之後 要把成績換成數字才能排序。
+    for (let i = 0; i < objectArray.length; i++) {
+      objectArray[i].class_grade_number = convertor(objectArray[i].class_grade);
+    }
+  ```
+
+- 例如 .class_grade_numbe 原本不存在 但我們需要數字
+
+## 合併排序
+
+### 需要稍微掌握遞迴概念
+
+- merge(a1,a2)
+  
+  ```js
+  function merge(a1, a2) {
+    let result = [];
+    let i = 0;
+    let j = 0;
+    while (i < a1.length && j < a2.length) {
+      if (a1[i].class_grade_number > a2[j.class_grade_number]) {
+        result.push(a2[j]);
+        j++;
+      } else {
+        result.push(a1[i]);
+        i++;
+      }
+    }
+    while (i < a1.length) {
+      result.push(a1[i]);
+      i++;
+    }
+    while (j < a2.length) {
+      result.push(a2[j]);
+      j++;
+    }
+    return result;
+  }
+  ```
+
+- mergeSort(arr)
+  
+  ```js
+  function mergeSort(arr) {
+    if (arr.length == 0) {
+      return;
+    }
+    if (arr.length == 1) {
+      return arr;
+    } else {
+      let middle = Math.floor(arr.length / 2);
+      let left = arr.slice(0, middle);
+      let right = arr.slice(middle, arr.length);
+      return marge(mergeSort(left), mergeSort(right));
+    }
+  }
+  ```
+
+### 然後應用上去就可以完成囉~
+
+- 搭配reverse就好
+  
+  ```js
+  objectArray = mergeSort(objectArray);
+    if (direction == "descending") {
+      objectArray = objectArray.reverse();
+    }
+    console.log(objectArray);
+  ```
+
+## 最後砍forms、重新生成+監聽之。
+
+- byTeacher_MakeFormByHTML
+
+- ReAppendTrashListener
+
+- ReAppendSelectionListener
+
+- ReAppendCreditListener
+  
+  - credit監聽追加+數字上限追加+自動重算追加
+    
+    creditInputRestrictGPA()
