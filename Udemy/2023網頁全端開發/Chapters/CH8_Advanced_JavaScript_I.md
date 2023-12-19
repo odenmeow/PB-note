@@ -425,3 +425,163 @@ newArrForEach = arrForEach.forEach((i) => {
 });
 console.log(newArrForEach); //undefined
 ```
+
+# (188) JS內建排序函式
+
+## sort()
+
+### 屬於少數會永久改變呼叫者原始內容的method。
+
+### 默認排序按字串
+
+```js
+let myArr = [5, 6, 4, 2, 1, 3, 13, 8, 9, 11, 15];
+myArr.sort();
+console.log(myArr);
+// 默認按 字符串排序 所以
+// [(1, 11, 13, 15, 2, 3, 4, 5, 6, 8, 9)];
+```
+
+### 可提供比較規則⭐⭐⭐⭐
+
+#### 只要知道怎麼得到返回值
+
+- 返回值可以是任何可被轉換為數字的值，因為 `sort()` 方法會根據這個返回值的正負來決定元素的相對位置。
+
+- 返回值為正數表示 `b` 應該排在 `a` 之前。
+
+- 返回值為負數表示 `a` 應該排在 `b` 之前。
+
+- 返回值為 0 表示 `a` 和 `b` 相等並保持原本的順序。
+
+| compareFn(a,b) rt value | sort order          |
+|:-----------------------:|:-------------------:|
+| > 0                     | Sort a after b      |
+| < 0                     | Sort a before b     |
+| === 0                   | Keep original order |
+
+```js
+let names = ["Onini", "Umi", "Davinci", "Cate"];
+
+names.sort((a, b) => {
+  if (a.length > b.length) {
+    return 1; // 1 代表 第二個參數要在後面
+  } else if (a.length < b.length) {
+    return -1; // -1 代表 第二個參數要在前面
+  } else {
+    return 0; // 保持不變
+  }
+});
+console.log(names);
+```
+
+## 進階消息
+
+### 排序的時間和空間複雜度不能被保證，取決於browser
+
+#### V8 引擎
+
+- Quicksort or Insertion Sort ( for smaller arrays) 或 AVL tree
+
+#### Firefox
+
+- Merge sort
+
+#### Safari
+
+- Quiksort , Merge Sort , Selection Sort (depending ont the type of array)
+
+# (189) for in loop, for of loop
+
+## for of Loop
+
+- 去循環可迭代對象內的每個元素 包含
+  
+  - string
+  
+  - array
+  
+  - array-like object
+    
+    - NodeList
+    
+    - HTMLCollection
+  
+  - TypedArray
+  
+  - Map
+  
+  - Set
+  
+  - user-defined 的 iterable
+  
+  - ⚠️Object 不是  iterable ⚠️
+
+- 使用方法
+  
+  ```js
+  for (let n of numbers) {
+    console.log(n);
+  }
+  ```
+
+- 
+
+- 
+
+- 
+
+### ⚠️特別注意 要使用 let  ，否則迴圈外也能訪問⚠️
+
+- 當你使用 `n`（沒有使用 `var`、`let` 或 `const` 聲明）在迴圈中初始化時，JavaScript 引擎會在外部作用域尋找是否存在名為 `n` 的變數。🔥如果找到了，它就會使用外部作用域中的 `n` 變數🔥，如果沒找到，則會創建一個全局變數 `n`。
+
+## for in Loop
+
+### 創建迴圈，循環JS物件中所有可枚舉屬性 enumerable properties
+
+- Object 的enumerable properties 就是 keys
+
+- array 的 enumerable properties 就是 indices
+
+- string 的 enumerable properties 也是 indices
+
+```js
+let Oni = {
+  name: "Oni",
+  age: 25,
+};
+for (let property in Oni) {
+  console.log(property);
+}
+// name
+// age
+for (let property in Oni) {
+  console.log(Oni[property]); // 最保守 
+}
+// Oni
+// 25
+for (let property in Oni) {
+  console.log(Oni.property); 
+}
+//無效!  Oni並沒有property屬性🔥🔥
+```
+
+# 測驗
+
+![](../../../Images/2023-12-19-21-58-00-image.png)
+
+- 字母而言ASCII 小寫排序比較後面 而大寫比較前面
+  
+  ![](../../../Images/2023-12-19-22-02-06-image.png)
+
+- of 會得到 元素本身💡⭐⭐⭐
+  
+  ![](../../../Images/2023-12-19-22-03-42-image.png)
+
+- in 則是物件的屬性或 陣列 字串的 indices
+  
+  ![](../../../Images/2023-12-19-22-04-58-image.png)
+
+- 枚舉屬性 這邊的i 實際上是 name  age 代入哦!⭐⭐⭐
+  
+  ![](../../../Images/2023-12-19-22-05-43-image.png)
