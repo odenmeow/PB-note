@@ -712,6 +712,8 @@ JS 中 每個值在 BooleanContext下都能被視為true或者false。
 
 - 空字串 firefox出現 \<empty string>
 
+- ##### 回頭補充，&& 前面如果失敗，則返回第一個falsy本身，也就是""。
+
 ## 少使用if( 條件==true)
 
 - 最好可以 if ( variable )  就做判斷
