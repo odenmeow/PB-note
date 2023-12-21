@@ -485,3 +485,425 @@ console.log(undefined == undefined); //true
 ```
 
 方法是獨立各自 物件擁有  跟JAVA不同!
+
+# (196) Inheritance and the Prototype Chain⭐⭐⭐⭐⭐
+
+## 每個物件🔥都有🔥private attr叫做`__proto__`
+
+- `__proto__` 底線有兩個!
+
+### ⭐⭐⭐關於proto 實際上就是JS的繼承 ? 結論:不太是⭐⭐
+
+### 我覺得Person.call才是 因為proto會受其它物件影響
+
+- 如果`A`物件的`__proto__` 是設定物件`B` 。
+  
+  那麼`A`就會繼承`B`的所有`attributes` 以及 `methods`  
+  
+  ```js
+  let Oni = {
+    name: "oni",
+    sayHi() {
+      console.log(this.name + "說你好");
+    },
+  };
+  
+  let Umi = {
+    __proto__: Oni,
+    name: "umi", //overwrite
+  };
+  ...
+  Umi.sayHi(); //umi說你好
+  console.log("Umi.__proto__", Umi.__proto__); 
+  // 確實指向了Oni物件、印出Oni 該有的
+  // Umi.__proto__ { name: 'oni', sayHi: [Function: sayHi] }
+  console.log("Oni.__proto__", Oni.__proto__); //確實指向了Oni物件
+  // Oni.__proto__ [Object: null prototype] {}
+  ```
+
+## Prototype屬性
+
+### Constructor method有；基本物件沒有!
+
+```js
+console.log(Umi); // { name: 'umi' }
+console.log(Umi.prototype); // undefined
+```
+
+```js
+let oni = new Person("Oni", 25); 
+//new關鍵字提供this物件給Person 然後
+let umi = new Person("Umi", 16);
+ //oni.__proto__ = Person.prototype
+```
+
+> 總之 建構式函數 各自持有自己的prototype屬性 是獨立的
+
+```js
+console.log("右邊是Animal.prototype", Animal.prototype);
+// { hello: [Function (anonymous)] }
+console.log("右邊是Animal.prototype", Person.prototype);
+// { hello: [Function (anonymous)] }
+console.log("右邊是兩者是否同一個物件", Animal.prototype == Person.prototype);
+// false
+```
+
+### 物件間方法是獨立的，上節講過 !
+
+### 但Prototype可以使之共用!⭐⭐⭐⭐
+
+```js
+Person.prototype.hello = function () {
+  console.log(this.name + "你好");
+};
+```
+
+```js
+console.log(oni.walk == umi.walk); //false
+console.log(oni.hello == umi.hello); //true
+```
+
+## 關於陣列跟字串也利用了以上技術💡💡
+
+> **這邊使用上JS提供簡單寫法，提升產出速度。**
+> 
+> **基本上跟使用Constructor一樣，只是JS Engine幫你做**  
+
+```js
+let arr = [1, 2, 3];
+let arrArr = new Array(1, 2, 3);
+let str = "字串";
+console.log(typeof str); //string
+let strStr = new String("字串");
+console.log(typeof strStr); //object
+```
+
+- **只是字串他幫忙時，他會用字串池判斷💡** 
+
+- 還有會使用 Coercion 因為str 的寫法得到primitive type 非 object
+
+### 請去primitive CH8 💡複習Coercion💡
+
+- ⭐這是一種implicit coercion ⭐
+
+![](../../../Images/2023-12-21-18-03-15-image.png)
+
+> `str.__proto__` 得到下一
+> 
+> `strStr` 得到下二 
+
+![](../../../Images/2023-12-21-18-05-50-image.png)
+
+# (197) Function Methods
+
+> 前情提要，下一集會用到所以先講
+
+## 屬於特殊物件
+
+### function.bind()
+
+```js
+let Oni = {
+  name: "Oni",
+  age: 25,
+};
+function getAge() {
+  return this.age; //沒有叫做age的 因為綁定外面的
+}
+console.log(getAge());
+let newFn = getAge.bind(Oni);
+console.log(getAge()); // 原始沒有被改變
+console.log(newFn()); // 回傳新的到另一個variable上
+```
+
+### function.call()
+
+```js
+function getName(country, eyeSight) {
+  console.log(this.name + "來自" + country + "視力" + eyeSight);
+  return this.age;
+}
+
+getName.call(Oni, "tw", "nearSighted");
+```
+
+### function.apply()
+
+```js
+getName.apply(Oni, ["tw", "nearSighted"]);
+```
+
+基本上跟 call一樣，只是參數傳入用陣列替代..
+
+# (198) Prototype Inheritance in Constructors
+
+## 建構式函數繼承另一個建構函數的身家
+
+### 屬性attrs💡💡
+
+- A 內部執行 B.call(this,args1,...,argsN) ;可以讓B設定的給A使用
+
+```js
+/*          call善用                */
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+  this.m = function () {
+    console.log("人類的方法");
+  };
+}
+Person.prototype.sayHi = function () {
+  //不能用arrow Fn 否則綁定window或undefined
+  console.log(this.name + "說你好");
+};
+let oni = new Person("Oni", 25);
+oni.sayHi();
+function Student(name, age, major, grade) {
+  Person.call(this, name, age);🔥🔥🔥
+  this.major = major;
+  this.grade = grade;
+}
+```
+
+### 方法methods⭐⭐⭐⭐
+
+```js
+/*        Object.create 建立出新的物件 讓人繼承                 */
+
+// Student.prototype = Person.prototype;
+// 上面這個做法會導致指向 Person的記憶體資料 而不是創造獨立的資料
+// 因此如果增加方法，會導致其實增加在Person.prototype、共享 ，而不是Student獨有。
+Student.prototype = Object.create(Person.prototype);
+Student.prototype.study = function () {
+  console.log(this.name + "正在讀" + this.major);
+};
+```
+
+- 詳細麻煩還是看完整code，基本上就是prototype
+
+```js
+let onisan = new Person("Oni", 25);
+console.log(onisan);
+// Person { name: 'Oni', age: 25, m: [Function (anonymous)] }
+Person.prototype.newWord = function () {
+  console.log("說點東西而已");
+};
+onisan.newWord();
+// 說點東西而已
+```
+
+## 結論: ⭐⭐⭐⭐⭐
+
+🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+prototype就是模板，所有物件的參照、共用方法跟屬性，可以後續追加進去，都讀得到 !
+
+---
+
+印出物件看不到prototype持有的屬性跟值
+
+但確實可以使用到!! 直接 oni.newWord(); 就能
+
+```js
+Person.prototype.newWord = function () {
+  console.log("說點東西而已");
+};
+onisan.newWord();
+```
+
+如果物件本身也有重複的變數則 優先使用既有的 ! prototype 不會被看見! 
+
+```js
+Person.prototype.name = "共用";
+console.log(onisan.name);  // 看不到 因為會先查本身有沒有持有
+let x = Person.prototype;
+console.log(x.name);
+```
+
+### 兩個小範例
+
+```js
+let objX = {
+  name: "objX",
+};
+Person.prototype.kk = "box";
+objX.__proto__ = Person.prototype;
+console.log(objX.name); //objX
+// console.log(objX.m()); //沒持有這個 因為prototype
+// 僅有prototype有的才能
+console.log(objX.kk); //box
+```
+
+```js
+objX.__proto__ = oni; 
+objX.m(); //人類的方法
+```
+
+oni才行哦Person不行，他是special function 裡面不會有你想要的東西 !
+
+> A constructor function is **a special type of function in programming that is used to create objects**.
+
+因為`__proto__` 就是用來繼承`物件`的`方法`跟`屬性`，所以繼承 oni內方法屬性
+
+或者繼承 `Person.prototype` 中我們所新增的`共用方法及屬性` 都ok   !
+
+---
+
+`a.__proto__=b` 可以繼承b的方法跟屬性
+
+如果a本身物件有name 、b物件也有name，當a.name查找到a物件下就有，則不會去使用b的部分，屬於一個備查  ，如果需要就去找他引用的概念( ? )
+
+`a.__proto__.age=35` 則等同於動了b物件 ，b物件會被改變。反之b改變a.age也會被改變 他根本就是完全照抄阿???
+
+🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+# (199) Class
+
+## 基本上就是語法糖!
+
+- 基於prototype in constructor 達成的
+
+### 基本對照class
+
+```js
+/*         Constructor               */
+
+// function Student(major, age, major) {
+//   this.name = name;
+//   this.age = age;
+
+//   this.major = major;
+// }
+// Student.prototype.sayHi = function () {
+//   console.log(this.name, "說你好");
+// };
+/*             Class                     */
+
+class Student {
+  constructor(name, age, major) {
+    this.name = name;
+    this.age = age;
+    this.major = major;
+  }
+  sayHi() {
+    console.log(this.name + "說你好");
+  }
+}
+```
+
+### 使用extends
+
+- 再說一次 `.__proto__` 只是透過chain查找借用、真正繼承是用Person.call這種   !!
+
+- chain 可以很長，但是環環相扣，**真正實現動一髮牽全身** ，我動=別人動，別人動=我動
+
+```js
+/*              extends                 */
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  sayHi() {
+    console.log(this.name + "說你好");
+  }
+}
+class Student extends Person {
+  constructor(name, age, major, grade) {
+    super(name, age);
+    // 相當於Person.call(this,name,age)🔥
+    // 原本Person因為是傳統fn所以有this，但被替換🔥🔥
+    // 所以是真的繼承了跟 .__proto__透過chain查詢的假貨不同!🔥🔥🔥
+    this.major = major;
+    this.grade = grade;
+  }
+  study() {
+    console.log(this.name + "正在讀", this.major);
+  }
+}
+
+let umi = new Student("Umi", 16, "All Subject", "A+");
+umi.sayHi();
+umi.study();
+```
+
+### 使用 static
+
+- 這東西跟JAVA一樣，可以被繼承，
+
+```js
+/*             static                        */
+
+class Student {
+  static title = "學生";
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+    this.sayhi = function () {
+      console.log("你好");
+    };
+  }
+  static star() {
+    console.log("******");
+  }
+}
+let oni = new Student("Oni", 25);
+console.log(oni.title); //undefined
+console.log(Student.title); //學生
+// oni.star(); //報錯 沒這東西
+Student.star();🙄🙄🙄🙄🙄🙄🙄🙄有夠複雜。
+// 由此可見跟JAVA 很類似，同樣可以被繼承!
+// JAVA 類別直接呼叫方法或者屬性是可以的
+// JAVA method 本來就是共用的 不會在記憶體很多份
+// JAVA static 共用屬性跟隨在類別身上也很像
+
+// 從物件去呼喊 JAVA不用特別設定但 JS要改用prototype 
+// 這沒辦法寫得像JAVA了，只能像之前那樣設定 obj.__proto__=Student.prototype
+// Student.prototype.method=function (){xxxxx}
+// Student.prototype 物件間共用方法、屬性 為了省記憶體
+
+class p extends Student {
+  constructor(name, age) {
+    super(name, age);
+  }
+}
+console.log("p開始表演");
+p.star(); //...幹真的有耶
+```
+
+![](../../../Images/2023-12-22-01-13-45-image.png)
+
+## 好玩的chain:
+
+> 主要是可以a物件繼承b物件 ，b繼承c，然後一直查找`__proto__`
+
+```js
+class Student {
+  constructor(name, age, major) {
+    this.name = name;
+    this.age = age;
+    this.major = major;
+  }
+  sayHi() {
+    console.log(this.name + "說你好");
+  }
+}
+let oX = {
+  name: "oX",
+};
+let oni = new Student("Oni", 25, "no");
+oni.__proto__ = { magic: "存在" };
+oX.__proto__ = oni;
+console.log(oX.name);   
+console.log(oX.magic); // 存在  
+```
+
+## 參考commit也不錯
+
+git commit -m "Ch9 - section199 class，除了 
+講class怎麼作為語法糖、也能使用繼承extends+super 就跟 Person.call(this,arg,arg) 
+基本一樣，extends 還會繼承靜態static的部分，這個static就是原本constructor物件直 
+接透過.(dot annotation)去新增的屬性或方法，也會被繼承沒錯，然後跟Student.prototype這物件持有的共用屬性及方法是不一樣的，所以如果想製作批量物件之間共有的方法或屬
+性可能還是需要照老方法"
+
+-  就是指從Student.prototype下手 因為他才可以使instance共享、呼叫方法、查找屬性

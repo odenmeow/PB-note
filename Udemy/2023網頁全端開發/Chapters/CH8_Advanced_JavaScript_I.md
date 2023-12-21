@@ -178,13 +178,13 @@ function sum(...args) {
 
 # (184)Primitive Reference Data Types
 
-## Primitive
+## Primitive⚠️
 
 ### 先說結論，沒有自己的attr、methods
 
 ### 乘載 value，而不僅僅ref
 
-### Primitive Coercion
+### Primitive Coercion⚠️
 
 - 自動裝箱到wrapper object ，改為訪問該物件上的屬性...等。
 
