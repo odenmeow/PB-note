@@ -906,4 +906,105 @@ git commit -m "Ch9 - section199 class，除了
 接透過.(dot annotation)去新增的屬性或方法，也會被繼承沒錯，然後跟Student.prototype這物件持有的共用屬性及方法是不一樣的，所以如果想製作批量物件之間共有的方法或屬
 性可能還是需要照老方法"
 
--  就是指從Student.prototype下手 因為他才可以使instance共享、呼叫方法、查找屬性
+- 就是指從Student.prototype下手 因為他才可以使instance共享、呼叫方法、查找屬性
+
+# (200) Circle範例
+
+
+
+## 錯誤示範
+
+```js
+/*         Circle範例              */
+
+class Circle {
+  static allCircles = [];
+  constructor(radius) {
+    this.radius = radius;
+    allCircles.push(this);
+  }
+  getArea() {
+    return Math.PI * this.radius * this.radius;
+  }
+  getPerimeter() {
+    return Math.PI * 2 * this.radius;
+  }
+  static getAreaFormula() {
+    return "園面積公式 2 * pi * r";
+  }
+  static getAllCircleAreaTotal() {
+    let area = 0;
+    this.allCircles.forEach((element) => {
+      area += element.getArea;
+    });
+    return area;
+  }
+}
+
+let c1 = new Circle(10);
+console.log(c1.getArea());
+let c2 = new Circle(10);
+console.log(Circle.allCircles());
+console.log(Circle.getAllCircleAreaTotal());
+```
+
+## 正確示範
+
+### 要改...因為
+
+```js
+ class Circle {
+  static allCircles = [];
+  constructor(radius) {
+    this.radius = radius;
+    Circle.allCircles.push(this);
+  }
+```
+
+- 改成Circle 因為 建構子內 this 是指向創建出的物件 。
+
+- Circle.allCircles 才能找得到 !
+
+### 不用改...因為
+
+```js
+static getAllCircleAreatTotal() {
+    let area = 0;
+    this.allCircles.forEach((element) => {
+      area += element.getArea();
+    });
+    return area;
+  }
+```
+
+- 不用改 因為呼喚的時候是透過 Circle.getAllCircleAreaTotal ()  
+
+- 所以方法內部的this 確實指向 Circle 這個特殊物件
+
+# 最終考試
+
+
+
+![](../../../Images/2023-12-22-13-37-25-image.png)
+
+- 做得很好！
+  
+  creation phase結束後，會進入execution phase，才會進入工作階段！
+
+
+
+![](../../../Images/2023-12-22-13-38-52-image.png)
+
+- var 會undefined 但 let const 不可以這樣
+
+![](../../../Images/2023-12-22-13-39-25-image.png)
+
+<img src="../../../Images/2023-12-22-13-40-20-image.png" title="" alt="" width="355">
+
+<img title="" src="../../../Images/2023-12-22-13-40-54-image.png" alt="" width="403">
+
+![](../../../Images/2023-12-22-13-44-14-image.png)
+
+- 他的意思是問說上面有誰的Prototype= =
+
+- 不是問最終是誰
