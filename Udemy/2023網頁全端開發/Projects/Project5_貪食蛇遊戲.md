@@ -69,7 +69,6 @@ body {
 const unit = 20;
 const row = canvas.height / unit; //320/20=16
 const column = canvas.width / unit; //320/20=16
-
 ```
 
 ```js
@@ -123,8 +122,6 @@ function changeDirection(e) {
 ...
 ```
 
-
-
 ![](../../../Images/2023-12-22-23-37-03-image.png)
 
 # (206) 穿牆
@@ -156,14 +153,11 @@ function changeDirection(e) {
       // exceed bottom boundary
       snake[i].y = 0;
   }
-  
   ```
 
 ![](../../../Images/2023-12-22-23-54-05-image.png)
 
 # (207) 果實功能
-
-
 
 ![](../../../Images/2023-12-22-23-58-01-image.png)
 
@@ -194,8 +188,65 @@ function changeDirection(e) {
 
 比較關鍵 要手動設定false不然會無窮迴圈
 
+# (208) 遊戲結束設定
 
+## 蛇的0確認有沒有跟1~n-1重疊
 
+## changeDirectionBug
 
+- 只要改變draw的速度1秒1格 很容易測出來
+  
+  遊戲開始後，狂按下或上 然後跟移動方向相反
+  
+  ![](../../../Images/2023-12-23-14-16-57-image.png) 
 
+- 如果手速夠快，是有可能導致頭逆向往身體衝過去
+  
+  ```js
+  function changeDirection(e) {
+    if (e.key == "ArrowLeft" && d != "Right") {
+      console.log("已按左鍵");
+      d = "Left";
+    } else if (e.key == "ArrowRight" && d != "Left") {
+      console.log("已按右鍵");
+      d = "Right";
+    } else if (e.key == "ArrowUp" && d != "Down") {
+      console.log("已按上鍵");
+      d = "Up";
+    } else if (e.key == "ArrowDown" && d != "Up") {
+      console.log("已按下鍵");
+      d = "Down";
+   // draw 1 d=left    d=up   d=right
+    // frame 之間差...0.1秒，但是window.addEvent很快，所以出錯!
+    // draw 2 d=right
+    // 因此要避免 Next frame 出現之前能夠連續按
+    // draw 執行完， d 才能再度改變。
+    window.removeEventListener("keydown", changeDirection);
+  
+  
+    }
+  }
+  
+  
+  
+  ```
 
+## 解決
+
+- 上面那邊的 偵測到按鈕後 ，改完d，移除偵測功能
+  
+  ```js
+  window.removeEventListener("keydown", changeDirection);
+  ```
+  
+  
+  
+
+- 頭做好了才讓他可以重新控制方向
+  
+  ```js
+    snake.unshift(newHead);
+    // 頭做好了
+    // 可以開始控制了
+    window.addEventListener("keydown", changeDirection);
+  ```
