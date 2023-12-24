@@ -910,8 +910,6 @@ git commit -m "Ch9 - section199 class，除了
 
 # (200) Circle範例
 
-
-
 ## 錯誤示範
 
 ```js
@@ -983,15 +981,11 @@ static getAllCircleAreatTotal() {
 
 # 最終考試
 
-
-
 ![](../../../Images/2023-12-22-13-37-25-image.png)
 
 - 做得很好！
   
   creation phase結束後，會進入execution phase，才會進入工作階段！
-
-
 
 ![](../../../Images/2023-12-22-13-38-52-image.png)
 

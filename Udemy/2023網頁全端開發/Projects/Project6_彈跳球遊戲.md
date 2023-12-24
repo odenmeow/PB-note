@@ -1,7 +1,5 @@
 # (211) 基本設定
 
-
-
 - 設定畫布跟基本的canvas前置作業。
 
 ```js
@@ -15,7 +13,6 @@ function drawCircle() {
   console.log("畫圓");
 }
 let game = setInterval(drawCircle, 25);
-
 ```
 
 # (212) 彈跳球功能設定
@@ -78,15 +75,9 @@ function isOverlapping() {
 
 - 不需要在那邊計算+50 -50 那會比較複雜化問題。
 
-
-
 # (215) 磚塊邏輯設計
 
-
-
 ## splice 拿掉某一個撞到的磚塊!
-
-
 
 # (216) 系統性能優化
 

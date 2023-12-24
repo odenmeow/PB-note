@@ -222,25 +222,20 @@ function changeDirection(e) {
     // 因此要避免 Next frame 出現之前能夠連續按
     // draw 執行完， d 才能再度改變。
     window.removeEventListener("keydown", changeDirection);
-  
-  
-    }
-  }
-  
-  
-  
   ```
 
+    }
+
+  }
+
+```
 ## 解決
 
 - 上面那邊的 偵測到按鈕後 ，改完d，移除偵測功能
-  
-  ```js
-  window.removeEventListener("keydown", changeDirection);
-  ```
-  
-  
-  
+
+```js
+window.removeEventListener("keydown", changeDirection);
+```
 
 - 頭做好了才讓他可以重新控制方向
   
