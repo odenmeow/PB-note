@@ -146,13 +146,11 @@ hello
 - 大量解構、包含利用了     ...寫法
   
   ```js
-  
   //  版本二 關於剩餘參數 採陣列
   let arr = [100, 200, 300, 400, 500];
   let [a1, a2, ...a3] = arr;
   console.log("版本二 a1 is", a1);
   console.log("版本二 a3 is", a3);
-  
   ```
 
 ### 版本三 : 物件轉印🔥
@@ -182,15 +180,177 @@ hello
   ---------------------------------------
   167 66 { name: 'Oni', age: 25, addr: 'Tw' }
   ```
-  
-  
 
 # (221) Switch Statement
 
+```js
+let num = prompt("輸入1到5");
+switch (num) {
+  case "1":
+    alert("輸入了數字1");
+    break;
+  case "2":
+    alert("輸入了數字2");
+    break;
+  case "3":
+    alert("輸入了數字3");
+    break;
+  case "4":
+    alert("輸入了數字4");
+    break;
+  case "5":
+    alert("輸入了數字5");
+    break;
+  default:
+    alert("沒有輸入1到5 我不會告訴你輸入了哪個數");
+}
+```
+
+## 不可省略break⚠️⚠️
+
+### fall through
+
+這樣會導致 A 條件符合，結果一直往下繼續做。
+
+> A符合，A, B, C  沒有break，D有 break，E沒有break
+
+則 
+
+> A 內容會被做、B,C也會  D也會，但是D 有break 所以E不做了
+
+```js
+let num = prompt("輸入1到5");
+switch (num) {
+  case "1":
+    alert("輸入了數字1");
+
+  case "2":
+    alert("輸入了數字2");
+
+  case "3":
+    alert("輸入了數字3");
+
+  case "4":
+    alert("輸入了數字4");
+    break;
+  case "5":
+    alert("輸入了數字5");
+  default:
+    alert("沒有輸入1到5 我不會告訴你輸入了哪個數");
+}
+-----------------------------
+1
+2
+3
+4
+```
+
 # (222) 錯誤處理
+
+> [Error - JavaScript | MDN (mozilla.org)](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Error) 
+
+## instanceof 找出錯誤類型子類
+
+```js
+/*             錯誤處理          */
+
+try {
+  whatever();
+  // console.log("hihi");
+} catch (e) {
+  // console.log("有錯誤" + e);
+  // console.log(e);
+  if (e instanceof TypeError) {
+    console.log("發生TypeError");
+  } else if (e instanceof ReferenceError) {
+    console.log("發生ReferenceError");
+  } else {
+    console.log("發生其他種類的error");
+  }
+} finally {
+  // 錯誤與否都會執行
+  console.log("一定存在");
+}
+// 發生錯誤會自動被做成 Error Object
+// TypeError , ReferenceError, SyntaxError
+
+/*           instanceof  為...的instance                       */
+// class Person {
+//   constructor(name) {
+//     this.name = name;
+//   }
+// }
+// let milk = new Person("cow");
+// console.log(milk instanceof Person);
+```
 
 # (223) 客製化錯誤訊息
 
+## 比較粗糙的寫法
+
+- 使用throw 然後直接放文字描述
+
+```js
+function sumArray(arr) {
+  // Array Class static method
+  if (!Array.isArray(arr)) {
+    throw "參數需要為array";
+  }
+  let result = 0;
+  arr.forEach((element) => {
+    result += element;
+  });
+  return result;
+}
+console.log(sumArray([1, 2, 3, 4, 5]));
+// console.log(sumArray("你好")); //沒有forEach 故，出錯。
 ```
 
+> [TypeError - JavaScript | MDN (mozilla.org)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError) 
+
+## 好一點的寫法
+
+- 使用 new TypeError 
+  
+  ```js
+  function sumArray(arr) {
+    // Array Class static method
+    if (!Array.isArray(arr)) {
+      // throw "參數需要為array";
+      throw new TypeError("參數並非array");
+      // 使用TypeError 則會不僅僅只告訴你文字，而且還能知道錯的位置、更詳細。
+    }
+  ```
+
+## JS 沒有我想要的 既有錯誤類別
+
+### 自己創造
+
+- 使用比較接近的既有類別去延伸，自己自製就好。
+
+```js
+class NotArrayError extends TypeError {
+  constructor(message) {
+    super(message);
+  }
+  printSolution() {
+    return "確定參數為array再執行!";
+  }
+}
+......
+
+......
+
+......
+
+try {
+  sumArray("hi");
+} catch (e) {
+  // console.log(e);
+  console.log(e.printSolution());
+}
 ```
+
+# 最後小考
+
+## 唯一有意思是之前python的鴨子類型被它拿出來湊題目
