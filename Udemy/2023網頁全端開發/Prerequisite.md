@@ -23,6 +23,8 @@
 - `Auto Rename Tag` 
 
 - `EJS language support`
+  
+  <img title="" src="../../Images/2023-12-26-17-12-13-image.png" alt="" width="371">
 
 ## 我自己之前安裝的有
 

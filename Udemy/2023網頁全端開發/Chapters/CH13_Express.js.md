@@ -152,7 +152,7 @@ app.listen(3000, () => {
 | res.sendFile(path)         | 將位於path的文件傳送出去。                                                                      |
 | res.json(body)             | 發送 JSON response。此method會先使用JSON.stringify()將body轉換為 JSON String後,再發送一個response給客戶端。 |
 | res.redirect(path)         | 伺服器通過發送狀態為302 的HTTP response 要求客戶端到 path。客戶端 會重新發送一個HTTP GET request到path。           |
-| res.render(view[, locals]) | res.render(view[, locals]) 將view模板透用locals的文字後,將view發送到客戶端。                          |
+| res.render(view[, locals]) | res.render(view[, locals]) 將view模板套用locals的文字後,將view發送到客戶端。                          |
 | res.status()               | HTTP Response status code                                                            |
 
 ### 示範send 會產生的錯誤
