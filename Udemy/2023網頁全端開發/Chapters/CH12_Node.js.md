@@ -678,11 +678,7 @@ C:\CodeSForGit\2023WebFullStack\Chapter12-Node.js>nodemon app.js
 
 當然，如果是資料夾內用需要用require()所取得的package，則一定要在本地透過npm install <package>的指令安裝。只有像nodemon這種透過shell執行的package適合使用-g做全域安裝。6
 
-
-
 # 最終小考
-
-
 
 ## 問題 4：
 
@@ -695,8 +691,6 @@ C:\CodeSForGit\2023WebFullStack\Chapter12-Node.js>nodemon app.js
 - 443 - HTTPs
 
 - 3000 - FTP >>>>>>>>>>>>>>>20, 21才是FTP協議使用的port!
-
-
 
 ## 問題 5：
 
@@ -727,8 +721,6 @@ C:\CodeSForGit\2023WebFullStack\Chapter12-Node.js>nodemon app.js
 如果網頁交出表格資料，且使用GET request的話，表格內的資料會被放在HTTP request的哪個地方？
 
 - name=value   url中 ? 之後 分隔方式為&
-
-
 
 ## 問題 8：
 

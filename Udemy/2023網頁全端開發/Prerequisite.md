@@ -22,6 +22,8 @@
 
 - `Auto Rename Tag` 
 
+- `EJS language support`
+
 ## 我自己之前安裝的有
 
 - `Auto Close Tag`
