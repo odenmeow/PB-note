@@ -441,21 +441,9 @@ end ( 同步所以出現)
 > 
 > setImmediate( ) 普通級別
 
-
-
-
-
-
-
-
-
 # (280)(進階課程) Race Condition
 
-
-
 訪問critical region 要先上鎖 避免其他人訪問
-
-
 
 .Lock 也稱作 mutex mutual exclusion lock 。
 
@@ -466,7 +454,6 @@ Mutex另一個名字是 binary semaphore。
 ### 有時100大多數只得到50
 
 ```js
-
 async function loadBalance() {
   await randomDelay(); //等時間到達 0~0.1s
   return balance;
@@ -500,7 +487,6 @@ async function main() {
   console.log(`兩者都賣光後金額為${balance}`);
 }
 main();
-
 ```
 
 ### 改進如下
@@ -576,4 +562,313 @@ git commit -m "Ch16 section - 280 實際使用
 
 # (282) Promise Based API
 
+> 學習fulfilled  rejected 如何做。
+
+## API
+
+application programming interface
+
+- 鬧鐘 練習版本
+  
+  ```js
+  function alarm(name, delay) {
+    if (isNaN(Number(delay))) {
+      throw new TypeError("型態錯誤");
+    }
+    setTimeout(() => {
+      output.innerHTML = name + "起床";
+    }, delay);
+  }
+  
+  button.addEventListener("click", (e) => {
+    try {
+      alarm(name.value, delay);
+    } catch (error) {
+      // 代表delay型態錯誤
+      console.log(e.target);
+      let existP = document.querySelector("p");
+      if (existP) {
+        existP.innerText += "?";
+      } else {
+        let p = document.createElement("p");
+        p.innerText = "不可以丟NaN過來";
+        e.target.parentElement.insertBefore(p, e.target);
+        delay.append("錯誤");
+      }
+    }
+  });
+  ```
+
+## 完事的版本
+
+```js
+const name = document.querySelector("#name");
+const delay = document.querySelector("#delay");
+const button = document.querySelector("#set-alarm");
+const output = document.querySelector("#output");
+
+// return Promise object
+// pending 的 delay秒=> fulfilled
+// if delay < 0 則 => rejected
+function alarm(name, delay) {
+  // return Promise object
+
+  // pending 的 delay秒=> fulfilled
+
+  // if delay < 0 則 => rejected
+  return new Promise((resolve, reject) => {
+    if (isNaN(Number(delay))) {
+      reject(new TypeError("型態錯誤"));
+    }
+    if (delay < 0) {
+      reject("delay不能小於0");
+    } else {
+      setTimeout(() => {
+        resolve(name + "起床");
+      }, delay);
+    }
+  });
+}
+
+button.addEventListener("click", (e) => {
+  try {
+    let promiseObject = alarm(name.value, delay.value);
+    promiseObject
+      .then((resolve) => {
+        output.innerHTML = resolve;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (error) {
+    // 代表delay型態錯誤
+    console.log(e.target);
+    let existP = document.querySelector("p");
+    if (existP) {
+      existP.innerText += "?";
+    } else {
+      let p = document.createElement("p");
+      p.innerText = "不可以丟NaN過來";
+      e.target.parentElement.insertBefore(p, e.target);
+      delay.append("錯誤");
+    }
+  }
+});
+```
+
+![](../../../Images/2023-12-28-16-02-50-image.png)
+
+### Promise使用asyn await
+
+```js
+button.addEventListener("click", async () => {
+  //只要不再是pending 程式就會繼續往下是
+  // 所以reject resolve 都會讓awiat 不繼續等待
+  try {
+    let result = await alarm(name.value, delay.value);
+    output.innerText = result;
+  } catch (errorMessage) {
+    console.log(errorMessage);
+  }
+});
+```
+
+- 沒做e.target.parentElement.insertBefore之類
+
 # (283) 連接到外部API
+
+## jokeapi
+
+```js
+let output = document.querySelector("#output");
+async function hello() {
+  try {
+    let result = await fetch(
+      "https://v2.jokeapi.dev/joke/Programming?type=single"
+    );
+    let data = await result.json();
+    output.innerText += data.joke + "\n";
+    console.log(data.joke);
+  } catch (err) {
+    console.log(err);
+  }
+}
+let btn = document.querySelector("#new-joke");
+btn.addEventListener("click", (e) => {
+  hello();
+});
+```
+
+## OpenWeather
+
+```js
+//            openWeather
+
+let key = "26cf0689f2e001e6feedad0188f8a6d6";
+let lat;
+let lon;
+async function weather(city) {
+  try {
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`;
+    let response = await fetch(url);
+    let data = await response.json();
+    console.log(data);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+weather("Taipei");
+```
+
+# 最終小考
+
+> 
+
+## 問題 4：Promise.all(arr)所return的promise，會在什麼情況下，會變成fulfilled？
+
+- 如果所有在arr當中的promises都變成fulfilled，則Promise.all() 所return的promise狀態會變成fulfilled
+
+- 如果所有在arr當中的某一個promises變成fulfilled，則Promise.all() 所return的promise狀態會變成fulfilled  ==>any
+
+- 如果所有在arr當中所有promises都變成rejected，則Promise.all() 所return的promise狀態會變成fulfilled  ==> 
+
+- 如果所有在arr當中的某一個promises都變成rejected，則Promise.all() 所return的promise狀態會變成fulfilled
+
+---
+
+.all 所有promise通過 才會 fulfilled，否則有人不通過就 .catch err
+
+.any 有任何一個通過就fulfilled ，通通失敗才會 err
+
+---
+
+## 問題 6：請判斷以下程式碼的運行結果：
+
+1. async function return100() {
+
+2. return 100;
+
+3. }
+
+4. console.log(typeof return100());
+
+---
+
+- object
+
+- number
+
+- undefined
+
+- null
+
+object 因為 async return 會被當作.then的參數 ，async固定回傳promise物件
+
+---
+
+## 問題 7：請判斷以下程式碼的運行結果：
+
+1. async function return100() {
+
+2. return 100;
+
+3. }
+
+4. console.log(return100());
+
+---
+
+- undefined
+
+- 1. [AsyncFunction: return100]
+
+- 100
+
+- 1. Promise { 100 }
+
+因為已經呼叫了 所以查看不會是上面那一個
+
+---
+
+## 問題 9：請判斷以下程式碼的運行結果：
+
+1. function give100(bool) {
+
+2. return new Promise((resolve, reject) => {
+
+3. bool ? resolve(100) : reject("false...");
+
+4. });
+
+5. }
+
+6. async function getValue(value) {
+
+7. let result = await give100(value);
+
+8. console.log(result);
+
+9. }
+
+10. getValue(true);
+
+---
+
+- 100
+
+- 1. Promise { <pending> }
+
+- 1. Promise { <fulfilled> }
+
+- undefined
+
+---
+
+## 問題 10：請判斷以下程式碼的運行結果：
+
+1. function give100(bool) {
+
+2. return new Promise((resolve, reject) => {
+
+3. setTimeout(() => {
+
+4. bool ? resolve(100) : reject("false...");
+
+5. }, 2000);
+
+6. });
+
+7. }
+
+8. console.log(give100(true));
+
+---
+
+- 1. Promise { <pending> }  >>>>>>>>因為8 會直接印出不會等她結束!
+
+- 1. Promise { <fulfilled> }
+
+- 1. Promise { <rejected> }
+
+- 100
+
+---
+
+## 
+
+## 問題 11：關於Queue與Stack的描述，以下何者錯誤？
+
+- Queue採用先進先出(First In First Out, FIFO)原則
+
+- Stack採用後進先出(Last In First Out, LIFO)原則
+
+- Queue是一種列隊式結構
+
+- Stack也是一種列隊式結構
+
+---
+
+Stack是堆狀的結構 !!
+
+---
