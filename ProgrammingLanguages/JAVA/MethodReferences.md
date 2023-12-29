@@ -4,8 +4,6 @@
 
 `::` 方法引用操作符主要是為了簡化 Lambda 表達式的書寫而存在的。它提供了一種更簡潔、更清晰地表示使用現有方法的方式，並將其轉換為函數式介面的實例。這使得程式碼更易讀、更簡潔，特別是當你只需要使用現有方法而不需要在 Lambda 表達式中進行額外的操作時。
 
-
-
 ### 靜態方法引用
 
 假設有一個簡單的類 `MathUtils`，其中包含一個靜態方法 `double square(double x)`：
@@ -53,9 +51,9 @@ public class Main {
     public static void main(String[] args) {
         MessagePrinter messagePrinterInstance = new MessagePrinter();
 
-        Consumer<String> printMessageFunc = messagePrinterInstance::printMessage;
+        Consumer<String> printMessageag-0-1hiq0iainag-0-1hiag-1-1hiq0iainq0iainag-0-1hiag-1-1hiq0iainq0iainFunc = mag-1-1hiq0iainessagePrinterInstance::printMessage;
         printMessageFunc.accept("Hello, world!");
-    }
+    }ag-0-1hiq0iainag-1-1hiq0iain
 }
 ```
 

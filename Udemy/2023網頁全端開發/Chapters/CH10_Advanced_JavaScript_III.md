@@ -181,6 +181,10 @@ hello
   167 66 { name: 'Oni', age: 25, addr: 'Tw' }
   ```
 
+### 版本四 GPT 搭配map🔥🔥🔥🔥
+
+![](../../../Images/2023-12-30-00-58-47-image.png)
+
 # (221) Switch Statement
 
 ```js
