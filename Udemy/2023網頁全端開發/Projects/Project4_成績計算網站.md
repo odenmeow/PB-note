@@ -183,7 +183,6 @@ main {
   }
   ```
 
-```
 ### 回憶selector同時兩個條件
 
 - 選擇器滿足兩個條件的話
@@ -192,7 +191,7 @@ main {
 h2#result-gpa {
           font-size: 3.5rem;
           font-weight: bold;
-        }
+}
 ```
 
   不需要空格，直接連著寫就行 !
@@ -538,6 +537,7 @@ h2#result-gpa {
   
   ```js
     newForm.style.animation = "scaleUp 0.5s ease forwards";
+  ```
   ```
 
 - css要做 keyframes  💡記得按下watch sass💡
