@@ -42,9 +42,7 @@
     
     - 日期 : 2024/1/2  18:20:00
     
-    -  
-
-
+    - 
 
 ---
 
@@ -211,3 +209,51 @@ e04 !
 ![](../../Images/2024-01-01-19-34-08-image.png)
 
 ## 還有一小bug 新增的商品 無法刪除
+
+# section 4
+
+- 新增功能  禁止現有商品名稱重複 
+
+## splice bug 如果undefined🔥🔥🔥🔥
+
+splice(i,1) 如果i undefined則會刪除
+
+### 會被視為0 直接刪除索引0 明明未定義!
+
+### 直接操作物件
+
+```js
+if (this.pickedNumber == "") {
+      let i;
+      PickedProduct.pickedProducts.forEach((e, index) => {
+        if (e.pickedName == this.pickedName) {
+          i = index;
+        }
+      });
+      // 下面會直接刪除 第i個物件
+      console.log("i=", i);
+      // 下面如果 i undefined的時候則 直接刪除0
+      PickedProduct.pickedProducts.splice(i, 1);
+      console.log("要刪除了", this.pickedName, this.pickedNumber);
+    }
+```
+
+## arr.map( ) 記得回傳否則無效💡💡💡
+
+```js
+  static historyRetrieve() {
+    const data = JSON.parse(localStorage.getItem("yoichiProducts"));
+
+    if (data == null || data.includes(null)) {
+      console.log("沒歷史紀錄或短缺");
+
+      console.log("localData=", data);
+      return "沒歷史紀錄或短缺";
+    }
+    Product.products = [];
+    data.map(({ name, price }) => {
+      new Product(name, Number(price));
+      // 這邊直接改變了所以才不用回傳! 💡💡💡💡💡💡💡
+    });
+  }
+```

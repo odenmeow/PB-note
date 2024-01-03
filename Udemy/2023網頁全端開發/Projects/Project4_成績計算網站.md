@@ -538,6 +538,9 @@ h2#result-gpa {
   ```js
     newForm.style.animation = "scaleUp 0.5s ease forwards";
   ```
+  
+  ```
+  
   ```
 
 - css要做 keyframes  💡記得按下watch sass💡
@@ -663,7 +666,7 @@ h2#result-gpa {
 
 - 直接  .aaa 不存在的屬性 就會增加上去
   
-  ```js
+  ```jsag-0-1hj6ubm0oag-1-1hj6ubm0o
   // 取得objectArray之後 要把成績換成數字才能排序。
     for (let i = 0; i < objectArray.length; i++) {
       objectArray[i].class_grade_number = convertor(objectArray[i].class_grade);
