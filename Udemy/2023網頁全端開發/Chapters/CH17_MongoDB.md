@@ -308,7 +308,7 @@ db.students.updateOne({name:"Umi"},
 
 {
 
-    set:{age:17},
+    $set:{age:17},
 
     currentDate:{lastModified:true}
 

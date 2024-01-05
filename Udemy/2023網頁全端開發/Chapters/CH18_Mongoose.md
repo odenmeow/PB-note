@@ -318,6 +318,8 @@ app.get("/", async (req, res) => {
 
 #### $set 可以避免全體更新，而是更新關注的部分
 
+#### 其實不寫，mongoose也會自己追加的樣子!
+
 ```js
 Student.updateOne({ name: "UmiOOO" }, 
 {$set:{ name: "UmiOAO" }})
@@ -487,10 +489,763 @@ Student.findOneAndUpdate(
 
 # (299) 刪除資料
 
+## 先提一下如果要ODM找尋特定條件
+
+如下
+
+```js
+Student.find({ "scholarship.merit": { $gte: 3500 } }).exec()
+```
+
+## 如果要刪除
+
+### deleteOne
+
+```js
+Student.deleteOne({ name: "UmiOAO" })
+  .exec()
+  .then((msg) => {
+    console.log(msg);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+
+
+正在聽port 3000
+mongodb連接成功
+{ acknowledged: true, deletedCount: 1 }
+```
+
+### deleteMany
+
+```js
+Student.deleteMany({ name: "UmiOOO" })
+正在聽port 3000
+mongodb連接成功
+{ acknowledged: true, deletedCount: 2 }
+```
+
 # (300) Schema Validators
+
+放到collection之前設定驗證
+
+## 大致上寫法
+
+```json
+name: {
+    type:String,
+    required:true
+}
+```
+
+## 每種data type 不一定通用validator
+
+## default不是validator
+
+## 通用的validator有以下:
+
+### required + function
+
+> **除了required : true 還能放錯誤訊息 跟 function !** 
+
+但小心 this 在update開啟runValidator時會找不到
+
+僅new Student 中 this才有效
+
+因此不使用runValidator比較好，用其他方式。
+
+```js
+const studentSchema = new Schema({
+  // name: String,
+  // name:{type:String}  也可以
+  // age: Number,
+  name: { type: String, required: true },
+  age: { type: Number, min: [0, "年齡不能小於0"] },
+  // major: String,
+  major: { type: String, required: [true, "需要一個主修"] },
+  scholarship: {
+    merit: Number,
+    other: Number,
+  },
+});
+const Student = mongoose.model("Student", studentSchema);
+let newStudent = new Student({
+  name: "Ani",
+  age: 25,
+  scholarship: {
+    merit: 10,
+    other: 10,
+  },
+});
+// newStudent.save();
+```
+
+- ### 如果沒有使用.save() 則不報錯誤，真的做才會報。
+
+#### function放在new Schema🔥🔥🔥🔥
+
+```js
+major: { type: String, required: [true, "需要一個主修"] },
+
+變成
+
+
+const studentSchema = new Schema({
+  // name: String,
+  // name:{type:String}  也可以
+  // age: Number,
+  name: { type: String, required: true },
+  age: { type: Number, min: [0, "年齡不能小於0"] },
+  // major: String,
+  major: {
+    type: String,
+    required: function () {
+      return this.scholarship.merit >= 3000;🔥🔥🔥
+    },
+  },
+  scholarship: {
+    merit: Number,
+    other: Number,
+  },
+});
+...
+let newStudent = new Student({
+  name: "Ani",
+  age: 25,
+  scholarship: {
+    merit: 3000,
+    other: 10,
+  },
+});
+newStudent
+  .save()
+```
+
+- 上面會出錯，因為條件設定>=3000會是主修必填入🔥🔥🔥
+
+### default: update也會套用!!!!!
+
+如果update沒有寫完整，則也會被默認更改值
+
+```js
+   merit: { type: Number, default: 0 },
+    other: { type: Number, default: 0 },
+```
+
+![](../../../Images/2024-01-05-14-21-31-image.png)
+
+## 跟String有關的驗證器
+
+### 重點1: update別依賴schema💡💡💡💡💡
+
+1. 關於使用 updateMany的時候 因為我更新字段不是$set 所以是全改
+
+2. 由於Schema 中 使用this 只支持 new 的save ，update 中validator會出錯。
+
+```js
+const studentSchema = new Schema({
+  // name: String,
+  // name:{type:String}  也可以
+  // age: Number,
+  name: { type: String, required: true },
+  age: { type: Number, min: [0, "年齡不能小於0"] },
+  // major: String,
+  major: {
+    type: String,
+    required: function () {
+      console.log(this);
+      console.log("印出來了在上面");
+      console.log("==========");
+      console.log(this.scholarship);
+      console.log("==========");
+      return this.scholarship.merit >= 3000;
+    },
+    enum: ["Chemistry", "Computer Science", "Mathematics", "Civil Engineering"],
+  },
+  scholarship: {
+    // merit: Number,
+    // other: Number,
+    merit: { type: Number, default: 0 },
+    other: { type: Number, default: 0 },
+  },
+});
+
+
+
+
+
+Student.updateMany(
+  { major: "ComputerScience" },
+  { major: "Computer Science", scholarship: { merit: 3200 } },
+  { runValidators: true, new: true }
+)
+  .exec()
+  .then((msg) => {
+    console.log("成功改變");
+    console.log(msg);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+```
+
+- 由於沒使用$set 所以被默認 全改 ，但那不是重點，實際上mongoose也會幫我們追加，重點是因為schema使用了this，update找不到導致error發生 !   實際上印出來就知道哪邊有問題了，真的只有new Student的時候驗證才可以找到，透過update 開驗證器，如果裡面有this真的找不到!!!!💡💡💡💡
+
+### 重點2:update對象被設為預設?!💡
+
+```js
+Student.updateMany(
+  { name: "UmiChan" },
+  { $set: { major: "Science", scholarship: 
+                { merit: 3200 } } 
+},
+```
+
+明明設定merit 而已，並且使用$set 但是怎麼會另一個被變成預設=0  ?
+這樣算是有跑validator??? 🙄🙄
+
+> 寫不寫$set都一樣，mongoose會自己追加，至於validator歸validator， default還是會幫我們做。💡
+> 
+> 除非使用"scholarship.merit" 更精細的操作! 💡
+
+#### 寫法一: 不會更動other
+
+採用物件寫法，不寫other也不會被自動套用預設值
+
+```js
+Student.updateMany(
+  { name: "UmiChan" },
+  { major: "Science", "scholarship.merit": 3000 },
+  { runValidators: false, new: true }
+)
+```
+
+#### 寫法二: other被設為預設!
+
+這邊明明沒設定 other ，只因為我用JSON寫法且忽略other 就自動被預設
+
+```js
+Student.updateMany(
+  { name: "UmiChan" },
+  { major: "Science", scholarship: { merit: 3200 }  },
+  { runValidators: false, new: true }
+)
+```
+
+### enum驗證器:
+
+```js
+enum: ["Chemistry", "Computer Science", "Mathematics", "Civil Engineering"],
+
+-------------------------------無法建立成功，因為不存在enum
+
+let newStudent = new Student({
+  name: "Jared",
+  age: 40,
+  major: "Nuclear Engineering",
+  scholarship: {
+    merit: 3000,
+    other: 100,
+  },
+});
+newStudent
+  .save()
+  .then((data) => {
+    console.log("成功保存", data);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+```
+
+### maxlength驗證器:
+
+```js
+const studentSchema = new Schema({
+  // name: String,
+  // name:{type:String}  也可以
+  // age: Number,
+  name: { type: String, required: true, maxlength: 20 },
+  age: { type: Number, min: [0, "年齡不能小於0"] },
+
+
+-----------
+let newStudent = new Student({
+  name: "Jaredaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  age: 40,
+
+---------
+errors: {
+    name: ValidatorError: Path `name` (`Jaredaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`) is longer than the maximum allowed length (20).
+```
+
+## 跟Number有關的驗證器
+
+最一開始圖片有寫:
+
+### min
+
+前面有用過囉
+
+```js
+age: { type: Number, min: [0, "年齡不能小於0"] },
+```
+
+### max
+
+### enum (可以列舉只能填入什麼數字 )
+
+## 結論:
+
+Ch18 section - 300 Schema Validators 真的就是驗證，主要介紹兩
+個，分別是String、 Number，專注在String上，有enum、maxlength、可設定，順便提醒
+，mongoose好像會自動追加，主要差別在於update若使用runValidators:true 則 會跑驗
+證部分 ， 小提示:default不算驗證屬性，驗證部分如果使用required: function(){this... 的話要小心，因為update那邊this會找不到merit 因為scholarship在找的時候已經是undefined，merit時直接報錯誤、最後，使用更新的時候要小心 'scholarship.merit':500 比 {scholarship:{merit:500}}安全，因為後面如果有預設other:0，會變成0，前面則 精準只改merit，如果沒有預設，也不會放過，會直接只剩下merit!!!!!!!!
 
 # (301) Static method, instance method
 
+## instance method
+
+Mongoose Model 每筆資料稱作doucment，又可稱instance。
+
+如果希望某個model 中所有documents都能使用某method 則可以將此method定義在Schema上。 稱作Instance method。
+
+### 有兩種語法 、作法可以達成:
+
+效果一樣
+
+#### 第一種 : 物件建立時
+
+const schema=new Schema(setting,{methods:{})
+
+```js
+const studentSchema=new Schema(屬性require之類, 方法);
+```
+
+```js
+const studentSchema = new Schema(
+  {
+    // name: String,
+    // name:{type:String}  也可以
+    // age: Number,
+    name: { type: String, required: true, maxlength: 20 },
+    age: { type: Number, min: [0, "年齡不能小於0"] },
+    // major: String,
+    major: {
+      type: String,
+      required: function () {
+        // console.log(this);
+        // console.log("印出來了在上面");
+        // console.log("==========");
+        // console.log(this.scholarship);
+        // console.log("==========");
+        return this.scholarship.merit >= 3000;
+      },
+      enum: [
+        "Chemistry",
+        "Computer Science",
+        "Mathematics",
+        "Civil Engineering",
+        "undecided",
+      ],
+    },
+    scholarship: {
+      // merit: Number,
+      // other: Number,
+      merit: { type: Number, default: 0 },
+      other: { type: Number, default: 0 },
+    },
+  },
+  {
+    methods: {
+      printTotalScholarship() {
+        return this.scholarship.merit + this.scholarship.other;
+      },
+    },
+  }
+);
+const Student = mongoose.model("Student", studentSchema);
+Student.find({})
+  .exec()
+  .then((arr) => {
+    arr.forEach((data) => {
+      console.log(data.printTotalScholarship());
+    });
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+```
+
+#### 第二種: 屬性去增加
+
+```js
+const studentSchema = new Schema({
+  name: { type: String, required: true, maxlength: 20 },
+  age: { type: Number, min: [0, "年齡不能小於0"] },
+  major: {
+    type: String,
+    required: function () {
+      return this.scholarship.merit >= 3000;
+    },
+    enum: [
+      "Chemistry",
+      "Computer Science",
+      "Mathematics",
+      "Civil Engineering",
+      "undecided",
+    ],
+  },
+  scholarship: {
+    merit: { type: Number, default: 0 },
+    other: { type: Number, default: 0 },
+  },
+});
+studentSchema.methods.printTotalScholarship = function () {
+  return this.scholarship.merit + this.scholarship.other;
+};
+```
+
+## Static methods
+
+專屬於 Schema 使用 而不是model內部documents持有。
+
+基本上跟class物件導向一樣，基本核心差不多。
+
+### static 簡單呼叫實驗
+
+```js
+const studentSchema=new Schema(...
+{name:String,age:{type:Number,min:[0,'不小於0']},major:...} 
+,{statics:{
+     findAllMajorStudents(major) {
+        console.log(this);
+      },
+}} 
+)
+
+const Student = mongoose.model("Student", studentSchema);
+
+Student.findAllMajorStudents();
+```
+
+- 呼叫的時候 先使用this觀察，發現this是Model{Student}。
+
+### static 搭配find找資料🔥🔥🔥🔥
+
+#### async所以 出現undefined ，小心使用!🔥
+
+```js
+const studentSchema = new Schema(
+  {
+    name: { type: String, required: true, maxlength: 20 },
+    age: { type: Number, min: [0, "年齡不能小於0"] },
+    major: {
+      type: String,
+      required: function () {
+        return this.scholarship.merit >= 3000;
+      },
+      enum: [
+        "Chemistry",
+        "Computer Science",
+        "Mathematics",
+        "Civil Engineering",
+        "undecided",
+      ],
+    },
+    scholarship: {
+      merit: { type: Number, default: 0 },
+      other: { type: Number, default: 0 },
+    },
+  },
+  {
+    statics: {
+      findAllMajorStudents(major) {
+        this.find({ major: major })
+          .exec()
+          .then((data) => {
+            console.log("執行中");
+            return data;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      },
+    },
+  }
+);
+
+
+console.log(
+    Student.findAllMajorStudents("Computer Science")
+);
+```
+
+- 請注意，這邊會印出undefined 因為async 會先印 不會等撈完資料!
+
+### static 使用dot notation屬性去寫
+
+```js
+const studentSchema = new Schema({
+  name: { type: String, required: true, maxlength: 20 },
+  age: { type: Number, min: [0, "年齡不能小於0"] },
+  major: {
+    type: String,
+    required: function () {
+      return this.scholarship.merit >= 3000;
+    },
+    enum: [
+      "Chemistry",
+      "Computer Science",
+      "Mathematics",
+      "Civil Engineering",
+      "undecided",
+    ],
+  },
+  scholarship: {
+    merit: { type: Number, default: 0 },
+    other: { type: Number, default: 0 },
+  },
+});
+studentSchema.methods.printTotalScholarship = function () {
+  return this.scholarship.merit + this.scholarship.other;
+};
+studentSchema.statics.findAllMajorStudents = function (major) {
+  // console.log(this);
+  this.find({ major: major })
+    .exec()
+    .then((data) => {
+      console.log("執行中");
+      console.log(data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+};
+const Student = mongoose.model("Student", studentSchema);
+Student.findAllMajorStudents("Computer Science");
+```
+
+- #### 注意是statics 跟 methods 別拼錯~
+
+#### 變種 跟前一個一樣，但少s 沒必要用這個
+
+第一個參數=名稱 第二個放函數
+
+```js
+studentSchema.static("findAllMajorStudents", function (major) {
+  // console.log(this);
+  this.find({ major: major })
+    .exec()
+    .then((data) => {
+      console.log("執行中");
+      console.log(data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+});
+```
+
+## 心得
+
+git commit -m "Ch18 section - 301 static method , instance method ，兩者都可以寫在new Schema({name:value...},{statics:{function()}})  或 statics換成methods、但拆出來直接studentSchema.statics.findAllMajorStudents=function (major){...}或者 methods.printTotalScholarship也是一樣的玩法，一個instance透過find後可以調用方法、 一個static 靜態直接使用，static fn的this，在後續const Student=mongoos.model('Student',studentSchema) 後Student.findAllMajor.....中，指向Student了 ，筆記說過 Model{Student}! "
+
 # (302) Mongoose Middleware
 
+## middleware寫在放入model之前
+
+const studentSchema=new Schema({}) ;
+
+這邊
+
+studentSchema.pre("save",callbackFunction)
+
+const Student=mongoose.model("Student",studentSchema)
+
+## if (e) throw e  該補強一下囉~
+
+## 使用了fs 在pre 中函數練習
+
+```js
+studentSchema.pre("save", () => {
+  fs.writeFile("record.txt", "A new data will be saved", (e) => {
+    if (e) throw e;
+  });
+});
+
+const Student = mongoose.model("Student", studentSchema);
+Student.findAllMajorStudents("Computer Science");
+
+let newStudent = new Student({
+  name: "Umimi",
+  age: 16,
+  major: "Computer Science",
+  scholarship: {
+    merit: 3333,
+    other: 1111,
+  },
+});
+newStudent
+  .save()
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+```
+
+![](../../../Images/2024-01-05-23-20-05-image.png)
+
+![](../../../Images/2024-01-05-23-20-13-image.png)
+
+### 關於lastModified⭐⭐⭐
+
+```js
+正在聽port 3000
+mongodb連接成功
+執行中
+[
+  {
+    scholarship: { other: 0, merit: 500 },
+    _id: new ObjectId("6596822d40755e95391dfbca"),
+    name: 'Umi',
+    age: 16,
+    major: 'Computer Science',
+    lastModified: 2024-01-04T14:11:14.095Z⭐⭐⭐
+  }
+]
+{
+  name: 'Umimi',
+  age: 16,
+  major: 'Computer Science',
+  scholarship: { merit: 3333, other: 1111 },
+  _id: new ObjectId("65981cd5618f0b4dd5122861"),
+  __v: 0
+}
+```
+
+### 是因為之前
+
+```mongodb
+exampleDB> db.students.updateOne({name:"Umi"},
+        {$set:{age:17},$currentDate:{lastModified:true}})
+```
+
 # (303) Final Code
+
+# 測驗:
+
+
+
+## 問題 2：以下何者不是使用ODM的好處？
+
+- Project更符合MVC模型。Mongoose是model，用來與MongoDB互動獲得或改變資料、View是EJS，Controller則是app.js來擔任。
+
+- 可以讓沒有用過ODM的人感覺你很厲害，從而獲得無謂的自尊心以及虛榮心。
+
+- 資料庫的結構能被追蹤。通常資料庫的結構經過改變之後，很難退回到未改變的結構。使用ODM可以將資料庫的結構寫在程式碼內部，方便追蹤與更改。
+
+- 通常 ORM/ODM 會內建保護機制或是保護型語法，所以使用SQL資料庫時，就不用擔心SQL Injection之類的攻擊。
+
+`b`錯
+
+
+
+---
+
+## 問題 3：在Mongoose中，關於Model and Schema的敘述，以下何者錯誤？
+
+- 每個Schema映射到一個 MongoDB 中的Collection，而Model是包裝包裝Schema的容器。
+
+- Model可以用來定義Collection的document架構，包含默認值、最大長度、最大值、最小值等等。
+
+- Schema所對應到的Collection提供了一個接口，可以用Model來對Collection進行新增、查詢、更新、刪除記錄等功能。
+
+- Model就像是SQL當中的table，而Schema是create table的步驟。
+
+
+
+`b` 有錯 ，這是schema的事情。
+
+---
+
+## 問題 4：在Mongoose中，如果使用document.save()，則return value的data type是？
+
+- Promise object
+
+- Array
+
+- Mongoose document
+
+- Query, a thenable object
+
+
+
+`a`  是正確 
+
+
+
+---
+
+## 問題 5：在Mongoose中，Model.find(filter)的return value的data type是？
+
+- Promise object
+
+- Array
+
+- Query, a thenable object
+
+- Mongoose document
+
+
+
+`c`   ， 要透過exec()才會被變成Promise
+
+---
+
+
+
+## 問題 6：在Mongoose中，Model.updateMany().exec()的return value的data type是？
+
+- Query, a thenable object
+
+- Array
+
+- Promise Object >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+- Mongoose document  
+
+
+
+
+
+----
+
+
+
+## 問題 7：若我們希望某個model中的所有documents都可以使用某個method，則這種method就叫做？
+
+- instance method  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+- static method
+
+- document method
+
+- collection method
+
+-------
+
+
+
+## 問題 8：如果我們想要定義某個專屬於Schema使用的method，則我們可以定義？
+
+- instance method
+
+- static method >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+- document method
+
+- collection method
