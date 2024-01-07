@@ -80,6 +80,8 @@ app.get("/:name", (req, res) => {
 
 ![](../../../Images/2023-12-26-17-24-26-image.png)
 
+- 往下一點點就看得到 <%-的範例
+
 ## 直接看.ejs檔案比較快
 
 ```js
@@ -91,6 +93,8 @@ app.get("/:name", (req, res) => {
 ```
 
 - 如果先給予變數 如同剛剛所用的param傳入render
+
+### <%- 變數>
 
 ```js
 app.get("/:name", (req, res) => {

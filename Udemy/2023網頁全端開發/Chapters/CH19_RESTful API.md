@@ -554,8 +554,6 @@ git commit -m "Ch19 section 309 PUT PATCH、這邊比較雜亂，因為版本關
 
 乖乖使用newObject =new NewData();比較好
 
-
-
 # (311) DELETE 移除資料
 
 ```js
@@ -571,14 +569,7 @@ app.delete("/students/:_id", async (req, res) => {
 app.listen(3000, () => {
   console.log("伺服器聆聽中");
 });
-
 ```
-
-
-
-
-
-
 
 # (312) Restful API Final Code
 
@@ -607,7 +598,6 @@ Cross-origin resource sharing
     <script src="./app.js"></script>
   </body>
 </html>
-
 ```
 
 ### app.js
@@ -623,7 +613,6 @@ async function getData() {
   }
 }
 getData();
-
 ```
 
 ## cors
@@ -654,14 +643,409 @@ app.use(cors());
 | PUT/PATCH | /students/:id      | 修改特定的學生資料       |
 | DELETE    | /students/:id      | 刪除特定學生          |
 
+## 得到學生全體
+
+```js
+<body>
+    <h1>學生首頁</h1>
+    <ul>
+      <% studentData.forEach(student => { %>
+      <li>
+        <%=student.name%>
+      </li>
+      <% }); %>
+    </ul>
+  </body>
+```
+
+![](../../../Images/2024-01-07-11-18-22-image.png)
+
+## 透過ID查出詳細資料
+
+```js
+<body>
+    <h1>學生首頁</h1>
+    <ul>
+      <% studentData.forEach(student => { %>
+      <li>
+        <a href="students/<%=student._id%>"><%=student.name%></a>
+      </li>
+      <% }); %>
+    </ul>
+  </body>
+```
+
+![](../../../Images/2024-01-07-11-18-32-image.png)
+
+![](../../../Images/2024-01-07-11-18-47-image.png)
+
+### bug= for i in Obj🔥🔥🔥
+
+`for...in` 迴圈會讓你遍歷物件的所有可列舉屬性，包括它的原型鏈上的屬性。
+
+<img title="" src="../../../Images/2024-01-07-11-43-41-image.png" alt="" width="473">
+
+#### 使用 Object.keys(student)🔥🔥🔥
+
+一般自己建立的就很簡單直接用這招
+
+```js
+let student = {
+  scholarship: { other: 0, merit: 500 },
+  _id: new ObjectId("6596822d40755e95391dfbca"),
+  name: 'Umi',
+  age: 16,
+  major: 'Computer Science',
+  lastModified: '2024-01-04T14:11:14.095Z'
+};
+let properties = Object.keys(student);
+console.log(properties);
+```
+
+- 上面這樣就ok
+
+- 另一個則是
+  
+  ```js
+  for (let key in student) {
+    if (student.hasOwnProperty(key)) {
+      console.log(key + ": " + student[key]);
+    }
+  }
+  ```
+
+#### 不可枚舉的情況下!!!🔥🔥🔥🔥
+
+對，看起來在該程式碼中，無法正確地印出屬性名稱。這種情況通常發生在對象的屬性是不可枚舉的情況下。這種情況下，你可以使用 `Object.getOwnPropertyNames()` 方法來獲取屬性名稱，即使它們不可枚舉。
+
+Mongoose可能為了防止誤用 有特別設定，然後放在 `._doc`
+
+```js
+let obj = {};
+Object.defineProperties(obj, {
+  property1: {
+    value: 'value1',
+    enumerable: true // 可枚舉
+  },
+  property2: {
+    value: 'value2',
+    enumerable: false // 不可枚舉
+  }
+});
+```
+
+```js
+let properties = Object.getOwnPropertyNames(studentData[0]._doc);
+
+[ 'scholarship', '_id', 'name', 'age', 'major', 'lastModified' ]
+```
+
+##### ⭐⭐⭐mongoose特別保護 ，因此也可以先轉成物件直接弄
+
+在 Mongoose 中，`.toObject()` 和 `.toJSON()` 方法將返回模型的 JavaScript 物件版本，但是 Mongoose 將其內部數據儲存在 `._doc` 中。這樣做是為了防止直接修改 Mongoose 模型的內部數據，因為直接修改模型可能會導致意外的行為或數據不一致。
+
+在 Mongoose 中，模型的內部數據是保護的，但你可以使用 `.toObject()` 或 `.toJSON()` 方法將其轉換為普通的 JavaScript 物件，並對其進行操作。這兩種方法都會返回一個去除了 Mongoose 內部屬性的純 JavaScript 物件版本，這樣你就可以安全地對其進行更改。
+
+```js
+const student = new Student({ name: 'John', age: 25 });
+
+// Mongoose 內部屬性儲存在 ._doc 中
+console.log(student._doc);
+
+// 將 Mongoose 模型轉換為普通 JavaScript 物件
+const plainObject = student.toObject(); // 或者使用 toJSON()
+
+// 此時內部數據不再儲存在 ._doc 中
+console.log(plainObject);
+
+// 對普通 JavaScript 物件進行更改
+plainObject.age = 30;
+
+// 沒有影響到原始的 Mongoose 模型
+console.log(student.age); // 25
+console.log(plainObject.age); // 30
+```
+
+##### 小節論:
+
+```js
+/** Mongoose避免我們直接改原始數據 因此用 ._doc保護 */
+   let properties = Object.getOwnPropertyNames(studentData[0]._doc);
+    console.log(properties);
+    properties.forEach((e) => {
+      console.log(e);
+    });/ });
+/** 可以將物件透過.toJSON 抽離，那就不需要透過上面那招了 */
+    let obj = studentData[0].toJSON();
+    for (let i in obj) {
+      console.log(i);
+    }
+```
+
+## id找學生 - 2  : 表格版本
+
+```js
+app.get("/students/:_id", async (req, res) => {
+  try {
+    let { _id } = req.params;
+    let studentData = await Student.find({ _id }).exec();
+
+    if (studentData.length > 0)
+      return res.render("students-page", { studentData });
+    else {
+      return res.render("student-not-found", { _id });
+    }
+  } catch (e) {
+    console.log(e);
+    console.log("資料型態為", typeof e);
+    return (
+      res
+        .status(400)
+        // .send("尋找資料時發生錯誤" + "\n" + e.message + "\n" + e.reason);
+        .render("error", { e })
+    );
+  }
+});
+```
+
+```js
+<style>
+      tr,
+      td,
+      table {
+        border-collapse: collapse;
+        border: 2px black solid;
+        padding: 1rem;
+      }
+      a {
+        position: absolute;
+        left: 50%;
+        bottom: 0%;
+      }
 
 
+    </style>
+<table>
+      <tbody>
+        <tr>
+          <td>編號</td>
+          <td><%=studentData[0]._id%></td>
+        </tr>
+        <tr>
+          <td>名稱</td>
+          <td><%=studentData[0].name%></td>
+        </tr>
+        <tr>
+          <td>年齡</td>
+          <td><%=studentData[0].age%></td>
+        </tr>
+        <tr>
+          <td>主修</td>
+          <td><%=studentData[0].major%></td>
+        </tr>
+        <tr>
+          <td>merit</td>
+          <td><%=studentData[0].scholarship.merit%></td>
+        </tr>
+        <tr>
+          <td>other</td>
+          <td><%=studentData[0].scholarship.other%></td>
+        </tr>
+      </tbody>
+    </table>
+    <a href="/students">回首頁</a>
+```
 
+### 回憶 定位差別 : absolute vs fixed
 
+1. **`position: absolute`**:
+   
+   - 元素的位置相對於其最近的已定位（父元素或祖先元素）的祖先元素（非 static 定位的元素）。
+   - 如果沒有已定位的祖先元素，則相對於瀏覽器窗口進行定位。
+   - 元素的位置會從文檔流中移除，不會對其他元素造成影響。
+   - 通常會使用 `top`, `bottom`, `left`, `right` 屬性來定位。
 
+2. **`position: fixed`**:
+   
+   - 元素的位置相對於瀏覽器窗口本身進行定位，即使網頁滾動，該元素也會固定在視口的某個位置。
+   - 不會因為頁面的滾動而改變其位置。
+   - 通常也會使用 `top`, `bottom`, `left`, `right` 屬性來定位。
 
-
+簡而言之，`position: absolute` 會相對於其最近的已定位的祖先元素定位，而 `position: fixed` 則是相對於瀏覽器窗口進行定位，並且在頁面滾動時保持固定位置。
 
 # (315) 透過網頁新增學生資料
 
+## 必須建立在:id的Router之前
+
+```js
+// 建立for 網頁new student 必須在:id 的router之前
+app.get("/students/new", async (req, res) => {
+    return res.render("student-new");
+});
+```
+
+## 使用表格做表單
+
+```html
+<form action="/students/new" method="post">
+    <table>
+    <tr>
+        <td><label for="student-name">姓名</label></td>
+        <td><input type="text" id="student-name" nage="name" /></td>
+    </tr>
+    <tr>
+        <td><label for="student-age">年齡</label></td>
+        <td><input type="text" id="student-age" name="age" /></td>
+    </tr>
+    <tr>
+        <td><label for="student-major">主修</label></td>
+        <td><input type="text" id="student-major" name="major" /></td>
+    </tr>
+    <tr>
+        <td><label for="student-merit">merit</label></td>
+        <td><input type="text" id="student-merit" name="merit" /></td>
+    </tr>
+    <tr>
+        <td><label for="student-other">other</label></td>
+        <td><input type="text" id="student-other" name="other" /></td>
+    </tr>
+    </table>
+    <button type="input">送出表單</button>
+</form>
+```
+
+## 提示resolve await
+
+對的，`await` 與 `then` 的目的都是獲取 `resolve` 的值。使用 `await` 將會直接返回 `resolve` 的值，而在 `then` 中的參數就是這個值，所以兩者得到的結果是相同的。
+
+## relative 跟 fixed h1寬度議題
+
+- 為什麼使用fixed 則 h1 寬度就以內容為主
+
+- `position: fixed;` 會將元素固定在視窗中的位置，忽略其他內容的佈局。這意味著該元素不再參與正常的文檔流，而是相對於視窗本身進行定位。
+  
+  > 元素會因脫離正常文檔流，因此其寬度將🔥基於其內容自動調整。🔥
+
+## 讓 li 圓點消失:
+
+```css
+li {
+        /* text-decoration: none; */
+        /* text-decoration-style: none; */
+        list-style-type: none;
+      }
+```
+
 # (316) 透過網頁更新學生資料
+
+`/students/:_id/edit` 這個router會先解析id再去 input value設定覆蓋。
+
+```js
+app.get("/students/:_id/edit", async (req, res) => {
+  try {
+    //這次玩findOne 就不會arr[0]
+    let { _id } = req.params;
+    let data = await Student.findOne({ _id }).exec();
+    if (data != null) {
+      return res.render("student-edit", { data });
+    } else {
+      return res.render("student-not-found", { _id });
+    }
+  } catch (e) {
+    return res.render("error", { e });
+  }
+});
+```
+
+## 重點在於form本身只有POST GET 所以
+
+### 安裝method-override💡
+
+```npmignore
+npm install method-override
+```
+
+```js
+const methodOverride = require('method-override');
+app.use(methodOverride("_method"));
+```
+
+```html
+<body>
+    <h1>修改資料</h1>
+    <!-- 必須使用POST 這樣才會幫忙放到BODY ! -->
+    <form action="/students/<%=data._id%>?_method=PATCH" method="POST">
+      <!-- <input type="hidden" name="_method" value="PATCH" /> -->💡💡💡
+      <table>
+        <tr>
+```
+
+💡 偷偷送出一個`_method` 的參數給express 然後解析路徑💡
+
+- 現在好像改成不是用hidden那邊的作法 而是上面那
+
+## input.value 採用讀取到的data!
+
+```js
+<tr>
+   <td><label for="student-name">姓名</label></td>
+   <td>
+     <input
+       type="text"
+       id="student-name"
+       name="name"
+       value="<%=data.name%>"
+     />
+   </td>
+</tr>
+```
+
+# 最終小考
+
+
+
+## 問題 1：符合REST的網路服務，允許使用者端向「？」發出存取和操作網路資源的請求，而與預先定義好的無狀態操作集一致化。
+
+- 聯合國總部辦公室
+
+- 柯南動畫中的神秘組織
+
+- 統一資源標識符（簡稱為URI） >>>>>>>>>
+
+- 光明會？
+
+## 問題 2：對一個儲存學生資料的RESTful API來說，如果要獲得所有學生的資料，定義的route會是？
+
+- GET /students  >>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+- POST /students
+
+- GET /students/:id
+
+- PUT  /students/:id
+
+
+
+## 問題 3：對一個儲存學生資料的RESTful API來說，如果更新特定學生的資料，定義的route會是？
+
+- PUT/PATCH /students/:id >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+- GET /students
+
+- GET /students/:id
+
+- DELETE /students/:id
+
+
+
+
+
+## 問題 4：對一個儲存學生資料的RESTful API來說，如果要回傳一個可以修改特定學生資料的表格，定義的route會是？
+
+- POST /students
+
+- POST /students/:id
+
+- GET /students/:id/edit >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+- POST /students/:id/edit
