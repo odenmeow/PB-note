@@ -1002,8 +1002,6 @@ app.use(methodOverride("_method"));
 
 # 最終小考
 
-
-
 ## 問題 1：符合REST的網路服務，允許使用者端向「？」發出存取和操作網路資源的請求，而與預先定義好的無狀態操作集一致化。
 
 - 聯合國總部辦公室
@@ -1024,8 +1022,6 @@ app.use(methodOverride("_method"));
 
 - PUT  /students/:id
 
-
-
 ## 問題 3：對一個儲存學生資料的RESTful API來說，如果更新特定學生的資料，定義的route會是？
 
 - PUT/PATCH /students/:id >>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -1035,10 +1031,6 @@ app.use(methodOverride("_method"));
 - GET /students/:id
 
 - DELETE /students/:id
-
-
-
-
 
 ## 問題 4：對一個儲存學生資料的RESTful API來說，如果要回傳一個可以修改特定學生資料的表格，定義的route會是？
 
