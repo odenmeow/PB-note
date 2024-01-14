@@ -435,7 +435,6 @@ router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
   return res.redirect("/profile");
 });
 module.exports = router;
-
 ```
 
 ## console
@@ -461,15 +460,227 @@ serialize user
 Redirect To profile
 反序列化使用者(回歸物件)，透過之前序列化的資料，得到_id
 已進入 >> /profile
-
-
 ```
 
-
-
-
-
 # (343) 註冊本地使用者
+
+## 該做的事:
+
+auth-routes增加 `router.get("/signup", (req, res)` 
+
+然後分發渲染頁面，傳入 `{ user : req.user }` 
+
+然後安裝 `npm i connect-flash`
+
+`app.js` 那邊要 `app.use(flash())` 
+
+而且還要使用自製 middleware  把想寫入 flash 放到res.locals下
+
+也要記得next() 
+
+回到 `auth-routes.js` 
+
+這邊 router.post ("/signup") 自製防堵牆壁，禁止使用者註冊時
+
+密碼少於8碼也能偷渡成功，透過 `req.flash("","")` 
+
+添加要求，將用戶導回 自己伺服器內部的另一個 route 
+
+然後傳承前面的req，使用render，去渲染畫面時，會自動帶入該屬性。
+
+另外 user name長度也要記得防堵 !
+
+回到 `signup.ejs`  之前，我們拿掉了message.ejs引用
+
+這次要把 引用放回去，因為透過redirect，把資料添加在req送過去後，已經可以render上去了，error這個參數將會被附上。
+
+另外，要注意 `signup.ejs` 下面 密碼那邊記得長度設定6 
+
+才能顯示出 `server` 阻擋 長度不足的密碼功能有沒有實現 !
+
+後續則引用`User` 模型 跟 `bcrypt`加密
+
+找看看有無註冊過的信箱
+
+如果找到，就會被發錯誤訊息並且導向 註冊畫面 (從而發出錯誤訊息)
+
+如果沒有，才可以註冊，然後成功的畫面也要導向 ( 成功訊息 )
+
+另外 訊息 要安裝回去index.ejs 透過include 安裝回去!
+
+## signup.ejs
+
+首先要取消 `<%- include ("partials/message") %>` 
+
+避免引用報錯
+
+---
+
+等到後續
+
+記得要改密碼最短=6 另一端auth那邊則設定最短8
+
+```ejs
+        <div class="form-group">
+          <label for="exampleInputPassword1">密碼：</label>
+          <input
+            type="password"
+            class="form-control"
+            id="exampleInputPassword1"
+            minlength="6"
+            maxlength="1024"
+            name="password"
+            required
+          />
+        </div>
+```
+
+<img src="../../../Images/2024-01-14-16-34-28-image.png" title="" alt="" width="349">
+
+## auth-routes.js
+
+使用者的頁面渲染
+
+註冊頁面的錯誤 則返回
+
+記得密碼長度要額外攔截 避免postman漏洞
+
+姓名長度也是 User有設定的都要check !
+
+---
+
+後續則引用User 模型 跟 bcrypt加密
+
+然後找出註冊過後的信箱
+
+如果找到，就會被發錯誤訊息並且導向
+
+如果沒有，才可以註冊，然後成功的畫面也要導向
+
+另外 訊息 要安裝回去index.ejs 透過include 安裝回去!
+
+```js
+const User = require("../models/user-model");
+const bcrypt = require("bcrypt");
+router.get("/signup", (req, res) => {
+  return res.render("signup", { user: req.user });
+});
+
+router.post("/signup", async (req, res) => {
+  let { name, email, password } = req.body;
+  if (password.length < 8) {
+    //二度防堵 避免有人繞路
+    req.flash("error_msg", "密碼長度過短 ， 至少>=8 ");
+    return res.redirect("/auth/signup");
+  }
+  if (name.length < 3) {
+    req.flash("error_msg", "名稱過短 ， 至少>=3 ");
+    return res.redirect("/auth/signup");
+  }
+  // 確認信箱是否註冊過
+  const foundEmail = await User.findOne({ email }).exec();
+  if (foundEmail) {
+    req.flash("error_msg", "信箱已被註冊，請直接登入，或使用其他註冊");
+    return res.redirect("/auth/signup");
+  }
+  let hashedPassword = await bcrypt.hash(password, 12);
+  let newUser = new User({ name, email, password: hashedPassword });
+  await newUser.save();
+  req.flash("success_msg", "註冊成功!");
+  return res.redirect("/auth/login");
+});/auth/login");
+});
+```
+
+## 安裝 connect-flash
+
+npm i connect-flash
+
+## app.js
+
+套用模組 `connect-flash` 然後 
+
+進入`Router` 之前，`middleware` 要先套用 `flsh()` 
+
+之後則是新增一個手動設定的 `MiddleWare`
+
+增加資料到 `res . locals` 屬性下面 
+
+要記得轉交控制權 next ( )
+
+```js
+const passport = require("passport");
+const flash = require("connect-flash");
+
+app.use(passport.session());
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
+  next();
+});
+```
+
+## message.ejs
+
+這邊使用的 error 他會自己去找到 res.locals.error 的部分
+
+之前我們都是使用 `res.render("index",{error})`
+
+`res.render`      會 取得 第二個參數放入的
+
+`res.flash`        則會 看怎麼
+
+```ejs
+<% if (error != "") { %>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong><%= error %></strong>
+</div>
+<% } %>
+
+<!--break-->
+<% if (error_msg != "") { %>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong><%= error_msg %></strong>
+</div>
+<% } %>
+
+<!--break-->
+<% if (success_msg != "") { %>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong><%= success_msg %></strong>
+</div>
+<% } %>
+```
+
+## 自己做的後續
+
+登入功能的路由 我猜類似下面這樣
+
+但是還要使用session 的部分
+
+```js
+router.post("/login", async (req, res) => {
+  try {
+    let { username, password } = req.body;
+    let foundUser = await User.findOne({ email: username }).exec();
+
+    if (foundUser) {
+      let result = await bcrypt.compare(password, foundUser.password);
+      if (result) {
+
+      }
+    } else {
+      req.flash("error_msg", "重新登入");
+      return res.redirect("/auth/login");
+    }
+  } catch (e) {
+    req.flash("error_msg", e.reason);
+    return res.redirect("/auth/login");
+  }
+});
+```
 
 # (344) 登入本地使用者
 
