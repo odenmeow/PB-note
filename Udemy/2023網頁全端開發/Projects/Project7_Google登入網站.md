@@ -173,6 +173,16 @@ router.get("/google", (req, res) => {
 
 ### passport.js
 
+要給google `id` `secret`  `callbackURL`
+
+關於  明明GCP 已經有設定`callbackURL` 
+
+為什麼這邊也設定:
+
+1. 防止使用自己打錯
+
+2. 防止myServer被竄改了
+
 ```js
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
@@ -684,8 +694,266 @@ router.post("/login", async (req, res) => {
 
 # (344) 登入本地使用者
 
+## 該做的事:
+
+因為要做登入，雖然也不是不能像之前那樣，但既然要用google，那就統一用passport。
+
+使用 passport 的 LocalStrategy !!!
+
+安裝 npm i passport-local
+
+接著去`passport.js`
+
+記得先引用 `passport-local` 、`bcrypt`
+
+在這邊我們要新增 `LocalStrategy`策略
+
+然後 `auth-routes.js`  
+
+這邊要使用
+
+`router.post("/login",passport....,()=>{成功後}`
+
+ 三個參數分別是 route、authenticate事宜、success後要幹嘛
+
+## 安裝passport-local
+
+為了統一使用格式、靈活使用
+
+## passport.js
+
+使用 passport-local、bcrypt
+
+然後讓passport新增 本地端的策略
+
+async那邊採用的username跟password是自動收集
+
+`req.body` 解構出來的 username,password 帶入
+
+> 所以這邊的username,password 可以 u , p 命名無所謂
+> 
+> 知道代表username=email，password=password就好!
+
+然後done 跟之前googleStrategy 很相似 
+
+```js
+const LocalStrategy = require("passport-local");
+const bcrypt = require("bcrypt");
+
+
+
+// 這邊的username , password 是根據post自動從req.body 解構進去的
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    let foundUser = await User.findOne({ email: username }).exec();
+    if (foundUser) {
+      let result = await bcrypt.compare(password, foundUser.password);
+      if (result) {
+        done(null, foundUser);
+      } else {
+        done(null, false);
+      }
+    } else {
+      done(null, false);
+    }
+  })
+);
+```
+
+## auth-routes.js
+
+這邊則是使用 middleware 讓passport去幫忙掌管
+
+如果失敗就會跳到我們輸入的部分
+
+成功就會往下，然後會被導向profile
+
+```js
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    failureRedirect: "/auth/login",
+    failureFlash: "登入失敗，帳號或密碼錯誤", 
+    // 自動套入 req.locals.error這邊
+  }),
+  async (req, res) => {
+    return res.redirect("/profile"); //成功才會到這邊
+  }
+);
+```
+
+<img src="../../../Images/2024-01-15-15-09-47-image.png" title="" alt="" width="414">
+
 # (345) 製作Post
+
+## 該做的事:
+
+模型新增 `post-model.js `  文件
+
+`profile-routes` 
+
+寫 `router.get('post')` 跟 `router.post('post')` 的部分
+
+兩者都要驗證登入，前者給予畫面，後者負責文章資料。
+
+另外這邊原有的 `router.get('/',authCheck,reqr)` 
+
+這邊改成 async 並且 要去撈 post 的collection資料， 也在render時給予。
+
+`profile.ejs` 
+
+這邊要做section 然後透過 posts 去作出內容 若無則不會做出
+
+## post-model.js
+
+做一個資料模型出來
+
+```js
+const mongoose = require("mongoose");
+const postSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  author: String,
+});
+
+module.exports = mongoose.model("Post", postSchema);
+```
+
+## profile-routes.js
+
+引用Post，這邊主要是做post文章的動作
+
+因此 get 取得ejs 文件，post 送出填寫內容都要做事
+
+兩邊都要先確認authCheck有登入
+
+然後建立Post Object，儲存，失敗則重新導向並填寫flash提示
+
+另外就是 / 這邊有改用async 並且試圖取得 Post Object資料 
+
+讓profile.ejs 可以使用collection資料。
+
+```js
+const Post = require("../models/post-model");
+
+router.get("/", authCheck, async (req, res) => {
+  console.log("已進入 >> /profile");
+  let postFound = await Post.find({ author: req.user._id }).exec();
+  return res.render("profile", { user: req.user, posts: postFound });
+  // deSerial那邊有解釋req.user
+});
+
+router.get("/post", authCheck, (req, res) => {
+  return res.render("post", { user: req.user });
+});
+router.post("/post", authCheck, async (req, res) => {
+  let { title, content } = req.body;
+  let newPost = new Post({
+    title,
+    content,
+    author: req.user._id,
+  });
+  try {
+    let savedPost = await newPost.save();
+    return res.redirect("/profile");
+  } catch (e) {
+    req.flash("error_msg", "標題跟內容都要填寫");
+    return res.redirect("/profile/post");
+  }
+});
+```
+
+## profile.ejs
+
+在section下方添加以下內容
+
+```ejs
+    </section>
+    <section class="posts">
+      <% for (let i = 0; i < posts.length; i++) { %>
+      <div class="card" style="width: 18rem; margin: 1rem">
+        <div class="card-body">
+          <h5 class="card-title"><%= posts[i].title %></h5>
+          <p class="card-text"><%= posts[i].content %></p>
+          <a href="#" class="btn btn-primary"><%= posts[i].date %></a>
+        </div>
+      </div>
+      <% } %>
+    </section>
+```
 
 # (346) Final Code
 
 # (347) (進階課程) RFC 6749 導讀與詳細說明
+
+## 如何達到
+
+## Protocol Flow
+
+![](../../../Images/a39b8d5a24a755431c2a710423e5d9211e19942b.png)
+
+client 基本上就是 My server 
+
+![](../../../Images/2024-01-15-19-18-00-image.png)
+
+![](../../../Images/2024-01-15-19-22-05-image.png)
+
+- 302 redirect 重新導向 發現302 然後導向/elsewhere-doc
+
+# 最終小考
+
+## 問題 1：以下關於OAuth 2.0的敘述，何者錯誤？
+
+- OAuth 2.0 是一種安全協議
+
+- OAuth 2.0 規範了如何讓第三方應用程式，代表資源擁有者訪問伺服器，獲得資源擁有者的資訊。
+
+- OAuth 2.0 中的Resource Owner(資源擁有者)指的是是Google, Facebook等大型系統，也就是給予授權的伺服器。🔥
+
+- Resource Server – 資源伺服器，指的是Google, Facebook等大型系統中，存放資源擁有者的被保護資訊的位置。
+
+Resource Owner – 資源擁有者，即網頁的使用者。資源是指網頁使用者的個人資料與授權。
+
+
+
+## 問題 2：Oauth 2.0當中的secret的功能為何？
+
+- Authorization Server使用secret來確認沒有其他網站可以冒充我們製作的網站。🔥
+
+- 用來將訊息簽名。原理與Cookie簽名一樣。
+
+- 讓大家有很多秘密，創造一種神秘感。
+
+- 沒有什麼特別的功能。。。
+
+
+
+## 問題 3：在OAuth當中，client通常是指?
+
+- 出手闊綽消費者
+
+- 網站的用戶端
+
+- 這個英文單字我沒看過，容我先查一下字典。
+
+- 我們製作的網頁伺服器🔥
+
+## 問題 4：在OAuth當中，resource owner通常是指?
+
+- 網頁的使用者🔥
+
+- 我們製作的網站
+
+- Google伺服器
+
+- 世界上的有錢人與貧富不均的現象
