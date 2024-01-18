@@ -924,8 +924,6 @@ client 基本上就是 My server
 
 Resource Owner – 資源擁有者，即網頁的使用者。資源是指網頁使用者的個人資料與授權。
 
-
-
 ## 問題 2：Oauth 2.0當中的secret的功能為何？
 
 - Authorization Server使用secret來確認沒有其他網站可以冒充我們製作的網站。🔥
@@ -935,8 +933,6 @@ Resource Owner – 資源擁有者，即網頁的使用者。資源是指網頁�
 - 讓大家有很多秘密，創造一種神秘感。
 
 - 沒有什麼特別的功能。。。
-
-
 
 ## 問題 3：在OAuth當中，client通常是指?
 
