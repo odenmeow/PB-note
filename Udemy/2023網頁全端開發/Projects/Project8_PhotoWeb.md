@@ -446,10 +446,6 @@ export default Picture;
 
 達成搜尋結果
 
-
-
-
-
 ## Homepage.js
 
 ### v1- 利用useEffect
@@ -476,11 +472,7 @@ const Homepage = () => {
 
 ### v2 - prop {()=>{}   }
 
-
-
 為什麼使用  `prop = {  ()=>{search(searchURL)}   }` ? 
-
-
 
 因為  要避免 render的時候直接觸發，然後裡面沒有值
 
@@ -490,15 +482,9 @@ const Homepage = () => {
 
 [ AnonymousFunction ] 被丟過去，由對面按鈕負責
 
-
-
 另外 `searchURL` 會跟隨render 函數 ( 也就是Homepager內部 )，
 
 每當被重新渲染，都會重新計算值，所以才會跟著變動。
-
-
-
-
 
 ```js
 import React, { useEffect, useState } from "react";
@@ -537,14 +523,9 @@ const Homepage = () => {
 };
 
 export default Homepage;
-
 ```
 
-
-
 ## Search.js
-
-
 
 這邊就配合 setInput函數，每當改變輸入內容就會改變input的值
 
@@ -568,18 +549,11 @@ const Search = ({ search, setInput }) => {
 };
 
 export default Search;
-
 ```
-
-
 
 # (365) 更多圖功能
 
-
-
 ## Work Flow
-
-
 
 `Homepage.js`  增加按鈕功能
 
@@ -610,7 +584,6 @@ setData([...data, ...result.data.photos]);   這是額外想到的
 ## Homepage.js
 
 ```js
-
 import React, { useEffect, useState } from "react";
 import Search from "../components/Search";
 import Picture from "../components/Picture";
@@ -670,16 +643,6 @@ const Homepage = () => {
 };
 
 export default Homepage;
-
-
 ```
-
-
-
-
-
-
-
-
 
 # (366) Final Code
