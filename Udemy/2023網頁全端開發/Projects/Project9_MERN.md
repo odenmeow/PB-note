@@ -1064,18 +1064,6 @@ git commit -m "Project9 - section 372 驗證JWT 令牌，主要使用index.js{�
 
 `course-route.js` `v5`  delete資源
 
-
-
-
-
-
-
-
-
-
-
-
-
 ## course-route.js
 
 ### v1 - 基本的取得課程
@@ -1179,8 +1167,6 @@ POSTMAN : 取得課程 byID
 
 ### v4 - 編輯課程patch
 
-
-
 ```js
 // 更改課程
 router.patch("/:_id", async (req, res) => {
@@ -1235,13 +1221,80 @@ router.delete("/:_id", async (req, res) => {
 });
 ```
 
-
-
-
-
-
-
 # (374) Axios 補充說明
+
+> 接下來要做關於 前端的部分、先做些事
+
+fetch 之前有用過，回傳一個promise
+
+# Work Flow
+
+打開她給的資料後整理一下放到
+
+`axiosExample` > `axios.js` 、`index.html` 
+
+
+
+> **上網查**
+> 
+> **what does axios return**
+
+![](../../../Images/2024-01-21-22-28-50-image.png)
+
+
+
+> **⭐稍微注意⭐**
+> 
+> **html如果裡面想使用 axios 記得裝上cdn** 
+> 
+> [axios - Libraries - cdnjs - The #1 free and open source CDN built to make life easier for developers](https://cdnjs.com/libraries/axios) 
+
+## Difference between fetch & axios
+
+### fetch
+
+`fetch` 需要透過 await o.json() 才能提取  
+
+`fetch` 內建就有
+
+### axios⭐⭐⭐
+
+`axios` 只需要直接 o.data 就能得到 
+
+`axios` npm i axios  `node.js` 才能使用!⭐⭐⭐
+
+> browser無法安裝 ， browser要使用，可以用cdn
+
+```js
+async function example1() {
+  try {
+    // fetch returns Promise object
+    let responseObject = await fetch(
+      "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json"
+    );
+    let data = await responseObject.json();
+    console.log(data);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function example2() {
+  // axios.get() returns a Promise object
+  // Axios Response Object
+  try {
+    let axiosResponseObject = await axios.get(
+      "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json"
+    );
+    console.log(axiosResponseObject.data);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+example1();
+example2();
+```
 
 # (375) React設定
 
