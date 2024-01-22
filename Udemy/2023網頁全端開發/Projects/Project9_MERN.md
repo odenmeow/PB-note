@@ -1227,7 +1227,7 @@ router.delete("/:_id", async (req, res) => {
 
 fetch 之前有用過，回傳一個promise
 
-# Work Flow
+## Work Flow
 
 打開她給的資料後整理一下放到
 
@@ -2674,15 +2674,7 @@ export default courseService;
 
 ![](../../../Images/2024-01-22-22-13-24-image.png)
 
-
-
 > 先不要按註冊課程，我們還沒有寫enroll的功能!!section 380會說
-
-
-
-
-
-
 
 ## App.js
 
@@ -2913,8 +2905,175 @@ router.get("/findByName/:name", async (req, res) => {
 
 # (380) React註冊課程
 
+## Work Flow⚠️
+
+`enroll-component.js` 
+
+這邊註冊按鈕做了，也做了handleEnroll，但是CourseService.enroll 功能還沒，
+
+進一步發現 
+
+`server` > `routes` > `course-route.js` 也還沒做註冊功能
+
+---
+
+`course-route.js` `v1` 先做課程註冊功能  ( by 課程id )
+
+回到 `course.service.js`
+
+`course.service.js` `v1` 實作axios enroll的部分
+
+---
+
+返回 `enroll-component.js`  `v1` 他幫我們做了，僅供參考 放上來
+
+實際測試發現有bug
+
+![](../../../Images/2024-01-22-23-02-45-image.png)
+
+- 這個錯誤是在 `nav-component.js` 那邊 ，兩個錯誤點
+
+然後小錯誤修改一下
+
+`course-component.js` 學生的課程頁面才對
+
+> **有小bug 可以重複註冊相同課程**   😕⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+
+<img title="" src="../../../Images/2024-01-22-23-16-56-image.png" alt="" width="477">
+
+![](../../../Images/2024-01-22-23-16-39-image.png)
+
+---
+
+---
+
+---
+
+
+
+## course-route.js
+
+### v1 - 學生課程註冊功能😕
+
+`enroll`   `by`  `courseId` 
+
+⭐⭐可以直接對物件操作然後再save !⭐⭐
+
+```js
+// 學生註冊課程的功能 ( by 課程id)
+router.post("/enroll/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let foundCourse = await Course.findOne({ _id });
+    foundCourse.students.push(req.user._id);
+    await foundCourse.save();
+    res.send("註冊完成");
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+```
+
+## course.service.js
+
+### v1 實作enroll axios post功能😕
+
+> POST 中間要放物件，因為我們沒使用，所以給 `{ }`😕
+
+```js
+  enroll(_id) {
+    let token = getToken();
+    return axios.post(
+      API_URL + "/enroll/" + _id,
+      {},
+      {
+        headers: { Authorization: token },
+      }
+    );
+  }
+```
+
+## enroll-component.js
+
+### v1 他幫我做了但我還是放上來
+
+id 是偷偷放上課程id所以才能這樣玩
+
+```js
+  const handleEnroll = (e) => {
+    CourseService.enroll(e.target.id)
+      .then(() => {
+        window.alert("課程註冊成功。重新導向到課程頁面。");
+        navigate("/course");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+
+ {currentUser && searchResult && searchResult.length != 0 && (
+        <div>
+          <p>我們從 API 返回的數據。</p>
+          {searchResult.map((course) => (
+            <div key={course._id} className="card" style={{ width: "18rem" }}>
+              <div className="card-body">
+                <h5 className="card-title">課程名稱：{course.title}</h5>
+                <p className="card-text">{course.description}</p>
+                <p>價格: {course.price}</p>
+                <p>目前的學生人數: {course.students.length}</p>
+                <a
+                  href="#"
+                  onClick={handleEnroll}
+                  className="card-text btn btn-primary"
+                  id={course._id}
+                >
+                  註冊課程
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+```
+
+## nav-component.js
+
+修改class 成為className
+
+button 跟 span 都有錯
+
+```js
+   <button
+    className="navbar-toggler"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#navbarNav"
+    aria-controls="navbarNav"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+   >
+    <span className="navbar-toggler-icon"></span>
+```
+
+## course-component.js
+
+### v1 修改小錯誤( 打字錯誤)
+
+不是講師 而是學生
+
+```js
+      {currentUser && currentUser.user.role === "student" && (
+        <div>
+          <h1>歡迎來到學生的課程頁面</h1>
+        </div>
+      )}
+```
+
 # (381) Final Code
 
 # (382) Heroku免費託管服務終止
+
+Heroku於2022/11/28終止免費的託管服務，但目前市面上很少不需要綁定信用卡又穩定的託管服務，所以之後可能會看市場情況，教用Netlify或其他平台的免費託管教學。
 
 # (383) Heroku 部屬網站
