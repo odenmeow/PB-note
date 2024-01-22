@@ -2243,11 +2243,7 @@ const Layout = ({ currentUser, setCurrentUser }) => {
 
 # (378) React課程頁面
 
-
-
 ## Work Flow
-
-
 
 新建 課程頁面組件
 
@@ -2279,8 +2275,6 @@ const Layout = ({ currentUser, setCurrentUser }) => {
 
 `server` > `routes` > `course-route.js` `v2` 新增 route API (依照學生id尋找課程)
 
-
-
 `course.service.js` `v2` 學生註冊過的課程，Axios API
 
 > 可以繼續寫 學生的API了 
@@ -2305,14 +2299,6 @@ const Layout = ({ currentUser, setCurrentUser }) => {
 
 ![](../../../Images/2024-01-22-20-25-52-image.png)
 
-
-
-
-
-
-
-
-
 ## App.js
 
 ### v1 增加course頁面組件
@@ -2331,8 +2317,6 @@ import CourseComponent from "./components/course-component";
             }
          />
 ```
-
-
 
 ## course-component.js
 
@@ -2379,7 +2363,6 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
 
 export default CourseComponent;
 default CourseComponent;
-
 ```
 
 ### v2 使用course.service.js
@@ -2414,7 +2397,6 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
       }
     }
   }, []);
-
 ```
 
 ### v3 繼續完成學生api
@@ -2424,7 +2406,6 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
 記得引用 useState
 
 ```js
-
 import React, { useEffect, useState } from "react";
 
 
@@ -2459,8 +2440,6 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
     }
   }, []);
 ```
-
-
 
 ### v4 - setCourseData
 
@@ -2551,8 +2530,6 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
   }, []);
 ```
 
-
-
 ## course-route.js
 
 ### v1 - 依照講師id找課程
@@ -2592,8 +2569,6 @@ router.get("/student/:student_id", async (req, res) => {
 ```
 
 ## course.service.js
-
-
 
 ### v1 - 講師擁有的課程+張貼課程
 
@@ -2637,13 +2612,9 @@ let courseService = new CourseService();
 export default courseService;
 
 export default courseService;
-
-
 ```
 
 ### v2 學生註冊過的課程
-
-
 
 ```js
 // 學生註冊過的課程
@@ -2661,19 +2632,284 @@ export default courseService;
   }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
 # (379) React 搜尋課程
+
+- 先做新增課程的畫面
+
+## Work Flow
+
+`nav-component.js` 裡面有 `<Link  to='/postCourse'>`
+
+> 這是我們會用的，導向新增課程的畫面
+
+`App.js` `v1`  引用它做好的 postCourse-component.js
+
+<img src="../../../Images/2024-01-22-21-28-30-image.png" title="" alt="" width="315">
+
+> **跟之前很類似，然後就能得到下面**
+
+![](../../../Images/2024-01-22-21-30-03-image.png)
+
+> **⭐先做畫面 註冊課程的畫面 ( 然後搜尋先做 才做註冊 ) ⭐**
+
+`App.js` `v2` 搭建 EnrollComponent畫面
+
+製作 `components` > `enroll-component.js`  `v1` 
+
+> 這個頁面已經被做好
+> 
+> 但她引用的 axios api 和 server api ，還差一些
+
+`server` > `routes` > `course-route.js` 增加 依照課程名稱找課程
+
+然後去
+
+`client` > `src` > `services` > `course.service.js` `v1`增加 axios API
+
+`course.service.js` `v2` 是回傳單純Promise的版本，`v1` 用來查看長什麼樣子
+
+![](../../../Images/93d1d9c45d66ad87e5d729d5b22b0605098b3f7c.png)
+
+> **course.service.js 改 v2 後，enroll-component.js就正常運作了** 
+
+![](../../../Images/2024-01-22-22-13-24-image.png)
+
+
+
+> 先不要按註冊課程，我們還沒有寫enroll的功能!!section 380會說
+
+
+
+
+
+
+
+## App.js
+
+### v1 - 取得畫面(Route)postCourse-component
+
+跟前者一樣都是自斷尾巴的做法  `< Route ..../>` 
+
+> 被包裹在 `< Route path="/"  element={<Layout .. / >} >`  
+> 
+> 和  
+> 
+> `< / Route>`  之間
+
+```js
+ import PostCourseComponent from "./components/postCourse-component";
+
+
+        <Route
+            path="postCourse"
+            element={
+              <PostCourseComponent
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+        </Route>
+      </Routes>
+```
+
+### v2 - 取得畫面(Route)enroll-component
+
+> 
+
+```js
+import EnrollComponent from "./components/enroll-component";
+
+         <Route
+            path="enroll"
+            element={
+              <EnrollComponent
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+```
+
+## enroll-component.js
+
+### v1 製作畫面
+
+> **他已經做好了 看一下**
+
+```js
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CourseService from "../services/course.service";
+
+const EnrollComponent = (props) => {
+  let { currentUser, setCurrentUser } = props;
+  const navigate = useNavigate();
+  let [searchInput, setSearchInput] = useState("");
+  let [searchResult, setSearchResult] = useState(null);
+  const handleTakeToLogin = () => {
+    navigate("/login");
+  };
+  const handleChangeInput = (e) => {
+    setSearchInput(e.target.value);
+  };
+  const handleSearch = () => {
+    CourseService.getCourseByName(searchInput)
+      .then((data) => {
+        console.log(data);
+        setSearchResult(data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handleEnroll = (e) => {
+    CourseService.enroll(e.target.id)
+      .then(() => {
+        window.alert("課程註冊成功。重新導向到課程頁面。");
+        navigate("/course");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  return (
+    <div style={{ padding: "3rem" }}>
+      {!currentUser && (
+        <div>
+          <p>You must login first before searching for courses.</p>
+          <button
+            className="btn btn-primary btn-lg"
+            onClick={handleTakeToLogin}
+          >
+            Take me to login page.
+          </button>
+        </div>
+      )}
+      {currentUser && currentUser.user.role == "instructor" && (
+        <div>
+          <h1>Only students can enroll in courses.</h1>
+        </div>
+      )}
+      {currentUser && currentUser.user.role == "student" && (
+        <div className="search input-group mb-3">
+          <input
+            onChange={handleChangeInput}
+            type="text"
+            className="form-control"
+          />
+          <button onClick={handleSearch} className="btn btn-primary">
+            Search
+          </button>
+        </div>
+      )}
+      {currentUser && searchResult && searchResult.length != 0 && (
+        <div>
+          <p>我們從 API 返回的數據。</p>
+          {searchResult.map((course) => (
+            <div key={course._id} className="card" style={{ width: "18rem" }}>
+              <div className="card-body">
+                <h5 className="card-title">課程名稱：{course.title}</h5>
+                <p className="card-text">{course.description}</p>
+                <p>價格: {course.price}</p>
+                <p>目前的學生人數: {course.students.length}</p>
+                <a
+                  href="#"
+                  onClick={handleEnroll}
+                  className="card-text btn btn-primary"
+                  id={course._id}
+                >
+                  註冊課程
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default EnrollComponent;
+```
+
+## course-route.js
+
+### v1 - 依照課程名稱找課程
+
+模糊搜尋、正則表達 、正規表達 有兩種方法
+
+然後去axios 服務增加功能
+
+```js
+// 依照課程名稱找課程
+router.get("/findByName/:name", async (req, res) => {
+  let { name } = req.params;
+  // 正則表達也能找尋模糊搜尋，i 不分大小寫
+  const regex = new RegExp(name, "i");
+  // let foundCourse = await Course.find({
+  //   title: { $regex: name, $option: "i" },
+  // });
+  try {
+    let foundCourse = await Course.find({ title: regex })
+      .populate("instructor", ["email", "username"])
+      .exec();
+    return res.send(foundCourse);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+```
+
+## course.service.js
+
+### v1 - 增加 依照課程名稱找課程的API (Axios)
+
+🔥一定要給Authorization token🔥 否則 401 錯誤
+
+```js
+  // 依照課程名稱找出課程
+  getCourseByName(name) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios
+      .get(API_URL + "/findByName/" + name, {
+        headers: { Authorization: token },
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+```
+
+![](../../../Images/2024-01-22-22-04-35-image.png)
+
+### v2 - res.send 可以使用的版本
+
+> 讓對面自己決定promise要怎麼使用
+
+```js
+  // 依照課程名稱找出課程
+  getCourseByName(name) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.get(API_URL + "/findByName/" + name, {
+      headers: { Authorization: token },
+    });
+  }
+```
 
 # (380) React註冊課程
 
