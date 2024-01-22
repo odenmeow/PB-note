@@ -2243,6 +2243,436 @@ const Layout = ({ currentUser, setCurrentUser }) => {
 
 # (378) React課程頁面
 
+
+
+## Work Flow
+
+
+
+新建 課程頁面組件
+
+`src` > `components` >  `course-component.js` 
+
+`App.js` `v1` 納入 `course-component.js`  `v1`
+
+> **初步顯示 : 如果沒登入，給一個返回登入按鈕**
+> 
+> **如果有登入，暫無畫面**
+
+---
+
+> **接著做講師身分畫面呈現**
+
+`course-component.js` `v2` 
+
+---
+
+> 講師id尋找課程
+
+`server` > `routes` > `course-route.js`  `v1` 新增 route API (依照講師id尋找課程)
+
+建立  `course.service.js` axios 服務。
+
+前往 `course-component.js` `v2`，引用服務 (老師id可以找，但學生註冊的課程還沒做)
+
+> course-component先做一些 ( v2 )，下面student API 做完再放上 ( v3 )
+
+`server` > `routes` > `course-route.js` `v2` 新增 route API (依照學生id尋找課程)
+
+
+
+`course.service.js` `v2` 學生註冊過的課程，Axios API
+
+> 可以繼續寫 學生的API了 
+
+回到 `course-component.js` `v3` 繼續完成studnet api 
+
+---
+
+- 學生那邊還沒有註冊課程的功能
+
+- 老師那邊有新增的功能  ( 所以可以先查看老師的課程頁面 )
+
+<img title="" src="../../../Images/2024-01-22-20-13-44-image.png" alt="" width="611">
+
+---
+
+回到 `course-component.js`  `v4` 修改console.log(data) ，
+
+我們要放入 setCourseData(data.data) ; 讓state傳遞
+
+> v4 改蠻多內容，最後可以呈現如下
+
+![](../../../Images/2024-01-22-20-25-52-image.png)
+
+
+
+
+
+
+
+
+
+## App.js
+
+### v1 增加course頁面組件
+
+```js
+import CourseComponent from "./components/course-component";
+
+
+         <Route
+            path="course"
+            element={
+              <CourseComponent
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+         />
+```
+
+
+
+## course-component.js
+
+### v1 課程畫面
+
+如果沒有登入則重新導向 所以引用 `{useNavigate}` 
+
+按下按鈕後 導回登入畫面
+
+```js
+import React from "react";
+import { useNavigate } from "react-router-dom";
+const CourseComponent = ({ currentUser, setCurrentUser }) => {
+  const Navigate = useNavigate();
+  const handleTakeToLogin = () => {
+    Navigate("/login");
+  };
+  return (
+    <div style={{ padding: "3rem" }}>
+      {!currentUser && (
+        <div>
+          <p>必須先登入才能看到課程</p>
+          <button
+            className="btn btn-primary btn-lg"
+            onClick={handleTakeToLogin}
+          >
+            回到登入畫面
+          </button>
+        </div>
+      )}
+      {currentUser && currentUser.user.role === "instructor" && (
+        <div>
+          <h1>歡迎來到講師的課程頁面</h1>
+        </div>
+      )}
+      {currentUser && currentUser.user.role === "student" && (
+        <div>
+          <h1>歡迎來到講師的課程頁面</h1>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CourseComponent;
+default CourseComponent;
+
+```
+
+### v2 使用course.service.js
+
+> student 先暫時放在那
+
+```js
+import React, { useEffect } from "react";
+import CourseService from "../services/course.service";
+
+
+
+const CourseComponent = ({ currentUser, setCurrentUser }) => {
+  const Navigate = useNavigate();
+  const handleTakeToLogin = () => {
+    Navigate("/login");
+  };
+  const [courseData, setCourseData] = useState(null);
+  useEffect(() => {
+    if (currentUser) {
+      let _id = currentUser.user._id;
+      if (currentUser.user.role === "instructor") {
+        CourseService.get(_id)
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else if (currentUser.user.role === "student") {
+        // CourseService.get()
+      }
+    }
+  }, []);
+
+```
+
+### v3 繼續完成學生api
+
+可以透過getEnrolledCourse (bystudentID) 了
+
+記得引用 useState
+
+```js
+
+import React, { useEffect, useState } from "react";
+
+
+
+
+const CourseComponent = ({ currentUser, setCurrentUser }) => {
+  const Navigate = useNavigate();
+  const handleTakeToLogin = () => {
+    Navigate("/login");
+  };
+  const [courseData, setCourseData] = useState(null);
+  useEffect(() => {
+    if (currentUser) {
+      let _id = currentUser.user._id;
+      if (currentUser.user.role === "instructor") {
+        CourseService.get(_id)
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else if (currentUser.user.role === "student") {
+        CourseService.getEnrolledCourse(_id)
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    }
+  }, []);
+```
+
+
+
+### v4 - setCourseData
+
+> 稍微改一下內容 因為已查看了 data 樣貌
+
+> 另外還有畫面呈現也修改了
+
+```js
+const CourseComponent = ({ currentUser, setCurrentUser }) => {
+  const Navigate = useNavigate();
+  const handleTakeToLogin = () => {
+    Navigate("/login");
+  };
+  const [courseData, setCourseData] = useState(null);
+  useEffect(() => {
+    if (currentUser) {
+      let _id = currentUser.user._id;
+      if (currentUser.user.role === "instructor") {
+        CourseService.get(_id)
+          .then((data) => {
+            // console.log(data);
+            setCourseData(data.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else if (currentUser.user.role === "student") {
+        CourseService.getEnrolledCourse(_id)
+          .then((data) => {
+            setCourseData(data.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    }
+  }, []);
+  return (
+    <div style={{ padding: "3rem" }}>
+      {!currentUser && (
+        <div>
+          <p>必須先登入才能看到課程</p>
+          <button
+            className="btn btn-primary btn-lg"
+            onClick={handleTakeToLogin}
+          >
+            回到登入畫面
+          </button>
+        </div>
+      )}
+      {currentUser && currentUser.user.role === "instructor" && (
+        <div>
+          <h1>歡迎來到講師的課程頁面</h1>
+        </div>
+      )}
+      {currentUser && currentUser.user.role === "student" && (
+        <div>
+          <h1>歡迎來到講師的課程頁面</h1>
+        </div>
+      )}
+      {currentUser && courseData && courseData.length != 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {courseData.map((course) => {
+            return (
+              <div className="card" style={{ width: "18rem", margin: "1rem" }}>
+                <div className="card-body">
+                  <h5 className="card-title">課程名稱 :{course.title}</h5>
+                  <p style={{ margin: "0.5rem 0rem" }} className="card-text">
+                    {course.description}
+                  </p>
+                  <p style={{ margin: "0.5rem 0rem" }}>
+                    {" "}
+                    學生人數:{course.students.length}
+                  </p>
+                  <p style={{ margin: "0.5rem 0rem" }}>
+                    課程價格 :{course.price}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};   }
+    }
+  }, []);
+```
+
+
+
+## course-route.js
+
+### v1 - 依照講師id找課程
+
+> **new route = 依講師id** 
+
+```js
+// 依照講師id尋找課程
+router.get("/instructor/:instructor_id", async (req, res) => {
+  let { instructor_id } = req.params;
+  try {
+    let foundCourse = await Course.find({ instructor: instructor_id })
+      .populate("instructor", ["username", "email"])
+      .exec();
+    res.send(foundCourse);
+  } catch (e) {
+    return res.send(500).send(e);
+  }
+});
+```
+
+### v2 - 依照學生id找課程
+
+> 讓學生註冊過的課程顯示出來
+
+```js
+// 用學生id尋找課程
+router.get("/student/:student_id", async (req, res) => {
+  let { student_id } = req.params;
+  try {
+    let foundCourses = await Course.find({ students: student_id })
+      .populate("instructor", ["username", "email"])
+      .exec();
+    return res.send(foundCourses);
+  } catch (error) {}
+});
+```
+
+## course.service.js
+
+
+
+### v1 - 講師擁有的課程+張貼課程
+
+> **get / post** 
+> 
+> **取得資料、貼新課程** 
+
+```js
+import axios from "axios";
+const API_URL = "http://localhost:8080/api/courses";
+class CourseService {
+  post(title, description, price) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.post(
+      API_URL,
+      { title, description, price },
+      { headers: { Authorization: token } }
+    );
+  }
+
+  // 講師擁有的課程
+  get(_id) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.get(API_URL + "/instructor/" + _id, {
+      headers: { Authorization: token },
+    });
+  }
+}
+
+let courseService = new CourseService();
+export default courseService;
+
+export default courseService;
+
+
+```
+
+### v2 學生註冊過的課程
+
+
+
+```js
+// 學生註冊過的課程
+  getEnrolledCourse(_id) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.get(API_URL + "/student/" + _id, {
+      headers: { Authorization: token },
+    });
+  }   });
+  }
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 # (379) React 搜尋課程
 
 # (380) React註冊課程
