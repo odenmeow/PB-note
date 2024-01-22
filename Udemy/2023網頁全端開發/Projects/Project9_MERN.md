@@ -1812,6 +1812,435 @@ console.log(myDefaultValue); // 42
 
 # (377) React登入使用者
 
+## Work Flow
+
+先去 `auth.service.js` 製作 login 函數的功能
+
+接著 `login-component.js` 完善登入細節
+
+- 包含 錯誤訊息、登入轉向 `/profile` 、令牌儲存
+
+`App.js` 這邊則是寫 profile-component畫面
+
+寫好之後先不管 `profile-component.js`
+
+---
+
+> 先製作登出功能
+
+`auth.service.js`  `v2` 增加logout內容、`getCurrentUser()` 取得目前使用者data
+
+> 登出繼續製作功能
+
+`nav-component.js`  在導覽列有登出按鈕 ，完成它的 onClick 登出功能
+
+> profile製作
+
+`profile-component.js`  `v1` 製作個人頁面 要取得個人資料
+
+![](../../../Images/2024-01-22-15-57-44-image.png)
+
+---
+
+> 希望 登入後只有登出按鈕 反之亦然
+
+> 使用 state lifting 概念將 currentUser往上搬動，讓其他route也能共享!
+
+`profile-component.js` `v2`  state lifting 搬走useState的位置往上層移動
+
+`App.js`  `v2` 開始作為源頭傳遞 
+
+`Layout.js` 也要繼續往下傳遞
+
+`nav-component.js`  `v2` 也往下傳遞 (導覽列畫面顯示)
+
+`login-component.js` `v2` 登入後要設定一下currentUser ^^ 
+
+---
+
+> 確實無法偷渡
+
+![](../../../Images/2024-01-22-16-26-25-image.png)
+
+## auth.service.js
+
+簡單製作一下該函數功能
+
+### login功能
+
+```js
+class AuthService {
+  login(email, password) {
+    return axios.post(API_URL + "/login", { email, password });
+  }
+```
+
+### v2 - logout功能、取得user
+
+```js
+logout() {
+    localStorage.removeItem("user");
+  }
+
+getCurrentUser() {
+    return JSON.parse(localStorage.getItem("user"));
+  }
+```
+
+## login-component.js (src / components)
+
+總結一下，`response.data.token` 是成功登入時返回的令牌，而 `e.response.data` 是錯誤時返回的錯誤信息。
+
+除了基本行為，還要設定
+
+> **JWT 儲存在localStorage**
+
+然後成功登入要導向 `/profile` 
+
+```js
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../services/auth.service";
+const LoginComponent = (props) => {
+  let [email, setEmail] = useState("");
+  let [password, setPassword] = useState("");
+  let [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  };
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  };
+  // return res.send({
+  //   msg: "成功登入",
+  //   token: "JWT " + token, //JWT 後面留一個空白!
+  //   user: foundUser,
+  // });
+  const handleLogin = async () => {
+    try {
+      let response = await AuthService.login(email, password);
+      localStorage.setItem("user", JSON.stringify(response.data));
+      window.alert("成功登入，即將導向個人頁面");
+      navigate("/profile");
+    } catch (e) {
+      setMessage(e.response.data);
+    }
+  };
+  return (
+    <div style={{ padding: "3rem" }} className="col-md-12">
+      <div>
+        {message && <div className="alert alert-danger">{message}</div>}
+        <div className="form-group">
+          <label htmlFor="username">電子信箱：</label>
+          <input
+            onChange={handleEmail}
+            type="text"
+            className="form-control"
+            name="email"
+          />
+        </div>
+        <br />
+        <div className="form-group">
+          <label htmlFor="password">密碼：</label>
+          <input
+            onChange={handlePassword}
+            type="password"
+            className="form-control"
+            name="password"
+          />
+        </div>
+        <br />
+        <div className="form-group">
+          <button onClick={handleLogin} className="btn btn-primary btn-block">
+            <span>登入系統</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginComponent;
+div>
+    </div>
+  );
+};
+
+export default LoginComponent;
+```
+
+### v2 - 使用透過prop傳遞的SetCurrentUser
+
+setCurrentUser 登入後要設定一下!
+
+```js
+const LoginComponent = ({ currentUser, setCurrentUser }) => {
+
+    const handleLogin = async () => {
+    try {
+      let response = await AuthService.login(email, password);
+      localStorage.setItem("user", JSON.stringify(response.data));
+      window.alert("成功登入，即將導向個人頁面");
+      setCurrentUser(AuthService.getCurrentUser());
+      navigate("/profile");
+    } catch (e) {
+      setMessage(e.response.data);
+    }
+  };);
+```
+
+## App.js ( src/... )
+
+登入畫面增加 profile
+
+```js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import HomeComponent from "./components/home-component";
+import RegisterComponent from "./components/register-component";
+import LoginComponent from "./components/login-component";
+import ProfileComponent from "./components/profile-component";
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomeComponent />} />
+          <Route path="register" element={<RegisterComponent />} />
+          <Route path="login" element={<LoginComponent />} />
+          <Route path="profile" element={<ProfileComponent />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+### v2 - state傳遞鏈源頭
+
+基本上都有使用了，只有register沒設定props
+
+```js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import HomeComponent from "./components/home-component";
+import RegisterComponent from "./components/register-component";
+import LoginComponent from "./components/login-component";
+import ProfileComponent from "./components/profile-component";
+import { useState } from "react";
+import AuthService from "./services/auth.service";
+function App() {
+  let [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Layout currentUser={currentUser} setCurrentUser={setCurrentUser} />
+          }
+        >
+          <Route index element={<HomeComponent />} />
+          <Route path="register" element={<RegisterComponent />} />
+          <Route
+            path="login"
+            element={
+              <LoginComponent
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <ProfileComponent
+                currentUser={currentUser}
+                setCurrentUser={setCurrentUser}
+              />
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+```
+
+## nav-component.js (src / components)
+
+透過onClick配合登出
+
+```js
+import AuthService from "../services/auth.service";
+const NavComponent = () => {
+  // 不需要使用Nav 因為下面 Link 有使用to所以會自己導向
+  const handleLogOut = () => {
+    AuthService.logout();
+    window.alert("登出成功");
+  };
+
+
+
+<li className="nav-item">
+    <Link onClick={handleLogOut} className="nav-link" to="/">
+        登出
+    </Link>
+</li>
+```
+
+### v2 - setCurrentUser 傳遞鏈、導覽畫面
+
+> 如此 登出的時候才會同步影響
+
+有些還要有身分才產生畫面
+
+```js
+const NavComponent = ({ currentUser, setCurrentUser }) => {
+  // 不需要使用Nav 因為下面 Link 有使用to所以會自己導向
+  const handleLogOut = () => {
+    AuthService.logout();
+    window.alert("登出成功");
+    setCurrentUser(null);
+  };
+
+
+    {!currentUser && (
+      <li className="nav-item">
+        <Link className="nav-link" to="/register">
+          註冊會員
+        </Link>
+      </li>
+    )}
+    {!currentUser && (
+      <li className="nav-item">
+        <Link className="nav-link" to="/login">
+          會員登入
+        </Link>
+      </li>
+    )}
+    {currentUser && (
+      <li className="nav-item">
+        <Link onClick={handleLogOut} className="nav-link" to="/">
+          登出
+        </Link>
+      </li>
+    )}
+    {currentUser && (
+      <li className="nav-item">
+        <Link className="nav-link" to="/profile">
+          個人頁面
+        </Link>
+      </li>
+    )}
+    {currentUser && (
+      <li className="nav-item">
+        <Link className="nav-link" to="/course">
+          課程頁面
+        </Link>
+      </li>
+    )}
+    {currentUser && currentUser.user.role === "instructor" && (
+      <li className="nav-item">
+        <Link className="nav-link" to="/postCourse">
+          新增課程
+        </Link>
+      </li>
+    )}
+    {currentUser && currentUser.user.role === "student" && (
+      <li className="nav-item">
+        <Link className="nav-link" to="/enroll">
+          註冊課程
+        </Link>
+      </li>
+    )}
+```
+
+## profile-component.js (src / components)
+
+### v1 取得個資
+
+`useEffect` 讓第一次渲染，設定`currentUser` 資訊
+
+```js
+import { useState, useEffect } from "react";
+import AuthService from "../services/auth.service";
+const ProfileComponent = (props) => {
+  let [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    setCurrentUser(AuthService.getCurrentUser());
+  }, []); //只要render就呼喚前面fn
+  return (
+    <div style={{ padding: "3rem" }}>
+      {!currentUser && <div>在獲取您的個人資料之前，您必須先登錄。</div>}
+      {currentUser && (
+        <div>
+          <h2>以下是您的個人檔案：</h2>
+
+          <table className="table">
+            <tbody>
+              <tr>
+                <td>
+                  <strong>姓名：{currentUser.user.username}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>您的用戶ID: {currentUser.user._id}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>您註冊的電子信箱: {currentUser.user.email}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>身份: {currentUser.user.role}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProfileComponent;
+```
+
+### v2 - state Lifting
+
+> 將 currentUser往上搬動，讓其他route也能共享!
+
+連import的東西也不需要了，全靠傳遞過來的共享內容
+
+```js
+const ProfileComponent = ({ currentUser, setCurrentUser }) => {
+  return (
+```
+
+## Layout.js
+
+> 作為傳遞鏈的一部份 也要負責往下傳遞
+
+```js
+const Layout = ({ currentUser, setCurrentUser }) => {
+  return (
+    <>
+      <Nav currentUser={currentUser} setCurrentUser={setCurrentUser} />
+      <Outlet />
+    </>
+  );
+};
+```
+
 # (378) React課程頁面
 
 # (379) React 搜尋課程
