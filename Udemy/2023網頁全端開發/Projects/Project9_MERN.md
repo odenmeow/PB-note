@@ -1233,15 +1233,11 @@ fetch 之前有用過，回傳一個promise
 
 `axiosExample` > `axios.js` 、`index.html` 
 
-
-
 > **上網查**
 > 
 > **what does axios return**
 
 ![](../../../Images/2024-01-21-22-28-50-image.png)
-
-
 
 > **⭐稍微注意⭐**
 > 
@@ -1298,7 +1294,521 @@ example2();
 
 # (375) React設定
 
+## Work Flow
+
+先安裝 react
+
+`npx create-react-app client`
+
+`client` > `src` > 只留下 `App.js`  、 `index.js`
+
+`client` > `public` > 只留下 `index.html` 
+
+`npm install react-router-dom`
+
+然後回去server 幫忙安裝 cors 並加入server > index.js 小改一下
+
+---
+
+> 回到REact
+
+client > src > `App.js` `v1` 添加基本route功能
+
+client > src > components >  把課堂提供的component.js 檔案都放到這邊
+
+client > public > `index.html` `v2` 增加 bootstrap cdn內容 
+
+client > src > `App.js` `v2` 引用Component 組件
+
+並且 運行會出錯，需要改 `Components` > `nav-component.js` 登出的onClick先拿掉
+
+## npm 要安裝的 packages
+
+Project9_MERN \ client > `npm install react-router-dom`
+
+Project9_MERN \ server > `npm i cors` 
+
+因為是同源 所以要幫 `server` > `index.js` 添加 middleware cors
+
+## index.html ( client / public / index.html)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+### v2 添加cdn
+
+```js
+ <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+```
+
+## index.js ( server / index.js)
+
+添加 cors 同源才能使用
+
+```js
+const passport = require("passport");
+const cors = require("cors");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());;
+```
+
+## App.js ( client / src / App.js)
+
+添加 router 功能
+
+```js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+function App() {
+  return;
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element></Route>
+    </Routes>
+  </BrowserRouter>;
+}
+
+export default App;
+```
+
+### v2 引用組件
+
+```js
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomeComponent />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+## nav-component.js (client / src / component /...)
+
+這邊有 onClick 但是還沒寫 `handleLogout` ，所以要先拿走 ，才能開啟畫面
+
+```js
+<li className="nav-item">
+  <Link onClick={handleLogout} className="nav-link" to="/">
+      登出
+  </Link>
+</li>
+```
+
 # (376) React註冊使用者
+
+## Work Flow
+
+接著要做出註冊的畫面，nav-component 那邊有 `/register` 
+
+回到 `src` /`App.js` ( v1 )  ，添加Route
+
+接著 `src` / `components` / `register-component.js` 內部 onClick /Change 都先移除
+
+---
+
+`client` 安裝 `axios` 
+
+建立
+
+`src` / `services` / `auth.service.js`  (v1) 編寫axios功能，register 先寫
+
+然後 回到 `register-component.js`  `(v2)` 套用 剛剛寫的axios功能
+
+> 改蠻多內容，useState 、const ()=>{} 寫很多處理小幫手=handler
+
+建議export那邊不要直接new 會warning ! 
+
+然後可以開網頁先測試畫面 <u>**server + client**</u> 都打開 ! 
+
+<img src="../../../Images/2024-01-22-11-31-48-image.png" title="" alt="" width="173">
+
+> **真的有建立，畫面沒有跳轉而已，因為還沒寫**
+
+```json
+{
+    _id: ObjectId('65ade158949e372a69768c33'),
+    username: 'apex',
+    email: 'apex@gmail.com',
+    password: '$2b$10$lNqZsZRDYRzjv/5y4BxdYuraLOPU/20o42vJ1lh0lXxBGnkOewsma',
+    role: 'instructor',
+    date: ISODate('2024-01-22T03:30:32.350Z'),
+    __v: 0
+  }
+```
+
+---
+
+> 接著要做導向功能
+
+`register-component.js` `v3`  導向功能添加! 
+
+useNavigate 沒用過的東西
+
+`App.js`  `v2` 添加login component上去
+
+`login-component.js` `v1`修改一下，先拿掉 onClick onChange之類
+
+> 重新註冊一次，然後這次名稱叫做maple 其他類推 密碼=兩次名稱
+> 
+> 然後應該要成功導向
+
+---
+
+> 這一次故意密碼少打
+
+![](../../../Images/2024-01-22-11-46-52-image.png)
+
+`register-component.js` `v4` 錯誤訊息 加工
+
+![](../../../Images/2024-01-22-11-53-43-image.png)
+
+- 透過技巧解決
+
+**⭐請去後面 v4 有詳細說明⭐**
+
+## package安裝
+
+### client
+
+`npm install axios` 
+
+## App.js ( client / src /... )
+
+## v1 添加register
+
+```js
+import RegisterComponent from "./components/register-component";
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomeComponent />} />
+          <Route path="register" element={<RegisterComponent />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+### v2 - 添加login
+
+也要記得去刪除onclick 否則無法直接先查看 ( 會報錯 )
+
+```js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import HomeComponent from "./components/home-component";
+import RegisterComponent from "./components/register-component";
+import LoginComponent from "./components/login-component";
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomeComponent />} />
+          <Route path="register" element={<RegisterComponent />} />
+          <Route path="login" element={<LoginComponent />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+export default App;
+```
+
+## register-component.js ( src / components / ...)
+
+### v1 - 先移除 on ...行為
+
+```js
+onChange={handleChangeUsername}
+onChange={handleChangeEmail}
+onChange={handleChangePassword}
+onChange={handleChnageRole}
+onClick={handleRegister}
+```
+
+### v2 - 套入AuthService 以及 ustState
+
+多了userState 跟 const ，然後放回onClick onChange 
+
+畫面跳轉還沒寫上
+
+```js
+import React, { useState } from "react";
+import AuthService from "../services/auth.service";
+const RegisterComponent = () => {
+  let [username, setUsername] = useState("");
+  let [email, setEmail] = useState("");
+  let [password, setPassword] = useState("");
+  let [role, setRole] = useState("");
+
+  // 別使用function 除非另外設定 bind(this)
+  const handleUsername = (e) => {
+    setUsername(e.target.value);
+  };
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+  };
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+  };
+  const handleRole = (e) => {
+    setRole(e.target.value);
+  };
+  const handleRegister = () => {
+    AuthService.register(username, email, password, role)
+      .then(() => {
+        window.alert("註冊成功，即將導向登入頁面");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  return (
+    <div style={{ padding: "3rem" }} className="col-md-12">
+      <div>
+        <div>
+          <label htmlFor="username">用戶名稱:</label>
+          <input
+            onClick={handleUsername}
+            type="text"
+            className="form-control"
+            name="username"
+          />
+        </div>
+        <br />
+        <div className="form-group">
+          <label htmlFor="email">電子信箱：</label>
+          <input
+            onChange={handleEmail}
+            type="text"
+            className="form-control"
+            name="email"
+          />
+        </div>
+        <br />
+        <div className="form-group">
+          <label htmlFor="password">密碼：</label>
+          <input
+            onChange={handlePassword}
+            type="password"
+            className="form-control"
+            name="password"
+            placeholder="長度至少超過6個英文或數字"
+          />
+        </div>
+        <br />
+        <div className="form-group">
+          <label htmlFor="password">身份：</label>
+          <input
+            onChange={handleRole}
+            type="text"
+            className="form-control"
+            placeholder="只能填入student或是instructor這兩個選項其一"
+            name="role"
+          />
+        </div>
+        <br />
+        <button onClick={handleRegister} className="btn btn-primary">
+          <span>註冊會員</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterComponent;
+```
+
+### v3 - 導向的功能添加，useNavigate
+
+```js
+import { useNavigate } from "react-router-dom";
+
+const RegisterComponent = () => {
+  const navigate = useNavigate(); 
+
+
+
+  const handleRegister = () => {
+    AuthService.register(username, email, password, role)
+      .then(() => {
+        window.alert("註冊成功，即將導向登入頁面");
+        navigate("/login");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+}
+```
+
+### v4 - 錯誤訊息⭐⭐⭐
+
+透過console.log (e) 發現是 e.response.data 會回傳格式錯誤訊息
+
+#### 原始樣貌
+
+```js
+return (
+    <div style={{ padding: "3rem" }} className="col-md-12">
+      <div>
+        <div className="alert alert-danger">{message}</div>
+```
+
+![](../../../Images/2024-01-22-11-53-43-image.png)
+
+#### 優化後⭐⭐⭐
+
+> 透過 message && 來做事
+
+```js
+return (
+  <div style={{ padding: "3rem" }} className="col-md-12">
+    <div>
+      {message && <div className="alert alert-danger">{message}</div>}
+```
+
+![](../../../Images/2024-01-22-11-58-32-image.png)
+
+`if (emailExist) return res.status(400).send("信箱已被註冊過了");`
+
+`if (error) return res.status(400).send(error.details[0].message);`
+
+## auth.service.js (src / services /...)
+
+### v1 - 編寫 axios 功能
+
+```js
+import axios from "axios";
+const API_URL = "http://localhost:8080/api/user";
+
+class AuthService {
+  login() {}
+  logout() {}
+  register(username, email, password, role) {
+    return axios.post(API_URL + "/register", {
+      username,
+      email,
+      password,
+      role,
+    });
+  }
+}
+
+export default new AuthService();
+```
+
+> 建議使用 變數名稱然後再回傳 不然會有warning
+
+```js
+let authService = new AuthService();
+export default authService;
+```
+
+## login-component.js (components)
+
+先拿掉 onChange onClick 避免報錯!
+
+### v1 -拿掉onChange之類
+
+import 也先註解
+
+```js
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import AuthService from "../services/auth.service";
+
+onChange={handleChangeEmail}
+onChange={handleChangePassword}
+onClick={handleLogin}
+```
+
+## 解釋 export default 是什麼
+
+### 使用default
+
+如果有使用 default 則 import可以自己命名
+
+```js
+// MyModule.js
+const myModuleValue = 42;
+export default myModuleValue;
+
+// AnotherFile.js
+import myValue from './MyModule';
+
+console.log(myValue); // 42vice();
+```
+
+### 沒使用default
+
+就不能隨便取，而是名稱要一樣
+
+```js
+// MyModule.js
+export const myModuleValue = 42;
+
+// AnotherFile.js
+import { myModuleValue } from './MyModule';
+
+console.log(myModuleValue); // 42
+```
+
+### 混合操作
+
+```js
+// MyModule.js
+export const namedExport1 = "Hello";
+export const namedExport2 = "World";
+export default 42;
+
+// AnotherFile.js
+import { namedExport1, namedExport2 } from './MyModule'; // 使用具名匯入
+import myDefaultValue from './MyModule'; // 使用預設匯入
+
+console.log(namedExport1); // Hello
+console.log(namedExport2); // World
+console.log(myDefaultValue); // 42
+```
 
 # (377) React登入使用者
 
