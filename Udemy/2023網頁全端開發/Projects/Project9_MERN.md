@@ -2949,8 +2949,6 @@ router.get("/findByName/:name", async (req, res) => {
 
 ---
 
-
-
 ## course-route.js
 
 ### v1 - 學生課程註冊功能😕
@@ -3072,8 +3070,247 @@ button 跟 span 都有錯
 
 # (381) Final Code
 
+下載
+
 # (382) Heroku免費託管服務終止
 
 Heroku於2022/11/28終止免費的託管服務，但目前市面上很少不需要綁定信用卡又穩定的託管服務，所以之後可能會看市場情況，教用Netlify或其他平台的免費託管教學。
 
 # (383) Heroku 部屬網站
+
+## 改用Render部屬網站!
+
+## Work Flow
+
+---
+
+### (Render) 創建帳號、使用Static
+
+### (Github) 建立新Project9 雲端專用repo
+
+先去`Github`創造新的Repositroy Project9
+
+然後在 Project9_MERN 下
+
+```batch
+git init
+git add .
+git commit -m "first commit for cloud"
+git remote add o [github-web-site]
+git push -u o master
+```
+
+然後傳送到 `Github` ，讓 Render 使用這個 `Git Repository`
+
+### (Render) static-site設定
+
+由於使用 Project9 / client  所以要root Directory 設定一下   
+
+> **下面參考展示** 
+
+![](../../../Images/2024-01-23-14-52-44-image.png)
+
+![](../../../Images/2024-01-23-15-01-33-image.png)
+
+![](../../../Images/b360102c6157a2cdc799c4fca97a597aa140c964.png)
+
+### (Atlas) 免費小資料庫
+
+![](../../../Images/2024-01-23-19-38-36-image.png)
+
+```js
+let url="mongodb+srv://yee885495:<password>@project9.2bplgga.mongodb.net/?retryWrites=true&w=majority"
+```
+
+> 不需要放MERNDB在後面，他本身就是目標資料庫
+
+### (Render) server 的上傳之前設定
+
+#### 先添加 json 腳本
+
+`server` >  `package.json`  腳本添加
+
+`server > node --version` 查看版本 得到 v18.18.0
+
+> **記得使用 npm install 這樣才會安裝 node_modules**
+> 
+> **才會自動安裝dependencies**
+
+```json
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "build": "npm install",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+
+  },
+
+  "engines": {
+    "node": "v18.18.0"
+  }
+```
+
+#### 設定 server port ( 改由動態分配 )
+
+`server` `index.js`
+
+> **index.js 設定 port  ， render可能跟heroku一樣會設定process.env.port** 
+
+#### Webservices Render設定
+
+![](../../../Images/2024-01-23-20-09-46-image.png)
+
+##### 打錯了 ， start command應該是 node index.js
+
+> **Start Command 打錯 應該是 node index.js** 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+![](../../../Images/2024-01-23-20-10-35-image.png)
+
+### (Render) client 的重新上傳再度 設定
+
+`auth.service.js` 、`course.service.js` 
+
+URL 改成 webservices 給我們的網址
+
+![](../../../Images/2024-01-23-20-49-17-image.png)
+
+> 可以用了
+
+![](../../../Images/2024-01-23-20-56-36-image.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+## package.json (server)
+
+>  **記得build 要給 npm install 讓它安裝依賴模組**
+
+為了讓render幫我運行 
+
+```json
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "build": "npm install",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+  },
+
+  "engines": {
+    "node": "v18.18.0"
+```
+
+## index.js ( server )
+
+**port 自動抓取可使用者**
+
+> **heroku 會自己添加給 env.PORT**  ，render不知道會不會
+
+```js
+const port =porcess.env.PORT || 8080;
+
+
+
+app.listen(port, () => {
+  console.log("Backend on port 8080");
+});
+```
+
+## 說一下，render web services 久沒用會降反應!
+
+---
+
+# Heroku 他做的比較重要的事情
+
+## 放這
+
+
+
+## server (index.js)
+
+> **網站本身位置就是 My_web_url / 就會跳過之前的 route設定 直達最下層**
+
+```js
+const path require("path");
+
+
+app.use(express.static(path.join(__dirname,"client","build"))
+
+
+// 網站本身位置就是 myWebURL/  就會跳過之前的 route設定 直達最下層
+if(
+    process.env.NODE_ENV ==="production"||
+    process.env.NODE_ENV ==="staging"
+){
+    app.get("*", (req,res)=>{
+        res.sendFile(path.join(__dirname,"client","build","index.html"))
+
+    })
+}
+
+
+```
+
+
+
+
+
+
+
+
+
+# 最終小考
+
+## 問題 1：HTTP 是一種無狀態協議(stateless protocol)。 無狀態協議是指什麼意思？
+
+- 無狀態協議代表此協議要求伺服器在多個request期間保留有關每個用戶的信息或狀態。
+
+- 無狀態代表這是個沒有用的協議，大家可以不用遵守，只要當參考就好。
+
+- 無狀態協議代表此協議不要求伺服器在多個request期間保留有關每個用戶的信息或狀態。🔥
+
+- 無狀態協議代表這個協議的狀態不太好，需要好好休息？
+
+## 問題 2：如果我們伺服器中的session儲存了某個送到客戶端的session id何時會過期，那我們是屬於stateful還是stateless？
+
+- 我不知道 
+
+- stateful 🔥
+
+- stateless 
+
+- 介於兩者之間。 
+
+## 問題 3：以下何者是stateful authentication的優點？
+
+- 製作難度相當高，需要RSA等公開加密演算法的基礎知識。
+
+- 降低伺服器開銷：大量session數據不需要存儲在伺服器端。
+
+- 因為伺服器端可以隨時將session內部的資料刪除，所以方便做session管理。🔥
+
+- 易於擴展：由於session數據存儲在客戶端，因此request會被導向到哪個後端伺服器的主機並不重要。
+
+## 問題 4：以下何者不是stateless authentication的優點？
+
+- 降低伺服器開銷：大量session數據不需要存儲在伺服器端。因此，我們可以在客戶端上存儲更多的用戶屬性，以減少訪問數據庫的次數，而不用擔心伺服器的開銷問題。
+
+- 易於擴展：由於session數據存儲在客戶端，因此request會被導向到哪個後端伺服器的主機並不重要，只要所有後端伺服器都持有相同的金鑰，那麼所有伺服器主機都具有相同的能力來驗證令牌的有效性。
+
+- 能夠隨時撤銷session。🔥
+
+- 比較符合HTTP協議的規範。
