@@ -1108,7 +1108,138 @@ b.addEventListener("click", () => {
   });
   ```
 
-# (169) Storage講解
+# (169) currentTarget 額外補充
+
+
+
+> 跟 event bubbling 有關
+
+
+
+各位同學，上支影片有個忘記補充的資訊，我在這裡用文字的方式補充說明一下。在 event bubbling 發生時，event object 的 target 屬性在 child element 與 parent element 的 event handler 內會是一樣的。
+
+例如：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Bubbling Demo</title>
+  </head>
+  <body>
+    <div id="outer">
+      <div id="middle">
+        <button id="inner">Click me!</button>
+      </div>
+    </div>
+ 
+    <script>
+      // 取得元素
+      const outerElement = document.getElementById("outer");
+      const middleElement = document.getElementById("middle");
+      const innerButton = document.getElementById("inner");
+ 
+      // 綁定 click 事件
+      outerElement.addEventListener("click", function (event) {
+        console.log("Outer element clicked!");
+        console.log("Event target:", event.target);
+      });
+ 
+      middleElement.addEventListener("click", function (event) {
+        console.log("Middle element clicked!");
+        console.log("Event target:", event.target);
+      });
+ 
+      innerButton.addEventListener("click", function (event) {
+        console.log("Inner button clicked!");
+        console.log("Event target:", event.target);
+      });
+    </script>
+  </body>
+</html>
+```
+
+![](../../../Images/2024-01-24-15-43-01-image.png)
+
+
+
+這裡可以看出三個 event handler 內的 event.target 屬性都是
+
+` <button id=“inner”>`。這是一個很特別的規則。但這個規則的壞處是我們無法知道目前是哪個元素上的event handler 正在被執行。因此，JavaScript 的 event object 除了 target 屬性之外，有另一個屬性叫做 currentTarget。
+
+MDN 上對 currentTarget 的定義是
+
+> 「The currentTarget read-only property of the Event interface identifies the element to which the event handler has been attached. This will not always be the same as the element on which the event was fired, because the event may have fired on a descendant of the element with the handler, and then bubbled up to the element with the handler. The element on which the event was fired is given by Event.target.」 （[Event: currentTarget property - Web APIs | MDN](https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget)）
+
+簡單來說，addEventListener 監聽的是誰，則 e.currentTarget 就是誰。例如：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Bubbling Demo</title>
+  </head>
+  <body>
+    <div id="outer">
+      <div id="middle">
+        <button id="inner">Click me!</button>
+      </div>
+    </div>
+ 
+    <script>
+      // 取得元素
+      const outerElement = document.getElementById("outer");
+      const middleElement = document.getElementById("middle");
+      const innerButton = document.getElementById("inner");
+ 
+      // 綁定 click 事件
+      outerElement.addEventListener("click", function (event) {
+        console.log("Outer element clicked!");
+        console.log("Event target:", event.target);
+        console.log("Event current target:", event.currentTarget);
+      });
+ 
+      middleElement.addEventListener("click", function (event) {
+        console.log("Middle element clicked!");
+        console.log("Event target:", event.target);
+        console.log("Event current target:", event.currentTarget);
+      });
+ 
+      innerButton.addEventListener("click", function (event) {
+        console.log("Inner button clicked!");
+        console.log("Event target:", event.target);
+        console.log("Event current target:", event.currentTarget);
+      });
+    </script>
+  </body>
+</html>
+```
+
+這段程式碼運行的結果是：
+
+![](../../../Images/2024-01-24-15-43-55-image.png)
+
+這裡可以看出，currentTarget 不斷在變化，指向的都是 addEventListener 的監聽對象。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# (170) Storage講解
 
 ## LocalStorage and SessionStorage
 
@@ -1156,7 +1287,7 @@ b.addEventListener("click", () => {
 
 - 清除所有的k-v 。
 
-# (170) JSON與Storage
+# (171) JSON與Storage
 
 ## 原因 :
 
