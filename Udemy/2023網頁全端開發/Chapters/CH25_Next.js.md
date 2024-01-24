@@ -460,6 +460,131 @@ export default function newPage() {
 
 # (389)CSS Modules與App Component
 
+## 介紹
+
+Next.js 支援 CSS Module
+
+`CSS Module` : 將CSS 文件做成Module，套用給特定的Next.js Component。
+
+CSS Modules 文件的命名規則是 [name].module.css。
+
+此外，CSS樣式套用在Component上時，會自動生成一個獨特的class名稱，此特性可以讓我們避免CSS命名的衝突。
+
+如果希望某些CSS 套用到所有頁面，我們需要創建一個名為
+
+pages/_app.js的文件。 
+
+> 創建這文件後 一定要重新運行，Next.js會自動套用_app.js的樣式，到所有頁面上。
+
+## Work Flow
+
+### 透過 { } + style.module.css 套用到layout身上
+
+> layout.module.css 、layout.js 套用到Layout身上
+
+建立 `my-next` \ `components` \ `layout.module.css`   `v1`
+
+`my-next` \ `components` \ `layout.js`  `v1` 
+
+![](../../../Images/2024-01-24-21-02-53-image.png)
+
+---
+
+### 套用到全域設定 !
+
+> [Routing: Custom App | Next.js (nextjs.org)](https://nextjs.org/docs/pages/building-your-application/routing/custom-app) ⭐
+> 
+> 原本預設 App Component當預設，可以自己覆蓋，透過建立_app.js
+> 
+> 下面我們 _app.js 跟 global.css配合
+
+`pages` > `_app.js`  建立該名稱的js檔 💡
+
+`my-next` > `styles` > `global.css` 建立檔案
+
+#### 🔥發現全域格式套用 優先度確實比較低🔥
+
+![](../../../Images/2024-01-24-21-29-54-image.png)
+
+![](../../../Images/2024-01-24-21-30-02-image.png)
+
+---
+
+---
+
+## layout.js (components)
+
+- 手法蠻特殊的，import 特別名稱的CSS進來後，className用 { } 處理
+
+```js
+import Head from "next/head";
+
+const name = "Oni";
+const websiteTitle = "Next.js 網站練習";
+import Link from "next/link";
+
+import styles from "./layout.module.css";
+
+export default function Layout({ children, returnBack }) {
+  return (
+    <div className={styles.layout}>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="author" content="Oni" />
+      </Head>
+      <header className={styles.header}>
+        <h1>{websiteTitle}</h1>
+        <h2>創建人{name}</h2>
+      </header>
+      <main>{children}</main>
+      {returnBack && (
+        <Link href="/" className={styles.home}>
+          回到首頁
+        </Link>
+      )}
+    </div>
+  );
+}
+```
+
+## layout.module.css (components)
+
+- 單純寫css就可以
+
+```css
+.header {
+  background-color: black;
+  color: aqua;
+}
+
+.layout {
+  padding: 3rem;
+}
+
+.home {
+  color: orange;
+  text-decoration: none;
+}
+```
+
+## _app.js (pages)⭐⭐⭐
+
+建立好之後 伺服器要重新啟動! 
+
+記得引用css ! !
+
+```js
+import "../styles/global.css";
+export default function App({ Component, pageProps }) {
+  return <Component {...pageProps} />;
+}
+```
+
+## 心得
+
+> git commit -m "Ch25 section 389，介紹CSS modules跟 App Component，一個寫好單一CSS，import能套用到目標component身上，只要給出className = {nameInCss}，另一個則是app全域套用預設"
+
 # (390)特別注意事項！
 
 各位同學，請特別留意。
@@ -472,7 +597,75 @@ export default function newPage() {
 
 # (391)Client-Side Rendering
 
+## 介紹
+
+![](../../../Images/2024-01-24-21-46-37-image.png)
+
+- getStaticProps 跟 getStaticPaths 之後會在說明 ⚠️
+
+> getServerSideProps 跟 getStaticProps 跟 getStaticPaths 只能用在pages下的
+> 
+> 檔案 **( 開發不適用 ，為了方便開發，但是Production的時候還是會被限制)**
+
+## Work Flow
+
+我使用 Ch21 Authenticate 的Restful API ，裡面的port被我改成3001 因為跟Next衝突。
+
+去開這個API來配合測試 ( 因為只有他可以取得學生raw data，別人很多回傳render )
+
+建立 `pages > profile > index.js` 
+
+### ⚠️ useEffect內不能放async
+
+#### 這些內容是 useEffect跑完之後，return過去的，算是client自己跑完才給出的😕😕😕😕😕😕!
+
+![](../../../Images/2024-01-24-22-11-50-image.png)
+
+
+
+## index.js (profile)
+
+> 不能放async 所以放一般，然後內部再放async
+
+> 另外記得用3001 而不是3000或者8080喔
+
+```js
+import { useEffect, useState } from "react";
+export default function Profile() {
+  const [data, setData] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  useEffect(() => {
+    const myfunction = async () => {
+      setLoading(true);
+      let response = await fetch("http://localhost:3001/students");
+      let data = await response.json();
+      setData(data);
+      setLoading(false);
+    };
+    myfunction();
+  }, []);
+  return (
+    <div>
+      <h1>{isLoading && "Loading"}</h1>
+      {data && data.map((d) => <p>{d.name}</p>)}
+    </div>
+  );
+}
+```
+
+## 心得
+
+> **Ch25 section 391，Client-Side Rendering，看起來比較像是透過技巧然後再由client自己等待API跑完之後自己弄出畫面，所以算客戶自己渲染的畫面** 
+
 # (392)Static Site Generation with Data
+
+
+
+
+
+
+
+
 
 # (393)Static Generation with Dynamic Routes
 
@@ -480,4 +673,8 @@ export default function newPage() {
 
 # (395)Codes until Now
 
+下載資源(我不需要)
+
 # (396)More Content
+
+之後也許會視情況增加其他課程內容。
