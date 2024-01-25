@@ -621,8 +621,6 @@ export default function App({ Component, pageProps }) {
 
 ![](../../../Images/2024-01-24-22-11-50-image.png)
 
-
-
 ## index.js (profile)
 
 > 不能放async 所以放一般，然後內部再放async
@@ -659,17 +657,421 @@ export default function Profile() {
 
 # (392)Static Site Generation with Data
 
+## 介紹
 
+這次要說 圖中的 
 
+Pre-Rendering > Static Generation > Normal Way  `getStaticProps`
 
+---
 
+## Work Flow
 
+### 
 
+製作
 
+`page > profile > static-generation-with-data.js` 
+
+![](../../../Images/2024-01-25-13-40-05-image.png)
+
+- 如果試過，就會發現有轉圈圈(代表從server 送過來整頁)
+
+再改方便一些
+
+![](../../../Images/2024-01-25-13-45-21-image.png)
+
+## static-generation-with-data.js⭐⭐⭐⭐⭐
+
+### 💡getStaticProps() 一定要回傳物件
+
+### 💡物件屬性一定要有props
+
+### 💡該屬性會自動被套用到下面default參數
+
+```js
+import Layout from "../../components/layout";
+// 名稱一定要是getStaticProps
+export async function getStaticProps() {
+  const response = await fetch("http://localhost:3001/students");
+  const data = await response.json();
+
+  // getStaticProps() 一定要return 一個物件
+  // 該物件的屬性一定要叫做 props
+  // props屬性會自動被Next.js使用
+  // props屬性會自動變成下面 default function的參數
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
+export default function StaticGenerationPage({ data }) {
+  return (
+    <Layout returnBack={true}>
+      {" "}
+      <div>
+        {data.map((d) => (
+          <p key={d._id}>{d.name}</p>
+        ))}
+      </div>
+    </Layout>
+  );
+}
+```
+
+## 
 
 # (393)Static Generation with Dynamic Routes
 
+## 目的:
+
+希望可以按下名稱之後 去到對應的 id Route並且顯示內容
+
+## Work Flow
+
+製作
+
+`page > profile > static-generation-with-dynamic-routes.js`
+
+> 雖然等一下會改掉 ，也可以不要先做 反正會改名~
+
+改造以下，前面都被我先註解，隱蔽
+
+`page > profile > index.js`  
+
+> 實際上跟上一節392類似，都使用了async getStaticProps +default+data
+
+<img src="../../../Images/2024-01-25-15-23-19-image.png" title="" alt="" width="362">
+
+`page > profile > static-.........` 改名成為 `[id].js`
+
+### 有個錯誤需要改ch21 ，我沒建立id的route
+
+`ch21` `app.js` 新增route
+
+### getStaticPaths配合getStaticProps才能⭐⭐⭐
+
+`[id].js` 才能使用，另外額外添加 回上一頁功能 !  
+
+## index.js (pages)
+
+增加Link連結，前往profile
+
+```js
+export default function Home() {
+  return (
+    <Layout>
+      <div>
+        <h1>這是網站首頁</h1>
+        <a href="/posts/edit-post"> 前往editPost_頁面會重整 </a>
+        <hr></hr>
+        <Link href="/posts/edit-post">前往editPost_使用Link</Link>
+        <hr />
+        <Link href="/newPage">前往newPage</Link>
+        <hr />
+        <Link href="/profile/static-generation-with-data">
+          前往static-generation-with-data
+        </Link>
+        <hr />
+        <Link href="/profile">前往profile</Link>
+      </div>
+    </Layout>
+  );
+}
+```
+
+## index.js (profile)
+
+稍微改造，讓他變成  async  getStaticProps + default 聯手出擊 
+
+順便把 Link 弄成 block 讓他變成一列，而且 width : fit-content 💡
+
+順便也把Layout拉一下
+
+```js
+// import { useEffect, useState } from "react";
+// export default function Profile() {
+//   const [data, setData] = useState("");
+//   const [isLoading, setLoading] = useState(false);
+//   useEffect(() => {
+//     const myfunction = async () => {
+//       setLoading(true);
+//       let response = await fetch("http://localhost:3001/students");
+//       let data = await response.json();
+//       setData(data);
+//       setLoading(false);
+//     };
+//     myfunction();
+//   }, []);
+//   return (
+//     <div>
+//       <h1>{isLoading && "Loading"}</h1>
+//       {data && data.map((d) => <p>{d.name}</p>)}
+//     </div>
+//   );
+// }
+import Link from "next/link";
+import Layout from "../../components/layout";
+export async function getStaticProps() {
+  const response = await fetch("http://localhost:3001/students");
+  const data = await response.json();
+  return {
+    props: {
+      data,
+    },
+  };
+}
+export default function Profile({ data }) {
+  return (
+    <Layout returnBack={true}>
+      <div>
+        {data.map((d) => (
+          <Link
+            style={{ display: "block", width: "fit-content" }}
+            href={`/profile/${d._id}`}
+          >
+            {d.name}
+          </Link>
+        ))}
+        <br />
+      </div>
+    </Layout>
+  );
+}
+```
+
+> **/profile/ 會比較好  用絕對路徑** 
+
+## [id].js  (profile)
+
+弄Layout並添加新屬性
+
+```js
+import Layout from "../../components/layout";
+export async function getStaticPaths() {
+  const response = await fetch("http://localhost:3001/students");
+  const data = await response.json();
+  // paths一定要符合 Next.js 要求的格式
+  // getStaticPaths() 一定要return 一個有paths的屬性的物件
+  // paths 一定需要一個array of objects
+  // 內部每個objecy都需要有params，裡面還要有id的屬性
+  // 每個id會被拿來做頁面
+  const paths = data.map((d) => {
+    return {
+      params: {
+        id: d._id.toString(),
+      },
+    };
+  });
+
+  return {
+    paths,
+    fallback: false, //  false製作404頁面
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const response = await fetch(`http://localhost:3001/students/${params.id}`);
+  const data = await response.json();
+  return {
+    props: {
+      data,
+    },
+  };
+}
+
+export default function StudentProfile({ data }) {
+  return (
+    <Layout returnPrevious={"/profile"}>
+      <div>
+        <h1>學生資料</h1>
+        <p>姓名:{data.name}</p>
+        <p>年齡:{data.age}</p>
+        <p>獎學金:{data.scholarship.merit}</p>
+        <p>其他:{data.scholarship.other}</p>
+      </div>
+    </Layout>
+  );
+}
+```
+
+## app.js (ch21)
+
+添加一個Route
+
+```js
+app.get("/students/:_id", async (req, res) => {
+  let { _id } = req.params;
+  let foundStudent = await Student.findOne({ _id });
+  return res.send(foundStudent);
+});
+```
+
 # (394)Server-Side Rendering
+
+## Work Flow
+
+使用 `profile > index.js` 
+
+把舊的  getStaticProps 註解
+
+使用 getServerSideProps 
+
+`profile > [id].js` 
+
+前兩個  getStaticProps 、getStaticPaths 註解
+
+新增   getServerSideProps 
+
+> 前兩個搭配的 因為有寫 fallback false 所以會製作404
+> 
+> 但是getServerSideProps 並不會 反而會直接顯出錯誤
+
+![](../../../Images/2024-01-25-17-18-06-image.png)
+
+`ch21 > app.js` 新增try catch 避免id給錯或者格式不同發生bug直接罷工
+
+## index.js (profile)
+
+```js
+// import { useEffect, useState } from "react";
+// export default function Profile() {
+//   const [data, setData] = useState("");
+//   const [isLoading, setLoading] = useState(false);
+//   useEffect(() => {
+//     const myfunction = async () => {
+//       setLoading(true);
+//       let response = await fetch("http://localhost:3001/students");
+//       let data = await response.json();
+//       setData(data);
+//       setLoading(false);
+//     };
+//     myfunction();
+//   }, []);
+//   return (
+//     <div>
+//       <h1>{isLoading && "Loading"}</h1>
+//       {data && data.map((d) => <p>{d.name}</p>)}
+//     </div>
+//   );
+// }
+import Link from "next/link";
+import Layout from "../../components/layout";
+// export async function getStaticProps() {
+//   const response = await fetch("http://localhost:3001/students");
+//   const data = await response.json();
+//   return {
+//     props: {
+//       data,
+//     },
+//   };
+// }
+export async function getServerSideProps() {
+  const response = await fetch("http://localhost:3001/students");
+  const data = await response.json();
+  return {
+    props: {
+      data,
+    },
+  };
+}
+export default function Profile({ data }) {
+  return (
+    <Layout returnBack={true}>
+      <div>
+        {data.map((d) => (
+          <Link
+            style={{ display: "block", width: "fit-content" }}
+            href={`/profile/${d._id}`}
+          >
+            {d.name}
+          </Link>
+        ))}
+        <br />
+      </div>
+    </Layout>
+  );
+}
+```
+
+## [id].js (profile)
+
+```js
+import Layout from "../../components/layout";
+// export async function getStaticPaths() {
+//   const response = await fetch("http://localhost:3001/students");
+//   const data = await response.json();
+//   // paths一定要符合 Next.js 要求的格式
+//   // getStaticPaths() 一定要return 一個有paths的屬性的物件
+//   // paths 一定需要一個array of objects
+//   // 內部每個objecy都需要有params，裡面還要有id的屬性
+//   // 每個id會被拿來做頁面
+//   const paths = data.map((d) => {
+//     return {
+//       params: {
+//         id: d._id.toString(),
+//       },
+//     };
+//   });
+
+//   return {
+//     paths,
+//     fallback: false, //  false製作404頁面
+//   };
+// }
+
+// export async function getStaticProps({ params }) {
+//   const response = await fetch(`http://localhost:3001/students/${params.id}`);
+//   const data = await response.json();
+//   return {
+//     props: {
+//       data,
+//     },
+//   };
+// }
+
+//
+
+export async function getServerSideProps({ params }) {
+  const response = await fetch(`http://localhost:3001/students/${params.id}`);
+  const data = await response.json();
+  return {
+    props: { data },
+  };
+}
+
+export default function StudentProfile({ data }) {
+  return (
+    <Layout returnPrevious={"/profile"}>
+      <div>
+        <h1>學生資料</h1>
+        <p>姓名:{data.name}</p>
+        <p>年齡:{data.age}</p>
+        <p>獎學金:{data.scholarship.merit}</p>
+        <p>其他:{data.scholarship.other}</p>
+      </div>
+    </Layout>
+  );
+}
+};
+}
+```
+
+## app.js (ch21)
+
+```js
+app.get("/students/:_id", async (req, res) => {
+  try {
+    let { _id } = req.params;
+    let foundStudent = await Student.findOne({ _id });
+    return res.send(foundStudent);
+  } catch (e) {
+    return res.send({});
+  }
+});
+```
 
 # (395)Codes until Now
 
