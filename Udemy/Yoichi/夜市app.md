@@ -182,6 +182,8 @@ for (let i = 1; i <= 5; i++) {
 
 ### IIFE 破解var
 
+讓他內外不相干 ! 
+
 ```js
 for (var i = 1; i <= 5; i++) {
   (function (i) {
@@ -257,3 +259,233 @@ if (this.pickedNumber == "") {
     });
   }
 ```
+
+# section 5-1
+
+## css 選擇棄，不同class但希望寫一起
+
+希望同時兩種class被Sass使用，要用 逗號 `,` 分開 別忘了
+
+## 希望按了btn後自動定位到顯示區塊
+
+```js
+setTimeout(() => {
+  let targetElement = document.querySelector(".presentation-Area");
+  targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+}, 500);
+```
+
+## 顯示小提示文字
+
+![](../../Images/2024-01-26-14-16-50-image.png)
+
+```html
+<footer>
+  © Made By
+  <a href="mailto:qw28425382694@gmail.com" title="qw28425382694@gmail.com"
+        >Oni</a>
+</footer>
+```
+
+## 時間功能，之前有做格式了
+
+### 格式Part
+
+```js
+function generateTime() {
+  let now = new Date();
+
+  // 日期部分
+  let dateOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "Asia/Taipei",
+  };
+  let dateStr = now.toLocaleDateString("zh-TW", dateOptions);
+
+  // 時間部分
+  let timeOptions = {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+    timeZone: "Asia/Taipei",
+  };
+  let timeStr = now.toLocaleTimeString("zh-TW", timeOptions);
+  let hour = timeStr.substring(0, 2);
+  let other = timeStr.substring(2);
+  hour = Number(hour) % 24;
+  timeStr = hour.toString().padStart(2, "0") + other;
+  return { dateStr, timeStr };
+}
+```
+
+### HTML 顯示時間 (菜單上)
+
+setTimeout最好使用 ()=>{  triggerfunction()}
+
+```js
+class HTMLTime {
+  static interval;
+  constructor() {}
+  static showTime() {
+    let clock = document.querySelector(".yoichi-orderTime");
+    let { timeStr, dateStr } = generateTime();
+    clock.innerText = timeStr;
+  }
+  static showUp() {
+    this.interval = setInterval(() => {
+      this.showTime();
+    }, 1000);
+  }
+  static vanish() {
+    clearInterval(this.interval);
+  }
+}
+HTMLTime.showUp();
+setTimeout(() => {
+  HTMLTime.vanish();
+}, 5000);
+```
+
+## 畫面layout，訂單的part 製作完成
+
+# section 5-2
+
+## 動態新增後，顯示出明細
+
+先思考Order的取得與顯示
+
+發現現階段 訂單沒有按造日期 取得當日訂單的功能
+
+希望 static orders=[]  儲存訂單的結構，改變一下，不同day的訂單，存到不同day去。
+
+先去test做小測試，分析day 要怎麼拆解，然後依造day push & get。
+
+---
+
+改從 history 下手
+
+## 文件太大 最好要做壓縮
+
+```js
+const LZString = require("lz-string");
+
+const jsonData = [/* json放這 */ ];
+
+// 將數據轉換為 JSON 字符串
+const jsonString = JSON.stringify(jsonData);
+
+// 計算原始大小
+const originalSize = new TextEncoder().encode(jsonString).length;
+console.log(`原始大小: ${originalSize} 字節`);
+
+// 將 JSON 字符串進行壓縮
+const compressedData = LZString.compress(jsonString);
+
+// 計算壓縮後大小
+const compressedSize = new TextEncoder().encode(compressedData).length;
+console.log(`壓縮後大小: ${compressedSize} 字節`);
+
+// 解壓縮數據
+const decompressedData = LZString.decompress(compressedData);
+
+console.log(decompressedData);
+// 解壓縮後的 JSON 對象
+const yourDecompressedData = JSON.parse(decompressedData);
+
+// console.log(yourDecompressedData);
+```
+
+### getItem
+
+```js
+ //取回要取回當天的紀錄，如果有給date則取回那天的 (做出來但是工作區不會使用，歷史紀錄才會用到)
+      data = JSON.parse(
+        LZString.decompress(localStorage.getItem(`yoichiOrders-${dateStr}`))
+      );
+```
+
+### setItem
+
+```js
+localStorage.setItem(
+      `yoichiOrders-${dateStr}`,
+      LZString.compress(JSON.stringify(Order.orders))
+    );
+```
+
+# section 5-3
+
+## 卡牌顯示訂單水平overflow效果
+
+主要透過 shrink:0 、overflow-x、flex-wrap 達成
+
+```scss
+section.presentation-Area {
+      position: relative;
+      border: 2px blue solid;
+      height: 95vh;
+      width: 90vw;
+      left: 2rem;
+      margin-top: 4rem;
+      display: flex;
+
+      flex-wrap: nowrap;
+      overflow-x: auto; /* 水平溢出滾動 */
+      .yoichi-order-shown {
+        border: 2px red solid;
+        height: 100%;
+        display: flex;
+        flex-basis: 25%;
+        flex-shrink: 0;
+```
+
+![](../../Images/2024-01-26-19-56-07-image.png)
+
+## 訂單使用 .innerHTML+ `` 設定更省力
+
+```js
+ yoichi_order_shown.innerHTML = `
+   
+          <div class="yoichi-card">
+            <div class="yoichi-card-time-number">
+              <div class="order-time"><p>${order.orderTime}</p></div>
+              <div class="order-number"><p>${index}</p></div>
+            </div>
+            <div class="yoichi-card-order-detail">
+              
+                ${products}
+              
+            </div>
+            <div class="yoichi-card-bottom">
+              <div class="order-total-price">
+                <p>總價</p>
+              </div>
+              <div class="order-buttonMotion">
+                <button>按鈕</button>
+              </div>
+            </div>
+          </div>
+     `;
+```
+
+## 小改 historyRetrive邏輯，更通暢
+
+如果取出 = null，避免像之前直接LZString分析。
+
+改成直接說沒有，避免出錯。
+
+## 插入順序 要在舊的之前的話
+
+```js
+  let shownExist = orderScreen.querySelector(".yoichi-order-shown");
+    if (shownExist) {
+      orderScreen.insertBefore(yoichi_order_shown, shownExist);
+    } else {
+      orderScreen.append(yoichi_order_shown);
+    }
+```
+
+# section 5-4

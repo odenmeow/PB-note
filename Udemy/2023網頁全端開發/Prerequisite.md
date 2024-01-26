@@ -48,6 +48,4 @@ Animation: https://storyset.com
 
 [Webflow 響應式網頁設定方式 (tenten.co)](https://tenten.co/learning/webflow-responsive-web/)  
 
-
-
 -備忘 還有bubbling 那一個

@@ -1110,11 +1110,7 @@ b.addEventListener("click", () => {
 
 # (169) currentTarget 額外補充
 
-
-
 > 跟 event bubbling 有關
-
-
 
 各位同學，上支影片有個忘記補充的資訊，我在這裡用文字的方式補充說明一下。在 event bubbling 發生時，event object 的 target 屬性在 child element 與 parent element 的 event handler 內會是一樣的。
 
@@ -1134,24 +1130,24 @@ b.addEventListener("click", () => {
         <button id="inner">Click me!</button>
       </div>
     </div>
- 
+
     <script>
       // 取得元素
       const outerElement = document.getElementById("outer");
       const middleElement = document.getElementById("middle");
       const innerButton = document.getElementById("inner");
- 
+
       // 綁定 click 事件
       outerElement.addEventListener("click", function (event) {
         console.log("Outer element clicked!");
         console.log("Event target:", event.target);
       });
- 
+
       middleElement.addEventListener("click", function (event) {
         console.log("Middle element clicked!");
         console.log("Event target:", event.target);
       });
- 
+
       innerButton.addEventListener("click", function (event) {
         console.log("Inner button clicked!");
         console.log("Event target:", event.target);
@@ -1162,8 +1158,6 @@ b.addEventListener("click", () => {
 ```
 
 ![](../../../Images/2024-01-24-15-43-01-image.png)
-
-
 
 這裡可以看出三個 event handler 內的 event.target 屬性都是
 
@@ -1189,26 +1183,26 @@ MDN 上對 currentTarget 的定義是
         <button id="inner">Click me!</button>
       </div>
     </div>
- 
+
     <script>
       // 取得元素
       const outerElement = document.getElementById("outer");
       const middleElement = document.getElementById("middle");
       const innerButton = document.getElementById("inner");
- 
+
       // 綁定 click 事件
       outerElement.addEventListener("click", function (event) {
         console.log("Outer element clicked!");
         console.log("Event target:", event.target);
         console.log("Event current target:", event.currentTarget);
       });
- 
+
       middleElement.addEventListener("click", function (event) {
         console.log("Middle element clicked!");
         console.log("Event target:", event.target);
         console.log("Event current target:", event.currentTarget);
       });
- 
+
       innerButton.addEventListener("click", function (event) {
         console.log("Inner button clicked!");
         console.log("Event target:", event.target);
@@ -1224,20 +1218,6 @@ MDN 上對 currentTarget 的定義是
 ![](../../../Images/2024-01-24-15-43-55-image.png)
 
 這裡可以看出，currentTarget 不斷在變化，指向的都是 addEventListener 的監聽對象。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # (170) Storage講解
 

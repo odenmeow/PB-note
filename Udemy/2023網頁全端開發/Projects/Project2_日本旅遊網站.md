@@ -208,7 +208,7 @@ align-content 會無法垂直於main aixs 搞置中。
 
 - alt 圖片 替代文字方便視障、 搜尋爬蟲效果更好、
 
-## img 屬性 title
+## img 屬性 title (顯示小文字)
 
 - title="你好，這不是連結唷"
   
