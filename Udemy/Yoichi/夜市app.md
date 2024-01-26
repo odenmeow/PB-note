@@ -448,16 +448,16 @@ section.presentation-Area {
 
 ```js
  yoichi_order_shown.innerHTML = `
-   
+
           <div class="yoichi-card">
             <div class="yoichi-card-time-number">
               <div class="order-time"><p>${order.orderTime}</p></div>
               <div class="order-number"><p>${index}</p></div>
             </div>
             <div class="yoichi-card-order-detail">
-              
+
                 ${products}
-              
+
             </div>
             <div class="yoichi-card-bottom">
               <div class="order-total-price">
@@ -488,4 +488,97 @@ section.presentation-Area {
     }
 ```
 
-# section 5-4
+# section 5-4⚠️
+
+## 增加紀錄 有訂單的日子，明天確認有沒有多⚠️，再添加LZ
+
+![](../../Images/2024-01-26-22-22-21-image.png)
+
+## bug- 總價 顯示正確但訂單沒-5元⚠️
+
+<img src="../../Images/2024-01-26-22-25-20-image.png" title="" alt="" width="162">
+
+## 按鈕按下去後，跳三個選項
+
+### 編輯訂單
+
+### 已付款
+
+### 完成訂單
+
+## 監聽DOM元素是否多了屬性
+
+### 廢棄了
+
+```js
+// 目標元素
+const targetElement = document.querySelector('.yoichi-triplebtn');
+
+// 監聽屬性變化
+targetElement.addEventListener('DOMAttrModified', (event) => {
+  if (event.attrName === 'aria-describedby' && event.newValue) {
+    console.log('aria-describedby 屬性已變化，值為：', event.newValue);
+    // 在這裡執行你的相應操作
+  }
+});
+
+// 修改 aria-describedby 屬性
+setTimeout(() => {
+  targetElement.setAttribute('aria-describedby', 'popover803560');
+}, 1000);
+```
+
+### 新方式
+
+```js
+const targetElement = document.querySelector('.yoichi-triplebtn');
+
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'aria-describedby') {
+      console.log('aria-describedby 屬性已變化，值為：', targetElement.getAttribute('aria-describedby'));
+      // 在這裡執行你的相應操作
+    }
+  });
+});
+
+observer.observe(targetElement, { attributes: true });
+
+// 修改 aria-describedby 屬性
+setTimeout(() => {
+  targetElement.setAttribute('aria-describedby', 'popover803560');
+}, 1000);
+```
+
+### 套用效果
+
+
+
+```js
+ let btns = orderScreen.querySelectorAll(".yoichi-triplebtn");
+    btns.forEach((btn) => {
+      let observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "aria-describedby"
+          ) {
+            console.log(
+              "aria-describedby 屬性已變化，值為：",
+              btn.getAttribute("aria-describedby")
+            );
+            // 在這裡執行你的相應操作
+          }
+        });
+      });
+
+      observer.observe(btn, { attributes: true });
+```
+
+![](../../Images/2024-01-26-23-52-23-image.png)
+
+![](../../Images/2024-01-26-23-52-45-image.png)
+
+## 變日，嚇一跳，確實可以使用
+
+![](../../Images/2024-01-27-00-01-32-image.png)
