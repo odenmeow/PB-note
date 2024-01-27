@@ -552,8 +552,6 @@ setTimeout(() => {
 
 ### 套用效果
 
-
-
 ```js
  let btns = orderScreen.querySelectorAll(".yoichi-triplebtn");
     btns.forEach((btn) => {
@@ -579,6 +577,597 @@ setTimeout(() => {
 
 ![](../../Images/2024-01-26-23-52-45-image.png)
 
+- 套用 MutationObserver 後 就不需要等待了，自動出現
+
 ## 變日，嚇一跳，確實可以使用
 
 ![](../../Images/2024-01-27-00-01-32-image.png)
+
+# section 6-1
+
+## 思考流程1/27
+
+今天按鈕 應該怎麼賦予功能
+
+<img src="../../Images/2024-01-27-12-46-49-image.png" title="" alt="" width="263">
+
+### 1.付款後 修改只能廢棄訂單 ( 追加必須重新製作訂單 )
+
+### 2.付款按下去後 才能按完成 ( ok )
+
+---
+
+---
+
+## ⚠️popover要focus 才行 避免出錯 (新增訂單圖層跑掉)
+
+## 讓訂單按下去有手感
+
+```scss
+  .paidOrder {
+    flex-basis: 33%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    border-radius: 0 0 12% 0;
+    button {
+      border-radius: 0 0 12% 0;
+      height: 100%;
+      width: 100%;
+      &:active {
+        transform: translateY(1px); /* 向下移動 2px，模擬按下效果 */
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* 添加一點陰影效果 */
+      }
+    }
+  }
+```
+
+## 大錯誤 loadOrderPage() 裡面{}給錯範圍
+
+```js
+function loadOrderPage() {
+  let orderScreen = document.querySelector(".presentation-Area");
+  // 清空避免二度呼叫內部已經有東西又追加!
+  orderScreen.innerHTML = "";
+  Order.orders.forEach((order, index) => {
+    let products 
+
+
+
+  });
+  // 替.popover-body 裡面增加元素，然後flex，放三個按鈕!
+  let btns = orderScreen.querySelectorAll(".yoichi-triplebtn");
+  console.log(btns);
+  btns.forEach((btn, index) => {
+```
+
+ 不小心把 btns也包含進去 導致重複製作 觀察器!
+
+```batch
+製作中 0
+app.js:495 製作中 1
+app.js:495 製作中 0
+app.js:495 製作中 1
+app.js:495 製作中 2
+app.js:495 製作中 0
+app.js:495 製作中 1
+app.js:495 製作中 2
+app.js:495 製作中 3
+app.js:495 製作中 0
+app.js:495 製作中 1
+app.js:495 製作中 2
+app.js:495 製作中 3
+app.js:495 製作中 4
+```
+
+## 要立刻保存狀態否則f5就沒了
+
+```js
+paidBtn.addEventListener("click", (e) => {
+              console.log("paidBtn數字是" + header_num);
+              // 去修改對應編號的 order 狀態為 paid
+              Order.orders[header_num].status = "paid";
+              document.querySelector(`[data-bs-title="${header_num}"]`).click();
+              Order.historyUpdate(); //保存狀態否則畫面f5刷新就沒了
+              loadOrderPage();
+            });
+```
+
+![](../../Images/2024-01-27-14-43-29-image.png)
+
+# section 6-2
+
+## fulfilled的對象就離場不需列出
+
+```js
+     if (order.status == "paid") {
+      btnMsg = "已付";
+      btnColor = "success";
+    }
+    if (order.status == "fulfilled") {
+      return; //直接跳過，不創建該訂單了
+    }
+
+
+
+
+
+
+           fulfillBtn.addEventListener("click", (e) => {
+              console.log("fulfillBtn數字是" + header_num);
+              // 去修改對應編號的 order 狀態為 fulfill
+              if (Order.orders[header_num].status == "paid") {
+                // 已經付錢，直接修改狀態，然後刷新，讓訂單離場
+                Order.orders[header_num].status = "fulfilled";
+                document
+                  .querySelector(`[data-bs-title="${header_num}"]`)
+                  .click();
+                Order.historyUpdate(); //保存狀態否則畫面f5刷新就沒了
+                loadOrderPage();
+              } else {
+                // 不可以跳過付錢的警告
+              }
+           });
+```
+
+## 💡考慮要不要做空白訂單 ( 顯示銷售總數 跟總金額 +訂單筆數 )
+
+## 增加訂單的 + 滑動錯誤⭐⭐⭐
+
+---
+
+### stack-overflow answer⭐⭐
+
+在代碼的這一部分
+
+```javascript
+<a
+    className="btn btn-primary"
+    data-bs-toggle="modal"
+    onClick={handleClick}
+    role="button"
+  >
+```
+
+您添加了`data-bs-toggle`⭐
+
+而且你的`handleClick`⭐
+
+```javascript
+const modal = Modal.getOrCreateInstance(modalElement);
+modal.show();
+```
+
+**這兩者不能一起工作**
+
+如果您從“A”標籤中刪除，則問題將得到解決。`data-bs-toggle="modal"`
+
+因為你的函數中已經有模態動作了`handleClick`
+
+要刪除 **data-bs-toggle** 因為這出錯的
+
+```html
+    <aside class="floating-element">
+      <button
+        type="button"
+        class="newOrderBtn btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#Modal-add-product"
+      >
+        +
+      </button>
+```
+
+```batch
+modal.js:158  Uncaught TypeError: Cannot read properties of undefined (reading 'backdrop')
+    at On._initializeBackDrop (modal.js:158:39)
+    at new On (modal.js:69:27)
+    at On.getOrCreateInstance (base-component.js:65:41)
+    at HTMLButtonElement.<anonymous> (modal.js:363:22)
+    at HTMLDocument.n (event-handler.js:118:19)
+```
+
+## 訂單請先付款才能完成 (fulfill) (顯示警告)
+
+![](../../Images/2024-01-27-15-17-20-image.png)
+
+```js
+fulfillBtn.addEventListener("click", (e) => {
+              console.log("fulfillBtn數字是" + header_num);
+              // 去修改對應編號的 order 狀態為 fulfill
+              if (Order.orders[header_num].status == "paid") {
+                // 已經付錢，直接修改狀態，然後刷新，讓訂單離場
+                Order.orders[header_num].status = "fulfilled";
+                document
+                  .querySelector(`[data-bs-title="${header_num}"]`)
+                  .click();
+                Order.historyUpdate(); //保存狀態否則畫面f5刷新就沒了
+                loadOrderPage();
+              } else {
+                // 不可以跳過付錢的警告
+                (function showWarn() {
+                  let body = document.querySelector("body");
+                  let warn = document.createElement("div");
+                  // <div class="successSend alert alert-warning" role="alert">新增成功</div>
+                  warn.innerText = "請先付款";
+                  warn.className = "noSend alert alert-warning";
+                  warn.setAttribute("role", "alert");
+                  body.append(warn);
+                  warn.addEventListener("animationend", (e) => {
+                    e.target.remove();
+                  });
+                  warn.style.animation =
+                    "opacityTransitions 2.1s ease forwards";
+                })();
+              }
+            });
+          }
+```
+
+## 還是讓按鈕有專注功能避免完成出現鬼影
+
+```js
+data-bs-trigger="focus"
+
+
+<div class="order-buttonMotion">
+                <button type="button" data-bs-trigger="focus" data-bs-custom-class="custom-popover" data-bs-placement="top"  class="yoichi-triplebtn btn btn-lg btn-${btnColor}" data-bs-toggle="popover" data-bs-title="${index}" data-bs-content="生成中...">${btnMsg}</button>
+
+              </div>
+```
+
+## 確定做空白訂單 ( 顯示銷售總數 跟總金額 +訂單筆數 )
+
+方法: 訂單全部先出現後，最後再去 新增統計的 假訂單在最前面的位置
+
+品名       數量
+
+豬肉串    11
+
+香腸         8
+
+..
+
+..
+
+..
+
+收入 2500元    之類
+
+### 動了兩處，順便把他們淨空比較好查看邏輯
+
+![](../../Images/2024-01-27-16-59-52-image.png)
+
+![](../../Images/2024-01-27-16-57-44-image.png)
+
+# section 6-3
+
+## revise 按鈕的修改訂單功能
+
+之前有寫displayProducts 現在只要透過他就可以顯示歷史productsLog 然後order商品數量、總價
+
+```js
+reviseBtn.addEventListener("click", (e) => {
+        console.log("reviseBtn數字是" + header_num);
+        // 去顯示訂單修改畫面出來
+        // 已經付款的 只能廢棄訂單 (跳出提示)
+        displayProducts("revise", header_num);
+});
+```
+
+## 已經付款的 revise 只能廢棄訂單 (按鈕提示不可修改)
+
+## displayProducts修改商品重新呈現(累加HTMLbug)
+
+- 每次 forEach..... append之前都先清空，避開bug
+
+```js
+let block = document.querySelector(".cal-Area form");
+  block.innerHTML = `<section class="yoichi-block yoichi-block-title">
+            <div class="yoichi-p-name">商品名稱</div>
+            <div class="yoichi-p-number">數量</div>
+            <div class="yoichi-p-btns">操作</div>
+          </section>`;
+  Product.products.forEach((product, index) => {
+```
+
+## numberBtnsAppendFunction放入displayProducts
+
+否則info="revise" 產生的按鈕會失去功能，也不會計價
+
+另外必須要產生商品跟數量跟操作後，自動計價看看
+
+避免 revise 預設有商品數量 但不是透過btn 所以不會計價的問題!
+
+```js
+block.append(section);
+  });
+  // 先計算看看 (因為如果是修改的商品預設的數量 並非由按鈕觸發(不會run計算calculateAll))
+  calculateAll();
+  (function numberBtnsAppendFunction() {
+```
+
+## displayProducts  new及revise 輔助參數設定，避免pickedProducts出錯
+
+💡**pickedProducts 為了方便 calculateAll 計算** 💡
+
+```js
+function displayProducts(info, oid) {
+  let productsInfo;
+  if (info == "new") {
+    Product.historyRetrieve(); //依照最新設定顯示
+    // 訂單編號要自動推算
+    document.querySelector(".yoichi-orderNumber").innerText =
+      Order.orders.length;
+    PickedProduct.pickedProducts = [];
+  } else if (info == "revise") {
+    // 如果要求顯示舊訂單則依log去顯示
+    // Product.products = Order.orders[oid].productsLog;
+    Order.historyRetrieve(); // 這邊就接著之後更改Product.products使用特定Order的 productsLog 歷史紀錄囉
+    // 後續不可以Product.historyupdate覆蓋，會覆蓋商家的最新編輯售價
+    // 送出修改之後，重新diplayProducts("new")
+    // HTMLTime要停止 、改成訂單產生的時間
+    console.log("修改中");
+    Product.products = Order.orders[oid].productsLog;
+    PickedProduct.pickedProducts = Order.orders[oid].details;
+    // 改變按鈕 【送出】 => 【修改】
+  }
+```
+
+## revise按下後應該自動往上視窗
+
+```js
+ reviseBtn.addEventListener("click", (e) => {
+              console.log("reviseBtn數字是" + header_num);
+              // 去顯示訂單修改畫面出來
+              // 已經付款的 只能廢棄訂單 (跳出提示)
+              displayProducts("revise", header_num);
+              // 應該要自動往上
+              let header = document.querySelector("header");
+              console.log("滑動中");
+              header.scrollIntoView({
+                behavior: "instant",
+                block: "start",
+              });
+            });
+```
+
+## info=="revise" 內，時間跟編號要改設定
+
+## 修改 addNewOrderBtn內部不再使用clearScreen，直接displayProducts("new") 全部刷新，覆蓋修改中的
+
+```js
+(function addNewOrderBtn() {
+  let btn = document.querySelector(".newOrderBtn");
+  btn.addEventListener("click", (e) => {
+    try {
+      let header = document.querySelector("header");
+      console.log("滑動中");
+      header.scrollIntoView({
+        behavior: "instant",
+        block: "start",
+      });
+      (function resetCart() {
+        let resetOrderBtn = document.querySelector(".yoichi-order-revise");
+        if (resetOrderBtn != null) {
+          resetOrderBtn.classList.add("yoichi-order-create");
+          resetOrderBtn.classList.remove("yoichi-order-revise");
+        }
+        displayProducts("new");
+      })();
+    } catch (e) {
+      console.log(e, "錯誤");
+    }
+  });
+})();
+```
+
+## createOrderBtn 改成 sendOrderBtn，應該可IIFE，另外也在按扭上先確認class包含create或者revise來確認動作
+
+```js
+function sendOrderBtn() {
+  let btnSend = document.querySelector(".yoichi-order-create");
+  if (btnSend == null) return;
+  btnSend.addEventListener("click", (e) => {
+    if (e.target.classList.contains("yoichi-order-create")) {
+```
+
+## 修改訂單之前，先去把revise的畫面時間處理(停止+改變為old訂單生成時間)
+
+```js
+   } else if (info == "revise") {
+    // 如果要求顯示舊訂單則依log去顯示
+    // Product.products = Order.orders[oid].productsLog;
+    Order.historyRetrieve(); // 這邊就接著之後更改Product.products使用特定Order的 productsLog 歷史紀錄囉
+    // 後續不可以Product.historyupdate覆蓋，會覆蓋商家的最新編輯售價
+    // 送出修改之後，重新diplayProducts("new")
+    // HTMLTime要停止 、改成訂單產生的時間
+    console.log("修改中");
+    Product.products = Order.orders[oid].productsLog;
+    PickedProduct.pickedProducts = Order.orders[oid].details;
+    // 改變按鈕 【送出】 => 【修改】 如果null代表找不到，那一定跟上一個訂單有關
+    let reviseOrderBtn = document.querySelector(".yoichi-order-create");
+    if (reviseOrderBtn != null) {
+      reviseOrderBtn.classList.add("yoichi-order-revise");
+      reviseOrderBtn.classList.remove("yoichi-order-create");
+    }
+    // 改訂單編號
+    document.querySelector(".yoichi-orderNumber").innerText = oid;
+    HTMLTime.t_vanish();
+    document.querySelector(".yoichi-orderTime").innerText =
+      Order.orders[oid].orderTime;
+  }
+```
+
+## 預設叫做生成訂單，修改狀態要叫修改，info=='revise'那邊做設定。
+
+```js
+ if (reviseOrderBtn != null) {
+      reviseOrderBtn.classList.add("yoichi-order-revise");
+      reviseOrderBtn.classList.remove("yoichi-order-create");
+    }
+    // 改內容文字
+    document.querySelector(".yoichi-order-revise").innerText = "修改";
+```
+
+## 如果有paid就顯示不可改
+
+## 修改後移動到顯示區
+
+## 小小修改，生成btn的class、按鈕內文字統一由display new revise發包
+
+# section 6-4
+
+## new的時候，模擬鎖改成文字'新訂單'
+
+```js
+ document.querySelector(".yoichi-tiptool").innerHTML = "<p>新單</p>";
+  } else if (info == "revise") {
+```
+
+## 忘記顯示生成，雖然有移除immutable-order，小改。
+
+```js
+  } else if (info == "revise") {
+    // 如果要求顯示舊訂單則依log去顯示
+    // Product.products = Order.orders[oid].productsLog;
+    Order.historyRetrieve(); // 這邊就接著之後更改Product.products使用特定Order的 productsLog 歷史紀錄囉
+    // 後續不可以Product.historyupdate覆蓋，會覆蓋商家的最新編輯售價
+    // 送出修改之後，重新diplayProducts("new")
+    // HTMLTime要停止 、改成訂單產生的時間
+    Product.products = Order.orders[oid].productsLog;
+    PickedProduct.pickedProducts = Order.orders[oid].details;
+    // 改變按鈕 【送出】 => 【修改】 如果null代表找不到，那一定跟上一個訂單有關
+    let reviseOrderBtn = document.querySelector(".yoichi-order-send");
+    reviseOrderBtn.classList.add("yoichi-order-revise");
+    reviseOrderBtn.classList.remove("yoichi-order-create");
+    reviseOrderBtn.classList.remove("immutable-order");
+    reviseOrderBtn.innerText = "生成";
+```
+
+## revise或者revise+paid的時候，顯示作廢按扭
+
+```js
+    if (Order.orders[oid].status == "paid") {
+      // 改內容文字
+      let btn = document.querySelector(".yoichi-order-revise");
+      btn.innerText = "不可修改"; //要二度確認作廢與否
+      btn.classList.add("immutable-order"); //如果偵測到就使用廢棄的方式
+    }
+
+    (function deprecatedBtnTooltip() {
+      let div_deprecate = document.querySelector(".yoichi-tiptool");
+      div_deprecate.innerHTML = "";
+      let deprecatedBtn = document.createElement("button");
+      deprecatedBtn.classList.add("yoichi-deprecatedBtn");
+      deprecatedBtn.innerHTML = "作廢";
+      div_deprecate.append(deprecatedBtn);
+    })();  })();
+```
+
+## 作廢按扭按下去訂單作廢
+
+```js
+(function deprecatedBtnTooltip() {
+      let div_deprecate = document.querySelector(".yoichi-tiptool");
+      div_deprecate.innerHTML = "";
+      let deprecatedBtn = document.createElement("button");
+      deprecatedBtn.classList.add("yoichi-deprecatedBtn");
+      deprecatedBtn.innerHTML = "作廢";
+      div_deprecate.append(deprecatedBtn);
+      deprecatedBtn.addEventListener("click", (e) => {
+        // 顯示是否作廢 (防止按錯)
+        let confirmed = window.confirm("確定要作廢?");
+        if (confirmed) {
+          Order.orders[oid].status = "deprecated";
+          Order.historyUpdate();
+          alert("成功作廢!");
+          displayProducts("new");
+          loadOrderPage();
+        }
+      });
+    })();
+```
+
+```batch
+mongodb+srv://yee885495:<password>@cluster0.cjbwlxs.mongodb.net/?retryWrites=true&w=majority
+```
+
+# 7-1
+
+## 發現bug ，先修改，付款後，沒有更新上面的displayProduct畫面，清空付款會消失商品但錢沒被改
+
+付款有bug!!!
+
+修改中付款 會直接結算(變更)
+
+## 因為被同步操作，我們使用Order.orders[i]的引用，所以出錯。
+
+pickedProducts 如果被移除陣列，會真的影響到Order.orders[oid].details  !!!
+
+```js
+ PickedProduct.pickedProducts = Order.orders[oid].details;
+    // 改變按鈕 【送出】 => 【修改】 如果null代表找不到，那一定跟上一個訂單有關
+    let reviseOrderBtn = document.querySelector(".yoichi-order-send");
+    reviseOrderBtn.classList.add("yoichi-order-revise");
+    reviseOrderBtn.classList.remove("yoichi-order-create");
+    reviseOrderBtn.classList.remove("immutable-order");
+    reviseOrderBtn.innerText = "修改";
+
+    if (Order.orders[oid].status == "paid") {
+```
+
+## 之所以按了 paid才發現錯誤是因為，他會更新畫面(其實早就錯了)
+
+## 請善用深度複製，避免誤傷引用!!!!
+
+```js
+    Product.products = Order.orders[oid].productsLog;
+    PickedProduct.pickedProducts = Order.orders[oid].details;
+```
+
+```js
+// 深拷貝 Product.products
+    Product.products = JSON.parse(
+      JSON.stringify(Order.orders[oid].productsLog)
+    );
+
+    // 深拷貝 PickedProduct.pickedProducts
+    PickedProduct.pickedProducts = JSON.parse(
+      JSON.stringify(Order.orders[oid].details)
+    );
+```
+
+## 深度複製搞定就剩這個，如果fulfill、pay就順便displayupdate('new')，編輯到一半付錢或者完成訂單，視同放棄displayProducts編輯區，避開bug。
+
+```js
+ paidBtn.addEventListener("click", (e) => {
+              console.log("paidBtn數字是" + header_num);
+              // 去修改對應編號的 order 狀態為 paid
+              Order.orders[header_num].status = "paid";
+              document.querySelector(`[data-bs-title="${header_num}"]`).click();
+              Order.historyUpdate(); //保存狀態否則畫面f5刷新就沒了
+              console.log(Order.orders[header_num]);
+              displayProducts("new"); //編輯到一半付錢就視同放棄修改
+
+              loadOrderPage();
+            });
+```
+
+```js
+ fulfillBtn.addEventListener("click", (e) => {
+              console.log("fulfillBtn數字是" + header_num);
+              // 去修改對應編號的 order 狀態為 fulfill
+              if (Order.orders[header_num].status == "paid") {
+                // 已經付錢，直接修改狀態，然後刷新，讓訂單離場
+                Order.orders[header_num].status = "fulfilled";
+                document
+                  .querySelector(`[data-bs-title="${header_num}"]`)
+                  .click();
+                Order.historyUpdate(); //保存狀態否則畫面f5刷新就沒了
+                displayProducts("new");
+                loadOrderPage();
+              } else {
+```

@@ -3178,22 +3178,6 @@ URL 改成 webservices 給我們的網址
 
 ![](../../../Images/2024-01-23-20-56-36-image.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ---
 
 ## package.json (server)
@@ -3238,8 +3222,6 @@ app.listen(port, () => {
 
 ## 放這
 
-
-
 ## server (index.js)
 
 > **網站本身位置就是 My_web_url / 就會跳過之前的 route設定 直達最下層**
@@ -3261,17 +3243,7 @@ if(
 
     })
 }
-
-
 ```
-
-
-
-
-
-
-
-
 
 # 最終小考
 
