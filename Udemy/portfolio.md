@@ -1,3 +1,5 @@
+# 到第五節之前都是修改+修改為主
+
 # section 1-1
 
 ## 透過webservices才搭建完成
@@ -377,6 +379,8 @@ x4 ~ x10 直接透明化
 
 保留button功能在home但是layout持有div bubble cluster
 
+---
+
 # 先偷偷部屬Render試試看!⭐⭐⭐⭐⭐
 
 ## 發生警告 要求使用Image 這個next標籤
@@ -465,7 +469,6 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-
 ```
 
 ### 步驟:
@@ -476,6 +479,326 @@ npm run export
 
 ![](../Images/2024-01-31-01-43-12-image.png)
 
+然後成功Static site了 ，之後可能換用WebService也不一定 ?
+
+暫時 連出去網站的部分，使用webServices EJS 提供 之前專案
+
+---
+
+# 4-1
+
+## 修改 停止泡泡的滑鼠游標樣式
+
+```css
+.stopBubble:hover {
+  cursor: pointer;
+}
+```
+
+```js
+<a
+            className={style.stopBubble}
+```
+
+## 修正 navbar 比父元素更寬(超出的問題)
+
+### 兇手是自己裝飾的框框😕、以及@media scale害的😕
+
+```css
+section.resume section.picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2 1 500px;
+  position: relative;
+  padding: 2rem 0rem;
+  overflow: hidden; /* 防止子元素溢出 */
+}
 
 
-然後成功Static site了 
+section.resume section.picture div.greenRect1 {
+  width: 30vw;
+  height: 90vh;
+  border: 10px solid rgb(202, 248, 223);
+  transform: rotate(-90deg) translate(-50%, 0);
+  position: absolute;
+  z-index: -1;
+}
+```
+
+```css
+@media screen and (max-width: 1161px) {
+  section.about-me section.description {
+    width: 80%;
+  }
+  section.resume section.picture img,
+  .nextImage {
+    position: relative;
+    width: 70%;
+  }
+  section.resume section.table {
+    /* transform: scale(1.2); */
+    margin: 2rem;
+  }
+}
+```
+
+## 圖片又要求或警告了
+
+> 把objectFit="cover"拿掉了
+
+```js
+<Image
+            className={style.nextImage}
+            width={0}
+            height={0}
+            sizes="100vw"
+            style={{ width: "90%", height: "auto" }}
+            alt="me"
+            src="/project3/images/portrait.jpg"
+            layout="fill"
+            priority={true}
+          />
+```
+
+## 修改 停止泡泡+貓貓的位置
+
+# 4-2
+
+## toggle area 改成左邊出現
+
+> **start** 
+
+```js
+<Navbar.Offcanvas
+            id={`offcanvasNavbar-expand-${false}`}
+            aria-labelledby={`offcanvasNavbarLabel-expand-${false}`}
+            placement="start"
+          >
+```
+
+## toggle hamburger 改成左邊出現
+
+```js
+ <Container fluid>
+          <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${false}`} />
+
+          <Navbar.Brand
+```
+
+## 字體 CHEN I 校正
+
+```js
+<Navbar.Brand
+            href="#"
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+```
+
+# 4-3
+
+## 改回右邊 (比較好操作!)
+
+```js
+<Navbar.Brand
+            href="#"
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+              transform: "translate(50%,0)",
+            }}
+          >
+            {navTitle}
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${false}`} />
+          <Navbar.Offcanvas
+            id={`offcanvasNavbar-expand-${false}`}
+            aria-labelledby={`offcanvasNavbarLabel-expand-${false}`}
+            placement="end"
+            style={{ width: "50%" }}
+          >
+```
+
+# 4-4
+
+## 泡泡出現範圍 以及相對絕對問題
+
+改用 hidden 這樣泡泡才不會超出範圍造成某些手機 scroll-x 可以動來動去
+
+absolute 讓位置是絕對
+
+```js
+.bubble-background-wrap {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+}
+```
+
+```js
+export default function Layout({ children, bubbleStatus }) {
+  return (
+    <div style={{ position: "relative" }}>
+      <div
+        className={`${styleB["bubble-background-wrap"]} bubbleCluster  bubbleShow`}
+      >
+        <div className={`${styleB.bubble} ${styleB.x1}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x2}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x3}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x4}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x5}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x6}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x7}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x8}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x9}`}></div>
+        <div className={`${styleB.bubble} ${styleB.x10}`}></div>
+      </div>
+      <Head>
+```
+
+```css
+.bubble {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  bottom: 0;
+  position: absolute;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2),
+    inset 0px 10px 30px 5px rgba(252, 255, 255, 1);
+  pointer-events: none; /* 設置 pointer-events 為 none，讓事件穿透 */
+}
+
+@keyframes animateBubble {
+  0% {
+    bottom: 0%;
+  }
+  100% {
+    bottom: 100%;
+  }
+}
+```
+
+然後把x1~x10 的 top都拿掉
+
+```js
+.x1 {
+  animation: animateBubble 25s linear infinite,
+    sideWays 2s ease-in-out infinite alternate;
+  left: 5%;
+  transform: scale(0.5);
+}
+```
+
+## 4-5 也是修改畫面呈現而已
+
+## 修改Nav 為sticky
+
+```js
+ <Navbar
+        expand={false}
+        className="navbar-expand-lg bg-body-tertiary mb-3"
+        sticky="top"
+      >
+```
+
+## 修改children那邊的section，移除marginTop:10vh
+
+## Nav的傳送方式 as {Link}⭐⭐⭐⭐
+
+```js
+<Nav.Link as={Link} href="/" className={style.NavLinkHover}>
+                  首頁
+                </Nav.Link>
+```
+
+# section 5 -1  開始製造分頁(作品說明)
+
+如果導航兩次到 同一個目前都不存在的頁面 = 404 會出現錯誤
+
+```batch
+Error: Invariant: attempted to hard navigate to the same URL /Oni/project-MyAutoMechine 
+```
+
+![](../Images/2024-01-31-16-20-09-image.png)
+
+- 這是因為 第一次有預渲染，第二次會試圖拿來用但是沒有。
+
+## 重複連接 使用useRouter邏輯避險 直接不允許相同
+
+```js
+import { useRouter } from "next/router";
+
+const navigateToSamePage = (url) => {
+ if (router.asPath !== url) {
+ router.push(url);
+ }
+ };
+
+                   <NavDropdown.Item
+                      className={style.NavLinkHover}
+                      key={object.name + index}
+                      // as={Link}
+                      // href={object.link}
+                      onClick={() => {
+                        navigateToSamePage(object.link);
+                      }}
+                    >
+                      {object.name}
+                    </NavDropdown.Item>
+```
+
+## 製作 blog-img-container 、blog-img 自己的圖片格式
+
+```css
+.blog-img-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-bottom: 1rem;
+}
+
+.blog-img {
+  flex-basis: 40%;
+  flex-shrink: 1;
+  /* 添加其他樣式，例如邊框或間距，根據需要 */
+  border: 1px solid #ddd;
+  margin: 5px;
+}
+```
+
+```js
+<div className={style["blog-img-container"]}>
+              <Image
+                className={style["blog-img"]}
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: "50%", height: "auto" }}
+                alt="me"
+                src="/Oni/images/relay_wire.png"
+                layout="fill"
+                priority={true}
+              />
+            </div>
+```
+
+## 先寫樹梅派計畫內容
+
+連結也用上了，樹梅派姑且就這樣吧，去看commit
+
+## 使用Redux 全域狀態管理()
+
+# Section 5-2
+
+// output: "export", 好像用不用都無所謂ㄟ @@?
