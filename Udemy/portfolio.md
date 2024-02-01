@@ -485,7 +485,7 @@ npm run export
 
 ---
 
-# 4-1
+# section 4-1
 
 ## 修改 停止泡泡的滑鼠游標樣式
 
@@ -563,7 +563,7 @@ section.resume section.picture div.greenRect1 {
 
 ## 修改 停止泡泡+貓貓的位置
 
-# 4-2
+# section 4-2
 
 ## toggle area 改成左邊出現
 
@@ -599,7 +599,7 @@ section.resume section.picture div.greenRect1 {
           >
 ```
 
-# 4-3
+# section 4-3
 
 ## 改回右邊 (比較好操作!)
 
@@ -624,7 +624,7 @@ section.resume section.picture div.greenRect1 {
           >
 ```
 
-# 4-4
+# section 4-4
 
 ## 泡泡出現範圍 以及相對絕對問題
 
@@ -699,7 +699,7 @@ export default function Layout({ children, bubbleStatus }) {
 }
 ```
 
-## 4-5 也是修改畫面呈現而已
+## section 4-5 也是修改畫面呈現而已
 
 ## 修改Nav 為sticky
 
@@ -799,6 +799,188 @@ const navigateToSamePage = (url) => {
 
 ## 使用Redux 全域狀態管理()
 
-# Section 5-2
+# Section 5-2 圖片放大鏡
 
 // output: "export", 好像用不用都無所謂ㄟ @@?
+
+## 潤飾文字
+
+## 使用 react-medium-image-zoom 套件
+
+```batch
+npm install --save react-medium-image-zoom
+```
+
+## ⭐因為zommContainer有影子div，所以CSS特別喬了一下
+
+> **blog-img-container > blog-img 沒使用放大鏡💡** 
+
+> **blog-img-container >  blog-img-zoomer 單張使用放大鏡💡** 
+
+> **blog-img-container > blog-two-img-zoomer 使用兩張放大鏡💡**
+
+```css
+.blog-img-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-bottom: 1rem;
+}
+
+.blog-img-container > .blog-img {
+  flex-basis: 30%;
+  flex-shrink: 1;
+  margin: 5px;
+  text-align: center;
+}
+
+.blog-img-container > .blog-img-zoomer {
+  flex-basis: 100%;
+  flex-shrink: 1;
+  margin: 5px;
+  transform: translate(25%, 0);
+}
+
+.blog-img-container > .blog-two-img-zoomer {
+  flex-basis: 100%;
+  flex-shrink: 1;
+  margin: 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+```
+
+## 放大鏡css之後，放大鏡實際程式碼(autoMachine)
+
+> **實際的使用 如下** 
+
+```js
+<div className={style["blog-img-container"]}>
+              <div className={style["blog-img-zoomer"]}>
+                <ControlledZoom
+                  isZoomed={isZoomed}
+                  onZoomChange={handleZoomChange}
+                >
+                  <Image
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    style={{ width: "50%", height: "auto" }}
+                    alt="me"
+                    src="/Oni/images/relay_wire.png"
+                    layout="fill"
+                    priority={true}
+                  />
+                </ControlledZoom>
+              </div>
+            </div>
+```
+
+# Section 5-3
+
+## 發現zoom超出html，需要處理overflow hidden
+
+> 放棄blog-img-zoomer 不透過他了，直接透過CSS translate
+
+```js
+<div className={style["blog-img-container"]}>
+              <ControlledZoom
+                isZoomed={isZoomed}
+                onZoomChange={handleZoomChange}
+              >
+                <Image
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  style={{
+                    transform: "translate(50%,0)",
+                    width: "50%",
+                    height: "auto",
+                  }}
+                  alt="me"
+                  src="/Oni/images/relay_wire.png"
+                  layout="fill"
+                  priority={true}
+                />
+              </ControlledZoom>
+            </div>
+```
+
+# section 6-1 製作夜市頁面
+
+## 了解更多跟停用泡泡換位置
+
+```js
+ <a
+            className={style.stopBubble}
+            onClick={bubbleTogglehandler}
+            style={{ position: "relative", left: "16px" }}
+          >
+            停用泡泡
+          </a>
+          <a
+            style={{ position: "absolute", right: "16px" }}
+            href="#about-me-head"
+          >
+            了解更多
+          </a>
+```
+
+## 製作詳細內文
+
+# section 7-1 製作Udemy頁面 (GoGame)
+
+## [修復] ico 網頁圖案
+
+# section 7-2 tourism
+
+## [全體]修改連結 (直接前往、使用分頁)
+
+## [全體]修正圖片zoom置中，透過useEffect⭐⭐⭐
+
+> **由於我們使用 ControlledZoom 會莫名多一層div，也沒有className，只能透過渲染完畢後追加style來進行img置中!**
+
+```js
+ useEffect(() => {
+    // 因為 ControlledZoom 替我製作多了一層div 所以要在渲染完畢後製作置中功能!
+    // 在這裡進行元素選取和樣式修改
+    let imgs = document.querySelectorAll("img");
+    imgs.forEach((img) => {
+      let imgParent = img.parentElement;
+      imgParent.style.display = "flex";
+      imgParent.style.justifyContent = "center";
+      imgParent.style.alignItems = "center";
+    });
+    // imgParent.style.cssText = "display: flex; justify-content: center; align-items: center;";
+  }, []); // 這個空的[]確保這個 effect 只執行一次，即在組件渲染後
+
+```
+
+## [修改]原始的UdemyFullStack的旅遊nav(改用bootstrap自適應)
+
+
+
+
+
+
+
+
+
+---
+
+# 關於 💡zoom圖片放大縮小的問題💡
+
+## 使用 div +*stopPropagation*
+
+div 做一層圖片覆蓋全部畫面，點擊的時候才會消失，之後Zoom才會接收到其他instruction
+
+看能否以此規避 無法二度放大 ?
+
+如果是網頁整體跟著放大，那就試看看  restore的時候
+
+ 網頁大小設定回100%
+
+## 使用 旋轉 讓人不需要放大 哈哈
