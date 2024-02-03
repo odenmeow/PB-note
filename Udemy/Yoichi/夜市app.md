@@ -1,5 +1,3 @@
-
-
 # 設計時應注意: ( 想到就補充 )
 
 訂單資料不應該依賴 會受編輯而變動的 localStorage 的 yoichiProducts資料 
@@ -1189,12 +1187,6 @@ HTMLTime.t_showUp();
 # 7-3
 
 ## [修正] 折扣顯示了， 但實際產生的訂單沒有 -5元的bug、開著網頁過夜訂單update會被記入隔天的訂單的bug
-
-
-
-
-
-
 
 # TODO
 

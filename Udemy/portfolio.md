@@ -956,20 +956,185 @@ npm install --save react-medium-image-zoom
     });
     // imgParent.style.cssText = "display: flex; justify-content: center; align-items: center;";
   }, []); // 這個空的[]確保這個 effect 只執行一次，即在組件渲染後
-
 ```
 
 ## [修改]原始的UdemyFullStack的旅遊nav(改用bootstrap自適應)
 
+# section 7-3
 
+## [修正] useEffect不是所有img Parent而是含特定attr者
 
+```js
+  useEffect(() => {
+    // 因為 ControlledZoom 替我製作多了一層div 所以要在渲染完畢後製作置中功能!
+    // 在這裡進行元素選取和樣式修改
+    let imgs = document.querySelectorAll("img");
+    imgs.forEach((img) => {
+      let imgParent = img.parentElement;
+      if (imgParent.hasAttribute("data-rmiz-content")) {
+        imgParent.style.display = "flex";
+        imgParent.style.justifyContent = "center";
+        imgParent.style.alignItems = "center";
+      }
+    });
+    // imgParent.style.cssText = "display: flex; justify-content: center; align-items: center;";
+  }, []); // 這個空的[]確保這個 effect 只執行一次，即在組件渲染後
+```
 
+## [修正] YT、Git圖區、flexbasis直接改50%
 
+# section 8-1 zoom放大縮小問題
 
+```js
+const MyAutoMechine = () => {
+  const [isZoomed, setIsZoomed] = useState(false);
+  const handleImageClick = () => {
+    // 點選圖片時進行放大
+    console.log("shouldZoom");
+    setIsZoomed(true);
+    let btn = document.querySelector(".zoom-btn button");
+    console.log(btn);
+    btn.addEventListener("click", (e) => {
+      console.log("設定為false");
+      setIsZoomed(false);
+      document.documentElement.style.transform = "scale(1)";
+      window.devicePixelRatio = 0;
 
+    });
+  };
+```
 
+```js
+<ControlledZoom isZoomed={isZoomed} classDialog="zoom-btn">
+                <Image
+                  onClick={handleImageClick}
+```
+
+# section 8-2
+
+## 在考慮要用之前的useCallback或者現在的click😕
+
+## 另一個之前想的可能會比較好😕😕😕
+
+## 想到解法，不要指定btn，而是click針對整個塗層，這樣子非click就不會縮小圖片(先使用info藍色提示字)
+
+```js
+const handleImageClick = () => {
+    (function showWarn() {
+      let body = document.querySelector(".zoom-btn > div:nth-child(2)");
+      let warn = document.createElement("div");
+      let text = document.createElement("p");
+      text.style.margin = 0;
+      text.innerText = "雙擊可縮小";
+      warn.append(text);
+      warn.className = "noSend alert alert-info";
+      warn.setAttribute("role", "info");
+      warn.style.position = "absolute";
+      warn.style.right = "5%";
+      warn.style.bottom = "5%";
+      warn.style.width = "content-fit";
+      warn.style.height = "5%";
+      warn.style.margin = "0";
+      warn.style.display = "flex";
+      warn.style.justifyContent = "center";
+      warn.style.alignItems = "center";
+      body.append(warn);
+      warn.addEventListener("animationend", (e) => {
+        // e.target.remove();
+      });
+      warn.style.animation = "opacityTransitions 2.5s ease forwards";
+    })();
+
+    // 點選圖片時進行放大
+
+    console.log("shouldZoom");
+    setIsZoomed(true);
+
+    let btn = document.querySelector(".zoom-btn");
+    btn.addEventListener("dblclick", (e) => {
+      console.log("設定為false");
+      setIsZoomed(false);
+    });
+
+    btn.querySelector("button").addEventListener("click", (e) => {
+      console.log("設定為false");
+      setIsZoomed(false);
+    });
+  };
+```
+
+# section 8-3 製作Udemy成績計算網站
+
+## 關於裡面的mergeSort可能有空要再看看
+
+# section 8-4 製作Udemy貪吃蛇網站
+
+# section 8-5 製作磚塊跟mongodb網頁結束
 
 ---
+
+後續還需要 +3個 udmey專案
+
+- 9_MERN專案      ( 已經有了，貼連結跟網站文字內容就好 )
+
+- 8_圖片網站專案  (製作RENDER 專屬連結網站 小改內容) 
+
+- 7_Google 登入   (快好了)
+
+然後 把ISPAN 也做一做   ( 兩個 )
+
+之後補夜市APP 外觀 (覆蓋的邏輯可以等後續)
+
+然後修改一下104就能丟了 
+
+# GoogleLoginWeb⭐⭐⭐
+
+完成布署 ( 但是失敗 )
+
+>  記得要去 GPC 那邊 consent screen 發布 Public 出去讓大家可使用
+
+## ⭐請不要用相對路徑在GoogleStrategy， 改用絕對
+
+```js
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL:
+        "https://portfolio-104l.onrender.com/project7/auth/google/redirect",
+    },
+```
+
+# PhotoWeb
+
+完成布署
+
+# MERN
+
+已布署過
+
+# section 9-1 Udemy7_googleLoginWeb製作
+
+ 弄了三張圖片進去 哈哈
+
+# section 9-2 Udemy8_PhotoWeb製作
+
+## 順帶修正 之前各專案介紹的文字版面
+
+# section 9-3 Udemy9_MERN製作
+
+# section 10 ISPAN完成
+
+筆記 ( 完成 )
+
+---
+
+# TODO:
+
+> 畫面全部做好
+
+> 連線進去的時候 ( 如果使用到webservices 有等待 要做一下畫面 )
 
 # 關於 💡zoom圖片放大縮小的問題💡
 
@@ -981,6 +1146,6 @@ div 做一層圖片覆蓋全部畫面，點擊的時候才會消失，之後Zoom
 
 如果是網頁整體跟著放大，那就試看看  restore的時候
 
- 網頁大小設定回100%
+ 網頁大小設定回100%?
 
 ## 使用 旋轉 讓人不需要放大 哈哈
